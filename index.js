@@ -25,18 +25,18 @@ router.get('/',function(req,res){
 
 router.route('/person')
         .post(function(req, res){
-          res.send(req.body)
-          // var person = new Person();
-          // person.id = req.body.id;
-          // person.name = req.body.name;
-          // person.urlhinh = req.body.urlhinh;
-          //
-          // person.save(function(err){
-          //   if(err){
-          //     res.json({error:err})
-          //   }
-          //   res.json({message:'Data inserted successful!'})
-          // })
+          //res.send(req.body)
+          var person = new Person();
+          person.id = req.body.id;
+          person.name = req.body.name;
+          person.urlhinh = req.body.urlhinh;
+
+          person.save(function(err){
+            if(err){
+              res.json({error:err})
+            }
+            res.json({message:'Data inserted successful!'})
+          })
         })
         .get(function(req, res){
           Person.find(function(err, person){
