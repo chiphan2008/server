@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 server.listen(2309,'112.213.94.96');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.get('/',function(req,res){
