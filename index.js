@@ -25,7 +25,7 @@ router.get('/',function(req,res){
 
 router.route('/person')
         .post(function(req, res){
-          res.send({id:req.body.id,name:req.body.name,urlhinh:req.body.urlhinh})
+          res.send(req.body)
           // var person = new Person();
           // person.id = req.body.id;
           // person.name = req.body.name;
