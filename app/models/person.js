@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var PersonShema = new Schema({
   id:Number,
   name:String,
-  urlhinh:String,
+  urlhinh:String
 });
 
-module.exports = mongoose.model('Person',PersonShema)
+module.exports = mongoose.model('Person',PersonShema);

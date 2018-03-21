@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(express.bodyParser());
 app.use('/api',router);
 
-app.use(function(req, res, next){
+router.use(function(req, res, next){
   next();
 })
 
