@@ -32,7 +32,16 @@ router.route('/person')
                res.json({error:err})
              }
             if(item.length>0){
-              res.json({code:200,message:'Data exists!'})
+              Person.updateOne(
+                {id: req.body.id },
+                {
+                   $set: {
+                     "name": req.body.name,
+                     "urlhinh": req.body.urlhinh,
+                   }
+               }, function() {
+                   res.json({code:200,message:'Data exists!'})
+               });
             }else {
               var person = new Person();
               person.id = req.body.id;
