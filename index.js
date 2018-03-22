@@ -57,17 +57,20 @@ router.route('/person')
           });
         })
         .get(function(req, res){
-          res.json(req)
-          if(req.body.id){
-            Person.find({id:{$ne : req.body.id}},function(err, person){
-              if(err) res.json({error:err})
-              res.json({person})
-            });
-          }
           Person.find(function(err, person){
             if(err) res.json({error:err})
             res.json({person})
           });
+        })
+router.route('/except-person/:id')
+        .get(function(req, res){
+          if(req.params.id){
+            Person.find({id:{$ne : req.params.id}},function(err, person){
+              if(err) res.json({error:err})
+              res.json({person})
+            });
+          }
+          res.json({error:"Cant not GET"})
         })
 // router.post('/', function(req, res) {
 //     let data = {
