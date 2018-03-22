@@ -1,13 +1,14 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
 
 mongoose.connect('mongodb://localhost:27017/chat');
-//var io = require('socket.io')(server);
+
 server.listen(2309,'112.213.94.96');
 
 app.use(bodyParser.json());
@@ -17,6 +18,14 @@ app.use('/api',router);
 
 router.use(function(req, res, next){
   next();
+})
+
+io.on('connection',function(socket){
+  console.log('Id connection '+socket.id);
+  // socket.on('client-send-serv',function(data){
+  //   console.log(data);
+  //   io.sockets.emit('server-send-data', data);
+  // })
 })
 
 router.get('/',function(req,res){
