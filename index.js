@@ -26,8 +26,11 @@ router.get('/',function(req,res){
 router.route('/person')
         .post(function(req, res){
           //res.send(req.body)
-          Person.find({id:req.body.id},function(err){
+          Person.find({id:req.body.id},function(err,item){
             if(err){
+               res.json({error:err})
+             }
+            if(item){
               res.json({code:200,message:'Data exists!'})
             }else {
               var person = new Person();
