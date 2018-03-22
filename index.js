@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, {pingTimeout: 30000});
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var router = express.Router();
