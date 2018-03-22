@@ -27,7 +27,7 @@ router.route('/person')
         .post(function(req, res){
           //res.send(req.body)
           const data = Person.find({id:req.body.id}).count();
-          res.json({count:data})
+          res.send({count:data})
           if(data===0){
             res.json({code:200,message:'Data exists!'})
           }else {
