@@ -57,6 +57,12 @@ router.route('/person')
           });
         })
         .get(function(req, res){
+          if(req.body.id){
+            Person.find({id:{$ne : req.body.id}},function(err, person){
+              if(err) res.json({error:err})
+              res.json({person})
+            });
+          }
           Person.find(function(err, person){
             if(err) res.json({error:err})
             res.json({person})
