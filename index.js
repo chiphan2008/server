@@ -26,26 +26,23 @@ router.get('/',function(req,res){
 router.route('/person')
         .post(function(req, res){
           //res.send(req.body)
-          Person.find({id:req.body.id},function(err,item){
-            res.json(item);
-            if(err){
-               res.json({error:err})
-             }
-            if(item){
-              res.json({code:200,message:'Data exists!'})
-            }else {
-              var person = new Person();
-              person.id = req.body.id;
-              person.name = req.body.name;
-              person.urlhinh = req.body.urlhinh;
-              person.save(function(err){
-                if(err){
-                   res.json({error:err})
-                 }
-                 res.json({code:200,message:'Data inserted successful!'})
-              })
-            }
-          });
+          const data = Person.find({id:req.body.id}).count();
+          res.json({count:data})
+          if(data===0){
+            res.json({code:200,message:'Data exists!'})
+          }else {
+            var person = new Person();
+            person.id = req.body.id;
+            person.name = req.body.name;
+            person.urlhinh = req.body.urlhinh;
+            person.save(function(err){
+              if(err){
+                 res.json({error:err})
+               }
+               res.json({code:200,message:'Data inserted successful!'})
+            })
+          }
+
         })
         .get(function(req, res){
           Person.find(function(err, person){
