@@ -65,13 +65,14 @@ router.route('/person')
 router.route('/except-person/:id')
         .get(function(req, res){
           res.send(req.params)
-          if(req.params.id){
+          if(req.params.id>0){
             Person.find({id:{$ne : req.params.id}},function(err, person){
               if(err) res.json({error:err})
               res.json({person})
             });
+          }else {
+            res.json({error:"Cant not GET"})
           }
-          res.json({error:"Cant not GET"})
         })
 // router.post('/', function(req, res) {
 //     let data = {
