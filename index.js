@@ -27,6 +27,7 @@ router.route('/person')
         .post(function(req, res){
           //res.send(req.body)
           Person.find({id:req.body.id},function(err,item){
+            res.json(item);
             if(err){
                res.json({error:err})
              }
