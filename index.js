@@ -6,21 +6,15 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
-
+var BaseCtrl = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
 io.on('connection',function(socket){
   //console.log('Id connection '+socket.id);
-  socket.on('sendChatMessage',function(port,data){
-    console.log(data);
-    var nsp = io.of('/'+port);
-    nsp.on('connection', function(socket) {
-       nsp.on('sendMessage',function(data){
-         console.log(data);
-         nsp.emit('replyMessage', data);
-       })
-    });
+  socket.on('sendChatMessage',function(port){
+    console.log(port);
+    BaseCtrl.createNSP(port);
   })
 })
 
