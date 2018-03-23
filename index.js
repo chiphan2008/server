@@ -102,7 +102,7 @@ router.route('/except-person/:id')
         })
 router.route('/conversation/:group')
         .get(function(req, res){
-          Person.find({group:{$ne : req.params.group}},function(err, conv){
+          Conversation.find({group:{$ne : req.params.group}},function(err, conv){
             if(err) res.json({error:"Cant not GET"})
             res.json({conv})
           });
