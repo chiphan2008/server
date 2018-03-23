@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
-var BaseCtrl = require('./app/controllers/BaseController')
+var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
@@ -14,7 +14,7 @@ io.on('connection',function(socket){
   //console.log('Id connection '+socket.id);
   socket.on('sendChatMessage',function(port){
     console.log(port);
-    BaseCtrl.createNSP(port);
+    BaseController.createNSP(port);
   })
 })
 
