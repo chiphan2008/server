@@ -11,11 +11,11 @@ mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
 io.on('connection',function(socket){
-  console.log('Id connection '+socket.id);
-  // socket.on('client-send-serv',function(data){
-  //   console.log(data);
-  //   io.sockets.emit('server-send-data', data);
-  // })
+  //console.log('Id connection '+socket.id);
+  socket.on('sendChatMessage',function(data){
+    console.log(data);
+    //io.sockets.emit('server-send-data', data);
+  })
 })
 
 app.use(bodyParser.json());
