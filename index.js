@@ -6,15 +6,30 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
+var Conversation = require('./app/models/Conversation')
 //var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
 io.on('connection',function(socket){
-  //console.log('Id connection '+socket.id);
   socket.on('sendMessage',function(port,data){
     console.log(data);
-    io.sockets.emit('replyMessage-'+port, data);
+
+    if(data.group===undefined){
+      Conversation.find({group:data.group},function(err,item){
+        if(item.length===0){
+          io.sockets.emit('replyMessage-'+port, data);
+        }else {
+          io.sockets.emit('replyMessage-'+port, item);
+        }
+      });
+    }else {
+      var conversation = new Conversation();
+      conversation = data;
+      conversation.save();
+      io.sockets.emit('replyMessage-'+port, data);
+    }
+
   })
 })
 
@@ -33,9 +48,7 @@ router.get('/',function(req,res){
 
 router.route('/person')
         .post(function(req, res){
-          //res.send(req.body)
           Person.find({id:req.body.id},function(err,item){
-            //res.json(item.length)
             if(err){
                res.json({error:err})
              }
@@ -80,4 +93,11 @@ router.route('/except-person/:id')
           }else {
             res.json({error:"Cant not GET"})
           }
+        })
+router.route('/conversation/:group')
+        .get(function(req, res){
+          Person.find({group:{$ne : req.params.group}},function(err, conv){
+            if(err) res.json({error:"Cant not GET"})
+            res.json({conv})
+          });
         })
