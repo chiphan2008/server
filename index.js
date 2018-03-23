@@ -26,7 +26,9 @@ io.on('connection',function(socket){
     }else {
       var conversation = new Conversation();
       conversation = data;
-      conversation.save();
+      conversation.save(function(err) {
+        console.log('err',err);
+      });
       io.sockets.emit('replyMessage-'+port, data);
     }
 
