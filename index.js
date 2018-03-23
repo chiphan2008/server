@@ -25,7 +25,11 @@ io.on('connection',function(socket){
       });
     }else {
       var conversation = new Conversation();
-      conversation = data;
+      //conversation = data;
+      conversation.group= data.group,
+      conversation.user_id= data.user_id,
+      conversation.message= data.message,
+      conversation.urlhinh= data.urlhinh,
       conversation.save(function(err) {
         console.log('err',err);
       });
