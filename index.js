@@ -13,9 +13,11 @@ server.listen(2309,'112.213.94.96');
 io.on('connection',function(socket){
   //console.log('Id connection '+socket.id);
   socket.on('sendChatMessage',function(port,data){
+    console.log(data);
     var nsp = io.of('/'+port);
     nsp.on('connection', function(socket) {
        nsp.on('sendMessage',function(data){
+         console.log(data);
          nsp.emit('replyMessage', data);
        })
     });
