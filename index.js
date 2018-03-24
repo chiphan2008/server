@@ -14,9 +14,8 @@ server.listen(2309,'112.213.94.96');
 io.on('connection',function(socket){
   socket.on('sendMessage',function(port,data){
     console.log(data);
-
     if(data.group===undefined){
-      Conversation.find({group:data.group},function(err,item){
+      Conversation.find({group:port},function(err,item){
         if(item.length===0){
           io.sockets.emit('replyMessage-'+port, data);
         }else {
@@ -92,9 +91,9 @@ router.route('/person')
 router.route('/except-person/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id}},function(err, person){
+            Person.find({id:{$ne : req.params.id}},function(err, data){
               if(err) res.json({error:err})
-              res.json({person})
+              res.json({data})
             });
           }else {
             res.json({error:"Cant not GET"})
@@ -102,8 +101,8 @@ router.route('/except-person/:id')
         })
 router.route('/conversation/:group')
         .get(function(req, res){
-          Conversation.find({group:req.params.group},function(err, conv){
+          Conversation.find({group:req.params.group},function(err, data){
             if(err) res.json({error:"Cant not GET"})
-            res.json({conv})
+            res.json({data})
           });
         })
