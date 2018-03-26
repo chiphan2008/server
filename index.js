@@ -14,6 +14,7 @@ server.listen(2309,'112.213.94.96');
 io.on('connection',function(socket){
   //show handleEnterText
   socket.on('handleEnterText',function(port,data){
+    console.log(data);
     io.sockets.emit('replyStatus-'+port, data);
   });
   // handle send message
