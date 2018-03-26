@@ -12,6 +12,11 @@ mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
 io.on('connection',function(socket){
+  //show handleEnterText
+  socket.on('handleEnterText',function(port,data){
+    io.sockets.emit('replyStatus-'+port, data);
+  });
+  // handle send message
   socket.on('sendMessage',function(port,data){
     console.log(data);
     if(data.group===undefined){
