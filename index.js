@@ -99,7 +99,17 @@ router.route('/except-person/:id')
           if(req.params.id>0){
             Person.find({id:{$ne : req.params.id}},function(err, data){
               if(err) res.json({error:err})
-              res.json({data})
+              const pers = data.data;
+              let arr = [];
+              for(var i = 0; i < pers.length; i ++){
+                let param = pers[i].id<req.params.id ? pers[i].id+'_'+req.params.id : req.params.id+'_'+pers[i].id;
+                Conversation.find({group:param},function(err, el){
+                  pers[i]['message']= el.message;
+                  arr.push(pers[i]);
+                }).sort({create_at:1}).limit(1);
+              }
+              const arrObj = {data:arr}
+              res.json({arrObj})
             });
           }else {
             res.json({error:"Cant not GET"})
