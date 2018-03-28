@@ -11,7 +11,7 @@ var Conv = (param) =>{
       }
   })
 }
-var findOneMessage = (param) => {
+async findOneMessage(param){
   return Conv(param);
 }
 
