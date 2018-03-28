@@ -116,7 +116,7 @@ router.route('/except-person/:id')
               async.parallel(data, function(err, result) {
 
                 if (err) return console.log(err);
-                  res.json({result})
+                  res.json({data})
               });
 
             });
