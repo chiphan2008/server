@@ -12,6 +12,6 @@ var ConvOfPer = (param) => {
   })
 }
 
-exports.findOneMessage = async (param) => {
-  return await ConvOfPer(param);
+exports.findOneMessage = (param) => {
+  return ConvOfPer(param);
 }
