@@ -1,5 +1,5 @@
 'use strict';
-async = require('async');
+//async = require('async');
 
 var Conversation = require('../models/Conversation')
 
