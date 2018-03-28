@@ -3,6 +3,7 @@
 
 var Conversation = require('../models/Conversation')
 
-exports.findOneMessage = async function(param){
-  return Conversation.findOne({group:param}).sort('-create_at').exec();
+
+exports.findOneMessage = (param) =>{
+  return new Promise(Conversation.findOne({group:param}).sort('-create_at').exec());
 }
