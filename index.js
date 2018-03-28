@@ -116,14 +116,13 @@ router.route('/chat-message/:id')
                 // data.push(param)
                 // if(index===arr.length-1) res.json({data})
                 BaseController.findOneMessage(param).then(el=>{
-                  const obj = Object.assign({'message':el.message}, item._doc)
-                  data.push(obj);
-                  // if(el===undefined){
-                  //   data.push(item._doc);
-                  // }else {
-                  //   const obj = Object.assign({'message':el.message}, item._doc)
-                  //   data.push(obj);
-                  // }
+
+                  if(el===undefined){
+                    data.push(item);
+                  }else {
+                    const obj = Object.assign({'create_at':el.create_at,'message':el.message}, item._doc)
+                    data.push(obj);
+                  }
                   if(index===arr.length-1) res.json({data})
                 })
 
