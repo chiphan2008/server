@@ -103,7 +103,11 @@ router.route('/except-person/:id')
               data.forEach(function(item){
                 let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 //res.json({param}) .sort('-create_at').limit(1)
-                arr = await BaseController.findOneMessage(param);
+                BaseController.findOneMessage(param).then(e=>{
+                  res.json({e})
+                })
+
+                //arr = await BaseController.findOneMessage(param);
               })
               res.json({arr})
             });
