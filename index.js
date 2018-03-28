@@ -103,21 +103,18 @@ router.route('/except-person/:id')
               let data = [];
               arr.forEach(function(item){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
-                BaseController.findOneMessage('48_72').then(el=>{
-                  data.push({el})
-                })
-
+                // BaseController.findOneMessage('48_72').then(el=>{
+                //   data.push({el})
+                // })
+                const el = BaseController.findOneMessage('48_72');
+                res.json({el})
                 // if(el.message!==undefined){
                 //   res.json({el})
                 //   //item['message'] = el.message;
                 //   data.push(el);
                 // }
               });
-              async.parallel(data, function(err, result) {
 
-                if (err) return console.log(err);
-                  res.json({data})
-              });
 
             });
           }else {
