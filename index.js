@@ -101,16 +101,15 @@ router.route('/except-person/:id')
               if(err) res.json({error:err})
               const pers = data.data;
               let arr = [];
-              //res.json({pers})
-              for(var i = 0; i < pers.length; i++){
-                let param = pers[i].id<req.params.id ? pers[i].id+'_'+req.params.id : req.params.id+'_'+pers[i].id;
+              pers.forEach(function(item){
+                let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 res.json({param})
                 Conversation.find({group:param},function(err, el){
                   pers[i]['message']= el.message;
-                  arr.push(pers[i]);
+                  arr.push(item);
                   res.json({arr})
                 }).sort({create_at:1}).limit(1);
-              }
+              })
 
               res.json({data:arr})
             });
