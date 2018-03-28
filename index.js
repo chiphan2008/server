@@ -101,6 +101,7 @@ router.route('/except-person/:id')
               if(err) res.json({error:err})
               const pers = data.data;
               let arr = [];
+              res.json({pers})
               pers.forEach(function(item){
                 let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 res.json({param})
