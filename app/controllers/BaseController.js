@@ -3,8 +3,7 @@
 
 var Conversation = require('../models/Conversation')
 
-let findOneMessage = async (param) => {
-
+let findOneMessage = (param) => {
   let Conv = () =>{
     return new Promise(function(resolve, reject) {
       try{
@@ -16,7 +15,7 @@ let findOneMessage = async (param) => {
       }
     })
   }
-  return await Conv();
+  return Conv();
 }
 
 module.exports.findOneMessage = findOneMessage;
