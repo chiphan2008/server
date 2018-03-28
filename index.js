@@ -101,9 +101,10 @@ router.route('/except-person/:id')
               if(err) res.json({error:err})
               const pers = data.data;
               let arr = [];
-              res.json({pers})
+              //res.json({pers})
               for(var i = 0; i < pers.length; i++){
                 let param = pers[i].id<req.params.id ? pers[i].id+'_'+req.params.id : req.params.id+'_'+pers[i].id;
+                res.json({param})
                 Conversation.find({group:param},function(err, el){
                   pers[i]['message']= el.message;
                   arr.push(pers[i]);
