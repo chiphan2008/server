@@ -11,8 +11,8 @@ var Conv = (param) =>{
       }
   })
 }
-let findOneMessage = async (param) => {
-  return await Conv(param);
+var findOneMessage = (param) => {
+  return Conv(param);
 }
 
 module.exports.findOneMessage = findOneMessage;
