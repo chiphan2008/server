@@ -98,9 +98,9 @@ router.route('/except-person/:id')
         .get(function(req, res){
           if(req.params.id>0){
             Person.find({id:{$ne : req.params.id}},function(err, arr){
-              res.json({data:arr});
+              //res.json({data:arr});
               if(err) res.json({error:err})
-              let data = [];
+              var data = [];
               arr.forEach(function(item,index){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 BaseController.findOneMessage(param).then(el=>{
