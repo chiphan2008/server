@@ -102,7 +102,7 @@ router.route('/except-person/:id')
               let data = [];
               arr.forEach(function(item){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
-                const el = BaseController.findOneMessage.execSync('48_90').toString();
+                const el = BaseController.findOneMessage('48_72');
                 res.json({el})
                 // if(el.message!==undefined){
                 //   res.json({el})
