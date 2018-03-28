@@ -9,7 +9,7 @@ module.exports = {
   //   const {data} = await axios.get(endpoint + '/posts?_embed&per_page=' + perPage)
   //   return data
   // }
-  findOneMessage =  (param) =>{
+   function  findOneMessage(param){
     return  Conversation.findOne({group:param}).sort('-create_at').exec();
   }
 
