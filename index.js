@@ -105,11 +105,12 @@ router.route('/except-person/:id')
                 let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 //res.json({param}) .sort('-create_at').limit(1)
                 Conversation.find({group:param}).exec(function(err, el){
-                  res.json({el})
+                  arr = el;
                   // item['message']= el.message;
                   // arr.push(item);
                   // res.json({arr})
                 });
+                res.json({arr})
               })
               //res.json({arr})
             });
