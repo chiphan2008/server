@@ -104,7 +104,7 @@ router.route('/except-person/:id')
               data.forEach(function(item){
                 let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 //res.json({param})
-                Conversation.find({group:param},{sort: {created_at: 1}, limit: 1},function(err, el){
+                Conversation.find({group:param}).sort({create_at:1}).limit(1,function(err, el){
                   res.json({el})
                   item['message']= el.message;
                   arr.push(item);
