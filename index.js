@@ -98,6 +98,7 @@ router.route('/except-person/:id')
         .get(function(req, res){
           if(req.params.id>0){
             Person.find({id:{$ne : req.params.id}},function(err, arr){
+              res.json({data:arr});
               if(err) res.json({error:err})
               let data = [];
               arr.forEach(function(item,index){
