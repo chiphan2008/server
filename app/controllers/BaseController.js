@@ -2,17 +2,17 @@
 //async = require('async');
 
 var Conversation = require('../models/Conversation')
-
+var Conv = (param) =>{
+  return new Promise(function(resolve, reject) {
+      if(params!==''){
+        Conversation.findOne({group:param}).sort('-create_at').exec((err,el)=>{
+          resolve(el)
+        })
+      }
+  })
+}
 let findOneMessage = async (param) => {
-  return await function(param){
-    return new Promise(function(resolve, reject) {
-        if(params!==''){
-          Conversation.findOne({group:param}).sort('-create_at').exec((err,el)=>{
-            resolve(el)
-          })
-        }
-    })
-  }
+  return await Conv(param);
 }
 
 module.exports.findOneMessage = findOneMessage;
