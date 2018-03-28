@@ -106,6 +106,9 @@ router.route('/except-person/:id')
                 //res.json({param}) .sort('-create_at').limit(1)
                 Conversation.find({group:param}).exec(function(err, el){
                   arr = el;
+                  if(arr.length>0){
+                    res.json({arr})
+                  }
                   // item['message']= el.message;
                   // arr.push(item);
                   // res.json({arr})
