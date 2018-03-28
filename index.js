@@ -102,7 +102,7 @@ router.route('/except-person/:id')
               let data = [];
               arr.forEach(function(item){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
-                const el = BaseController.findOneMessage('48_72').then((err,el)=>{
+                const el = BaseController.findOneMessage('48_72').then((el)=>{
                   res.json({el})
                 });
 
