@@ -113,11 +113,11 @@ router.route('/chat-message/:id')
               var data = [];
               arr.forEach(function(item,index){
                 let param = req.params.id<item.id ?  req.params.id+'_'+item.id : item.id+'_'+req.params.id;
-                // data.push(param)
-                // if(index===arr.length-1) res.json({data})
                 BaseController.findOneMessage(param).then(el=>{
-                  //const obj = Object.assign({'create_at':el.create_at,'message':el.message}, item._doc)
-                  data.push(el);
+                  if(el!==null){
+                    const obj = Object.assign({'create_at':el.create_at,'message':el.message}, item._doc)
+                    data.push(obj);
+                  }
                   if(index===arr.length-1) res.json({data})
                 })
 
