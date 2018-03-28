@@ -13,7 +13,9 @@ var getOneConv = (param) => {
 }
 
 let findOneMessage =  (param) => {
-  return getOneConv(param);
+  return getOneConv(param).then(el =>{
+    return el;
+  });
 }
 
 module.exports.findOneMessage = findOneMessage;
