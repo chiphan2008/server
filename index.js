@@ -97,16 +97,18 @@ router.route('/person')
 router.route('/except-person/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id}},function(err, data){
+            Person.find({id:{$ne : req.params.id}},function(err, arr){
               if(err) res.json({error:err})
-              let arr = [];
-              data.forEach(function(item){
-                let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
-                //res.json({param}) //.sort('-create_at').limit(1)
-                res.json({e:BaseController.findOneMessage(param)})
-                ;
-              })
-              res.json({arr})
+              let data = [];
+              arr.forEach(function(item){
+                const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
+                const el = BaseController.findOneMessage(param);
+                if(el.length>0){
+                  item['message'] = el.message;
+                  data.push(item);
+                }
+              });
+              res.json({data})
             });
           }else {
             res.json({error:"Cant not GET"})
