@@ -1,5 +1,4 @@
 'use strict';
-var async = require('async');
 var Conversation = require('../models/Conversation')
 
 let findOneMessage = (param) => {
