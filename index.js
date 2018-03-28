@@ -113,15 +113,17 @@ router.route('/chat-message/:id')
               var data = [];
               arr.forEach(function(item,index){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
-                BaseController.findOneMessage(param).then(el=>{
-                  if(el.message===undefined){
-                    data.push(item._doc);
-                  }else {
-                    const obj = Object.assign({'message':el.message}, item._doc)
-                    data.push(obj);
-                  }
-                  if(index===arr.length-1) res.json({data})
-                })
+                data.push(param)
+                if(index===arr.length-1) res.json({data})
+                // BaseController.findOneMessage(param).then(el=>{
+                //   if(el.message===undefined){
+                //     data.push(item._doc);
+                //   }else {
+                //     const obj = Object.assign({'message':el.message}, item._doc)
+                //     data.push(obj);
+                //   }
+                //   if(index===arr.length-1) res.json({data})
+                // })
 
               });
 
