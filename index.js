@@ -100,10 +100,10 @@ router.route('/except-person/:id')
             Person.find({id:{$ne : req.params.id}},function(err, arr){
               if(err) res.json({error:err})
               let data = [];
-              arr.forEach(function(item){
+              arr.forEach(function(item,index){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 BaseController.findOneMessage('48_72').then(el=>{
-                  res.json({arr:arr.length})
+                  res.json({arr:index})
                 })
                 // const el = BaseController.findOneMessage('48_72');
                 // res.json({el})
