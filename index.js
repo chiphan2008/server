@@ -107,13 +107,12 @@ router.route('/except-person/:id')
                 Conversation.find({group:param}).exec(function(err, el){
                   arr = el;
                   if(arr.length>0){
-                    res.json({arr})
+                    res.json({el})
                   }
                   // item['message']= el.message;
                   // arr.push(item);
                   // res.json({arr})
                 });
-                res.json({arr})
               })
               //res.json({arr})
             });
