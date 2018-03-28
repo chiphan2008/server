@@ -4,12 +4,14 @@
 var Conversation = require('../models/Conversation')
 var params = '';
 var p1 = new Promise(function(resolve, reject) {
-  if(params!==''){
-    Conversation.findOne({group:params}).sort('-create_at').exec((err,el)=>{
-      return resolve(el)
-    })
-  }
 
+  setTimeout(()=>{
+    if(params!==''){
+      Conversation.findOne({group:params}).sort('-create_at').exec((err,el)=>{
+        return resolve(el)
+      })
+    }
+  },2000)
 })
 exports.findOneMessage = (param) =>{
   params=param;
