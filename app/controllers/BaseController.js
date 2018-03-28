@@ -5,7 +5,5 @@ var Conversation = require('../models/Conversation')
 
 
 exports.findOneMessage = (param) =>{
-  Conversation.findOne({group:param}).sort('-create_at').execSync(function(err,el){
-    return el;
-  });
+  return Conversation.findOne({group:param}).sort('-create_at').execSync();
 }
