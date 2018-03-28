@@ -97,6 +97,16 @@ router.route('/person')
 router.route('/except-person/:id')
         .get(function(req, res){
           if(req.params.id>0){
+            Person.find({id:{$ne : req.params.id}},function(err, data){
+              res.json({data});
+            });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+        })
+router.route('/chat-message/:id')
+        .get(function(req, res){
+          if(req.params.id>0){
             Person.find({id:{$ne : req.params.id}},function(err, arr){
               //res.json({data:arr});
               if(err) res.json({error:err})
@@ -104,9 +114,12 @@ router.route('/except-person/:id')
               arr.forEach(function(item,index){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 BaseController.findOneMessage(param).then(el=>{
-                  const obj = Object.assign({'message':el.message}, item._doc)
-                  data.push(obj);
-                  if(el.message===undefined) data.push(item._doc);
+                  if(el.message===undefined){
+                    data.push(item._doc);
+                  }else {
+                    const obj = Object.assign({'message':el.message}, item._doc)
+                    data.push(obj);
+                  }
                   if(index===arr.length-1) res.json({data})
                 })
 
