@@ -111,24 +111,21 @@ router.route('/chat-message/:id')
               //res.json({data:arr});
               if(err) res.json({error:err})
               var data = [];
-              var param;
               arr.forEach(function(item,index){
-                 if(req.params.id<item.id){
-                   param = req.params.id+'_'+item.id
-                 }else {
-                     param = item.id+'_'+req.params.id;
-                  }
-                data.push(param)
-                if(index===arr.length-1) res.json({data})
-                // BaseController.findOneMessage(param).then(el=>{
-                //   if(el.message===undefined){
-                //     data.push(item._doc);
-                //   }else {
-                //     const obj = Object.assign({'message':el.message}, item._doc)
-                //     data.push(obj);
-                //   }
-                //   if(index===arr.length-1) res.json({data})
-                // })
+                let param = req.params.id<item.id ?  req.params.id+'_'+item.id : item.id+'_'+req.params.id;
+                // data.push(param)
+                // if(index===arr.length-1) res.json({data})
+                BaseController.findOneMessage(param).then(el=>{
+                  const obj = Object.assign({'message':el.message}, item._doc)
+                  data.push(obj);
+                  // if(el===undefined){
+                  //   data.push(item._doc);
+                  // }else {
+                  //   const obj = Object.assign({'message':el.message}, item._doc)
+                  //   data.push(obj);
+                  // }
+                  if(index===arr.length-1) res.json({data})
+                })
 
               });
 
