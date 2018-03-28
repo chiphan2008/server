@@ -106,10 +106,11 @@ router.route('/except-person/:id')
                 Conversation.find({group:param},function(err, el){
                   pers[i]['message']= el.message;
                   arr.push(pers[i]);
+                  res.json({arr})
                 }).sort({create_at:1}).limit(1);
               }
-              const arrObj = {data:arr}
-              res.json({arrObj})
+
+              res.json({data:arr})
             });
           }else {
             res.json({error:"Cant not GET"})
