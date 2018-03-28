@@ -112,7 +112,7 @@ router.route('/chat-message/:id')
               if(err) res.json({error:err})
               var data = [];
               arr.forEach(function(item,index){
-                const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
+                let param = req.params.id<item.id ?  req.params.id+'_'+item.id : item.id+'_'+req.params.id;
                 data.push(param)
                 if(index===arr.length-1) res.json({data})
                 // BaseController.findOneMessage(param).then(el=>{
