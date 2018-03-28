@@ -113,7 +113,7 @@ router.route('/except-person/:id')
                 //   data.push(el);
                 // }
               });
-              res.json({data})
+              //res.json({data})
             });
           }else {
             res.json({error:"Cant not GET"})
