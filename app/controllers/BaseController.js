@@ -1,11 +1,7 @@
+var Conversation = require('.../models/Conversation')
 
-exports.createNSP = function(port){
-  var io = require('socket.io')(server, {pingTimeout: 30000});
-  var nsp = io.of('/'+port);
-  nsp.on('connection', function(socket) {
-     nsp.on('sendMessage',function(data){
-       console.log(data);
-       nsp.emit('replyMessage', data);
-     })
+exports.findOneMessage = function(param){
+  Conversation.find({group:param}).sort('-create_at').limit(1).exec(function(err, el){
+    return el;
   });
 }

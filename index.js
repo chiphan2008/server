@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
-//var BaseController = require('./app/controllers/BaseController')
+var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
@@ -100,17 +100,10 @@ router.route('/except-person/:id')
             Person.find({id:{$ne : req.params.id}},function(err, data){
               if(err) res.json({error:err})
               let arr = [];
-              //res.json({data})
               data.forEach(function(item){
                 let param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
                 //res.json({param}) .sort('-create_at').limit(1)
-                Conversation.find({group:param}).sort('-create_at').limit(1).exec(function(err, el){
-                  if(el.length>0){
-                    //res.json({el})
-                    item['message']= el.message;
-                    arr.push(item);
-                  }
-                });
+                arr = await BaseController.findOneMessage(param);
               })
               res.json({arr})
             });
