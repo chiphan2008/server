@@ -1,6 +1,5 @@
 var express = require('express');
 var app = express();
-var async = require('async');
 var server = require('http').Server(app);
 var io = require('socket.io')(server, {pingTimeout: 30000});
 var bodyParser = require('body-parser');
@@ -103,11 +102,11 @@ router.route('/except-person/:id')
               let data = [];
               arr.forEach(function(item){
                 const param = item.id<req.params.id ? item.id+'_'+req.params.id : req.params.id+'_'+item.id;
-                // BaseController.findOneMessage('48_72').then(el=>{
-                //   data.push({el})
-                // })
-                const el = BaseController.findOneMessage('48_72');
-                res.json({el})
+                BaseController.findOneMessage('48_72').then(el=>{
+                  res.json({arr:arr.length})
+                })
+                // const el = BaseController.findOneMessage('48_72');
+                // res.json({el})
                 // if(el.message!==undefined){
                 //   res.json({el})
                 //   //item['message'] = el.message;
