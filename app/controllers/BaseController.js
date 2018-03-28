@@ -3,9 +3,8 @@
 
 var Conversation = require('../models/Conversation')
 
-
-exports.findOneMessage = (param) => {
-  return function(param){
+let findOneMessage = async (param) => {
+  return await function(param){
     return new Promise(function(resolve, reject) {
         if(params!==''){
           Conversation.findOne({group:param}).sort('-create_at').exec((err,el)=>{
@@ -14,5 +13,9 @@ exports.findOneMessage = (param) => {
         }
     })
   }
-
 }
+
+module.exports.findOneMessage = findOneMessage;
+
+// exports.findOneMessage = (param) => {
+// }
