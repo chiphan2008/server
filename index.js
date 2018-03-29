@@ -176,7 +176,7 @@ function resolveAfter2Seconds(x) {
     }, 2000);
   });
 }
-// async function f1() {
-//   var x = await resolveAfter2Seconds(10);
-//   console.log(x); // 10
-// }
+async function f1() {
+  var x = await resolveAfter2Seconds(10);
+  console.log(x); // 10
+}
