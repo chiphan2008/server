@@ -59,7 +59,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api',router);
 
 router.use(function(req, res, next){
-  res.json({req});
+  res.send(req);
   next();
 })
 
