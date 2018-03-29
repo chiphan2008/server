@@ -5,8 +5,8 @@ var PersonShema = new Schema({
   id:Number,
   name:String,
   urlhinh:String,
-  update_at:{ type: Date, default: Date.now() },
-  create_at:{ type: Date, default: Date.now() }
+  update_at:{ type: Date },
+  create_at:{ type: Date }
 });
 
 module.exports = mongoose.model('Person',PersonShema);
