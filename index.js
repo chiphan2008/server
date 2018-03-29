@@ -119,16 +119,14 @@ router.route('/list-friend/:id')
           if(req.params.id>0){
             Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
-              var p1 = new Promise(function (resolve, reject) {
+              var p1;
                 arr.friends.forEach((item,index)=>{
-                    setTimeout(()=>{
                         Person.findOne({id:item.user_id}).exec(function(err, el){
+                          p1 = new Promise(function (resolve, reject) {
                           if(err) return reject(err)
                           data.push(el)
                           return resolve(data)
                         });
-                      },100)
-
                   })
               })
               p1.then(function(data) {
