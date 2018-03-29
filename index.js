@@ -138,9 +138,7 @@ router.route('/add-friend')
           Person.updateOne({id: req.body.id} ,
             {$push : {
               friends : {user_id:req.body.user_id,status:1}
-            }},function() {
-              res.json({code:200,message:'Data exists!'})
-          });
+            }},false,true);
 })
 
 router.route('/accept-addfriend/:id')
