@@ -70,7 +70,7 @@ router.route('/person')
                    $set: {
                      "name": req.body.name,
                      "urlhinh": req.body.urlhinh,
-                     "update_at": req.body.urlhinh,
+                     "update_at": Date.now()
                    }
                }, function() {
                    res.json({code:200,message:'Data exists!'})
