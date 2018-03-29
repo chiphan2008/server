@@ -140,16 +140,16 @@ router.route('/add-friend')
               $push : {
                 friends : {user_id:req.body.user_id,status:1}
               }
-          },{upsert:false, multi:false });
+            },false,true);
 })
 router.route('/unfriend')
         .post(function(req, res){
           Person.updateOne({id: req.body.id} ,
             {
-              $unset : {
-                friends : {user_id:req.body.user_id,status:1}
+              $pull : {
+                friends : {user_id:req.body.user_id}
               }
-          });
+            },false,true);
 })
 
 router.route('/conversation/:group')
