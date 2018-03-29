@@ -117,15 +117,12 @@ router.route('/except-person/:id')
 router.route('/list-friend/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Person.find({id:req.params.id}).exec(function(err, arr){
+            Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
               arr.friends.forEach((item,index)=>{
-                Person.find({id:item.user_id}).exec(function(err, el){
-                  data.push(el);
-                  if(index===arr.friends.length-1) res.json({data})
-                });
+                data.push(Person.findOne({id:item.user_id}));
               })
-
+              res.json({Promise.all(data)})
             });
           }else {
             res.json({error:"Cant not GET"})
