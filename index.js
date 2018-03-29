@@ -79,6 +79,7 @@ router.route('/person')
               person.id = req.body.id;
               person.name = req.body.name;
               person.urlhinh = req.body.urlhinh;
+              person.update_at = Date.now();
               person.save(function(err){
                 if(err){
                    res.json({error:err})
