@@ -2,9 +2,7 @@
 var Conversation = require('../models/Conversation')
 
 let findOneMessage = (param) => {
-  Conversation.findOne({group:param}).sort('-create_at').exec((err,el)=>{
-    return el;
-  })
+  return Conversation.findOne({group:param}).sort('-create_at').exec()
 }
 
 module.exports.findOneMessage = findOneMessage;

@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
-var BaseController = require('./app/controllers/BaseController')
+//var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
@@ -70,7 +70,7 @@ router.route('/person')
                    $set: {
                      "name": req.body.name,
                      "urlhinh": req.body.urlhinh,
-                     "update_at": Date.now()
+                     "online_at": Date.now()
                    }
                }, function() {
                    res.json({code:200,message:'Data exists!'})
@@ -114,7 +114,8 @@ router.route('/chat-message/:id')
               var data = [];
               arr.forEach(function(item,index){
                 let param = req.params.id<item.id ?  req.params.id+'_'+item.id : item.id+'_'+req.params.id;
-                BaseController.findOneMessage(param).then(el=>{
+
+                Conversation.findOne({group:param}).sort('-create_at').exec(function(err,el){
                   if(el!==null){
                     const obj = Object.assign({'create_at':el.create_at,'message':el.message}, item._doc)
                     data.push(obj);

@@ -5,7 +5,8 @@ var PersonShema = new Schema({
   id:Number,
   name:String,
   urlhinh:String,
-  update_at:{ type: Date },
+  online_at:{ type: Date },
+  offline_at:{ type: Date },
   create_at:{ type: Date, default: Date.now() }
 });
 
