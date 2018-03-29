@@ -122,7 +122,7 @@ router.route('/list-friend/:id')
           if(req.params.id>0){
             var data = [];
             Person.findOne({id:req.params.id}).exec(function(err, arr){
-              //res.json({arr})
+              res.json({data:arr.friends})
               arr.friends.forEach((item,index)=>{
                 Person.findOne({id:item.user_id}).exec(function(err, el){
                   data.push(el);
@@ -147,7 +147,7 @@ router.route('/add-friend')
 })
 router.route('/unfriend')
         .post(function(req, res){
-          Person.update({id: req.body.id} ,
+          Person.updateOne({id: req.body.id} ,
             {
               $pull : {
                 "friends" : {user_id:req.body.user_id}
