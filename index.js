@@ -70,6 +70,7 @@ router.route('/person')
                    $set: {
                      "name": req.body.name,
                      "urlhinh": req.body.urlhinh,
+                     "update_at": req.body.urlhinh,
                    }
                }, function() {
                    res.json({code:200,message:'Data exists!'})
@@ -79,7 +80,6 @@ router.route('/person')
               person.id = req.body.id;
               person.name = req.body.name;
               person.urlhinh = req.body.urlhinh;
-              person.update_at = Date.now();
               person.save(function(err){
                 if(err){
                    res.json({error:err})
