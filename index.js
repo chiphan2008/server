@@ -98,7 +98,7 @@ router.route('/person')
 router.route('/except-person/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id}}).sort('_id').exec(function(err, data){
+            Person.find({id:{$ne : req.params.id}}).sort('-_id').exec(function(err, data){
               res.json({data});
             });
           }else {
