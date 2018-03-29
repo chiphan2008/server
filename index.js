@@ -121,7 +121,8 @@ router.route('/list-friend/:id')
               var data = [];
               arr.friends.forEach((item,index)=>{
                 BaseController.findListFriend(item.user_id).then(function(err,data){
-                  res.json({data})
+                  data.push(el)
+                  if(index===arr.friends.length-1) res.json({data})
                 })
                 // Person.findOne({id:item.user_id}).exec(function(err,el){
                 //   data.push(el)

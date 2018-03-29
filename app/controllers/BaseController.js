@@ -1,5 +1,5 @@
 
-var Person = require('../models/Person')
+var Person = require('../models/person')
 
 // exports.findOneMessage = (param) => {
 //   return Conversation.findOne({group:param}).sort('-create_at').exec()
