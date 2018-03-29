@@ -122,6 +122,7 @@ router.route('/list-friend/:id')
           if(req.params.id>0){
             var data = [];
             Person.findOne({id:req.params.id}).exec(function(err, arr){
+              res.json({arr})
               arr.forEach((item,index)=>{
                 Person.findOne({id:item.user_id}).exec(function(err, el){
                   data.push(el);
@@ -140,6 +141,8 @@ router.route('/add-friend')
               $push : {
                 "friends" : {user_id:req.body.user_id,status:1}
               }
+            },function(){
+              res.json({data:'Data updated'})
             });
 })
 router.route('/unfriend')
@@ -149,8 +152,10 @@ router.route('/unfriend')
               $pull : {
                 "friends" : {user_id:req.body.user_id}
               }
+            },function(){
+              res.json({data:'Data updated'})
             });
-})
+        })
 
 router.route('/conversation/:group')
         .get(function(req, res){
