@@ -120,23 +120,17 @@ router.route('/list-friend/:id')
             Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
               arr.friends.forEach((item,index)=>{
-              new Promise(function (resolve, reject) {
+              var p1 = new Promise(function (resolve, reject) {
                     Person.findOne({id:item.user_id}).exec(function(err, el){
                       if(err) return reject(err)
                       data.push(el)
                       return resolve(data)
                     });
                   })
-                  .then(function(data) {
-                     res.json({data})
-                  });
-
-                // Person.findOne({id:item.user_id}).exec(function(err,el){
-                //   data.push(el)
-                //   if(index===arr.friends.length-1) res.json({data})
-                // })
               })
-
+              p1.then(function(data) {
+                 res.json({data})
+              });
             });
           }else {
             res.json({error:"Cant not GET"})
