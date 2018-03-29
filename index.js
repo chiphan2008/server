@@ -135,11 +135,13 @@ router.route('/list-friend/:id')
         })
 router.route('/add-friend')
         .post(function(req, res){
-          Person.update(
-            {id: req.body.id , "friends.status" : 1 } ,
-            {$inc : {"friends.$.user_id" : req.body.user_id} } ,
-            false ,
-            true);
+          Person.updateOne({id: req.body.id} ,
+            {$set : {
+              "friends.$.user_id" : req.body.user_id,
+              "friends.$.status" : 1
+            }},function() {
+              res.json({code:200,message:'Data exists!'})
+          });
 })
 
 router.route('/accept-addfriend/:id')
@@ -153,7 +155,7 @@ router.route('/accept-addfriend/:id')
                    "addfriend_at": Date.now()
                  }
              }, function() {
-                 res.json({code:200,message:'Data not exists!'})
+                 res.json({code:200,message:'Data exists!'})
              });
           }else {
             res.json({error:"Cant not GET"})
