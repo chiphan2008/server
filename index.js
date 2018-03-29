@@ -136,9 +136,8 @@ router.route('/list-friend/:id')
 router.route('/add-friend')
         .post(function(req, res){
           Person.updateOne({id: req.body.id} ,
-            {$set : {
-              "friends.$.user_id" : req.body.user_id,
-              "friends.$.status" : 1
+            {$push : {
+              friends : {user_id:req.body.user_id,status:1}
             }},function() {
               res.json({code:200,message:'Data exists!'})
           });
