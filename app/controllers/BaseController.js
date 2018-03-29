@@ -5,10 +5,10 @@ var Conversation = require('../models/Conversation')
 //   return Conversation.findOne({group:param}).sort('-create_at').exec()
 // }
 findListFriend = (user_id) => {
-  return new Promise(function(resolve,reject){
+  return new Promise((resolve,reject)=>{
     Person.findOne({id:user_id}).exec(function(err, el){
-      if(err) reject(err)
-      resolve(el)
+      if(err) return reject(err)
+      return resolve(el)
     });
   })
 }

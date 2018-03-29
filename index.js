@@ -8,7 +8,7 @@ var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
 //var ListFriend = require('./app/models/ListFriend')
-//var BaseController = require('./app/controllers/BaseController')
+var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
@@ -120,10 +120,13 @@ router.route('/list-friend/:id')
             Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
               arr.friends.forEach((item,index)=>{
-                Person.findOne({id:item.user_id}).exec(function(err,el){
-                  data.push(el)
-                  if(index===arr.friends.length-1) res.json({data})
+                BaseController.findListFriend(item.user_id).then(function(err,data){
+                  res.json({data})
                 })
+                // Person.findOne({id:item.user_id}).exec(function(err,el){
+                //   data.push(el)
+                //   if(index===arr.friends.length-1) res.json({data})
+                // })
               })
 
             });
