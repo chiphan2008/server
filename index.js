@@ -149,7 +149,7 @@ router.route('/unfriend')
               $unset : {
                 friends : {user_id:req.body.user_id,status:1}
               }
-          },{upsert:false, multi:false });
+          });
 })
 
 router.route('/conversation/:group')
