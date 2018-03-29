@@ -117,32 +117,53 @@ router.route('/except-person/:id')
             res.json({error:"Cant not GET"})
           }
         })
-router.route('/add-friend')
-        .post(function(req, res){
-          var listfriend = new ListFriend();
-          listfriend.id = req.body.id;
-          listfriend.name = req.body.name;
-          listfriend.urlhinh = req.body.urlhinh;
-          listfriend.group = req.body.group;
-          listfriend.message = req.body.message;
-          listfriend.status=1;
-          listfriend.addfriend_at= Date.now();
-          listfriend.save(function(err){
-            if(err){
-               res.json({error:err})
-             }
-             res.json({code:200,message:'Data inserted successful!'})
-          })
-
-})
-
-router.route('/chat-message/:id')
+router.route('/list-friend/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Conversation.findOne({id:{$ne : req.params.id}}).sort('-create_at').exec(function(err,data){
-              //res.json({data:arr});
-              if(err) res.json({error:err})
-              res.json({data});
+            var data = [];
+            Person.findOne({id:req.params.id}).exec(function(err, arr){
+              arr.forEach((item,index)=>{
+                Person.findOne({id:item.user_id}).exec(function(err, el){
+                  data.push(el);
+                  if(index===arr.length-1) res.json({data})
+                });
+              })
+            });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+        })
+router.route('/add-friend')
+        .post(function(req, res){
+          Person.update(
+            {id: req.body.id , "friends.status" : 1 } ,
+            {$inc : {"friends.$.user_id" : req.body.user_id} } ,
+            false ,
+            true);
+})
+
+router.route('/accept-addfriend/:id')
+        .get(function(req, res){
+          if(req.params.id>0){
+            ListFriend.updateOne(
+              {id: req.body.id },
+              {
+                 $set: {
+                   "status": 1,
+                   "addfriend_at": Date.now()
+                 }
+             }, function() {
+                 res.json({code:200,message:'Data not exists!'})
+             });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+        })
+router.route('/reject-addfriend/:id')
+        .get(function(req, res){
+          if(req.params.id>0){
+            ListFriend.remove({user_id: req.body.id },function() {
+                res.json({code:200,message:'Deleted successful!'})
             });
           }else {
             res.json({error:"Cant not GET"})
