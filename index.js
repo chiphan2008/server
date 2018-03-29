@@ -140,7 +140,7 @@ router.route('/add-friend')
               $push : {
                 "friends" : {user_id:req.body.user_id,status:1}
               }
-            },false,true);
+            });
 })
 router.route('/unfriend')
         .post(function(req, res){
@@ -149,7 +149,7 @@ router.route('/unfriend')
               $pull : {
                 "friends" : {user_id:req.body.user_id}
               }
-            },false,true);
+            });
 })
 
 router.route('/conversation/:group')
