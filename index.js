@@ -118,7 +118,10 @@ router.route('/chat-message/:id')
                     const obj = Object.assign({'create_at':el.create_at,'message':el.message}, item._doc)
                     data.push(obj);
                   }
-                  if(index===arr.length-1) res.json({data})
+                  if(index===arr.length-1){
+                    data.sort(function(a, b){ new Date(a.create_at) - new Date(b.create_at) ? 1 : -1 })
+                    res.json({data})
+                  }
                 })
 
               });
