@@ -119,12 +119,18 @@ router.route('/list-friend/:id')
           if(req.params.id>0){
             Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
-              arr.friends.each((item,index)=>{
-                res.json({item})
-                BaseController.findListFriend(item.user_id).then(function(err,data){
-                  data.push(el)
-                  if(index===arr.friends.length-1) res.json({data})
-                })
+              arr.friends.forEach((item,index)=>{
+                new Promise(function (resolve, reject) {
+                    Person.findOne({id:item.user_id}).exec(function(err, el){
+                      if(err) return reject(err)
+                      return resolve(el)
+                    });
+                  })
+                  .then(function(el) {
+                    data.push(el)
+                    if(index===arr.friends.length-1) res.json({data})
+                  });
+
                 // Person.findOne({id:item.user_id}).exec(function(err,el){
                 //   data.push(el)
                 //   if(index===arr.friends.length-1) res.json({data})
