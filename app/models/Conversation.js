@@ -5,7 +5,6 @@ var ConversationShema = new Schema({
   group:String,
   user_id:Number,
   message:String,
-  urlhinh:String,
   create_at:{ type: Date, default: Date.now() }
 });
 

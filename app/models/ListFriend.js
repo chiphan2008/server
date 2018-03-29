@@ -7,6 +7,7 @@ var ListFriendShema = new Schema({
   message: String,
   name:String,
   urlhinh:String,
+  status:Number,
   online_at:{ type: Date },
   offline_at:{ type: Date },
   addfriend_at:{ type: Date }

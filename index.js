@@ -21,7 +21,9 @@ io.on('connection',function(socket){
   // handle send message
   socket.on('sendMessage',function(port,data){
     //console.log(data);
+    ListFriend.find({group:port,status:1},function(err,friend){
 
+    })
     if(data.group===undefined){
       Conversation.find({group:port},function(err,item){
         if(item.length===0){
@@ -38,10 +40,9 @@ io.on('connection',function(socket){
       //chatting...
       var conversation = new Conversation();
       //conversation = data;
-      conversation.group= data.group,
-      conversation.user_id= data.user_id,
-      conversation.message= data.message,
-      conversation.urlhinh = req.body.urlhinh,
+      conversation.group= data.group;
+      conversation.user_id= data.user_id;
+      conversation.message= data.message;
       conversation.save(function(err) {
         console.log('err',err);
       });
@@ -58,6 +59,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api',router);
 
 router.use(function(req, res, next){
+  res.json({req});
   next();
 })
 
@@ -113,6 +115,25 @@ router.route('/except-person/:id')
             res.json({error:"Cant not GET"})
           }
         })
+router.route('/add-friend')
+        .post(function(req, res){
+          var listfriend = new ListFriend();
+          listfriend.id = req.body.id;
+          listfriend.name = req.body.name;
+          listfriend.urlhinh = req.body.urlhinh;
+          listfriend.group = req.body.group;
+          listfriend.message = req.body.message;
+          listfriend.status=1;
+          listfriend.addfriend_at= Date.now();
+          listfriend.save(function(err){
+            if(err){
+               res.json({error:err})
+             }
+             res.json({code:200,message:'Data inserted successful!'})
+          })
+
+})
+
 router.route('/chat-message/:id')
         .get(function(req, res){
           if(req.params.id>0){
