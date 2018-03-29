@@ -121,7 +121,7 @@ router.route('/list-friend/:id')
               var data = [];
               var p1;
                 arr.friends.forEach((item,index)=>{
-                        Person.findOne({id:item.user_id}).exec(function(err, el){
+                        Person.findOne({id:item.user_id}).exec(function(err, el, p1){
                           p1 = new Promise(function (resolve, reject) {
                           if(err) return reject(err)
                           data.push(el)
