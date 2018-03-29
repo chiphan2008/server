@@ -136,38 +136,22 @@ router.route('/list-friend/:id')
 router.route('/add-friend')
         .post(function(req, res){
           Person.updateOne({id: req.body.id} ,
-            {$push : {
-              friends : {user_id:req.body.user_id,status:1}
-            }},false,true);
+            {
+              $push : {
+                friends : {user_id:req.body.user_id,status:1}
+              }
+          },{upsert:false, multi:false });
+})
+router.route('/unfriend')
+        .post(function(req, res){
+          Person.updateOne({id: req.body.id} ,
+            {
+              $unset : {
+                friends : {user_id:req.body.user_id,status:1}
+              }
+          },{upsert:false, multi:false });
 })
 
-router.route('/accept-addfriend/:id')
-        .get(function(req, res){
-          if(req.params.id>0){
-            ListFriend.updateOne(
-              {id: req.body.id },
-              {
-                 $set: {
-                   "status": 1,
-                   "addfriend_at": Date.now()
-                 }
-             }, function() {
-                 res.json({code:200,message:'Data exists!'})
-             });
-          }else {
-            res.json({error:"Cant not GET"})
-          }
-        })
-router.route('/reject-addfriend/:id')
-        .get(function(req, res){
-          if(req.params.id>0){
-            ListFriend.remove({user_id: req.body.id },function() {
-                res.json({code:200,message:'Deleted successful!'})
-            });
-          }else {
-            res.json({error:"Cant not GET"})
-          }
-        })
 router.route('/conversation/:group')
         .get(function(req, res){
           Conversation.find({group:req.params.group},function(err, data){
