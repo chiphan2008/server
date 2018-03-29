@@ -9,7 +9,7 @@ var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
 //var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
-mongoose.Promise = require('bluebird');
+//mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
 
@@ -121,7 +121,7 @@ router.route('/list-friend/:id')
             Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
               arr.friends.forEach((item,index)=>{
-                data.push(Person.findOne({id:item.user_id}));
+                data.push(Person.find({id:item.user_id}));
               })
               res.json({Promise.all(data)})
             });
