@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
-var ListFriend = require('./app/models/ListFriend')
+//var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
@@ -21,9 +21,6 @@ io.on('connection',function(socket){
   // handle send message
   socket.on('sendMessage',function(port,data){
     //console.log(data);
-    ListFriend.find({group:port,status:1},function(err,friend){
-
-    })
     if(data.group===undefined){
       Conversation.find({group:port},function(err,item){
         if(item.length===0){
