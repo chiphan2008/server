@@ -125,7 +125,9 @@ router.route('/list-friend/:id')
               arr.friends.forEach((item,index)=>{
                 Person.findOne({id:item.user_id}).exec(function(err, el){
                   //res.json({data:el})
-                  data.push(el);
+                  if(el.status===1){
+                    data.push(el);
+                  }
                   if(index===arr.friends.length-1) res.json({data})
                 });
               })
