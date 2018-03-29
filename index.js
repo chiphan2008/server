@@ -122,13 +122,13 @@ router.route('/list-friend/:id')
               var data = [];
 
                 arr.friends.forEach((item,index)=>{
+                  //p1 = new Promise(function (resolve, reject) {
                         Person.findOne({id:item.user_id}).exec(function(err, el){
-                          p1 = new Promise(function (resolve, reject) {
-                          if(err) reject(err)
+                          //if(err) reject(err)
                           data.push(el)
-                         resolve(data)
+                          //resolve(data)
                         });
-                  })
+                  //})
               })
               p1.then(function(data) {
                  res.json({data,count:arr.friends.length})
