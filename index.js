@@ -117,15 +117,16 @@ router.route('/except-person/:id')
 router.route('/list-friend/:id')
         .get(function(req, res){
           if(req.params.id>0){
+            var p1;
             Person.findOne({id:req.params.id}).exec(function(err, arr){
               var data = [];
-              var p1;
+
                 arr.friends.forEach((item,index)=>{
-                        Person.findOne({id:item.user_id}).exec(function(err, el, p1){
+                        Person.findOne({id:item.user_id}).exec(function(err, el){
                           p1 = new Promise(function (resolve, reject) {
-                          if(err) return reject(err)
+                          if(err) reject(err)
                           data.push(el)
-                          return resolve(data)
+                         resolve(data)
                         });
                   })
               })
