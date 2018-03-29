@@ -129,7 +129,7 @@ router.route('/list-friend/:id')
                   })
               })
               p1.then(function(data) {
-                 res.json({data,count:data.length})
+                 res.json({data,count:arr.friends.length})
               });
             });
           }else {
