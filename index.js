@@ -135,19 +135,19 @@ router.route('/list-friend/:id')
         })
 router.route('/add-friend')
         .post(function(req, res){
-          Person.updateOne({id: req.body.id} ,
+          Person.update({id: req.body.id} ,
             {
               $push : {
-                friends : {user_id:req.body.user_id,status:1}
+                "friends" : {user_id:req.body.user_id,status:1}
               }
             },false,true);
 })
 router.route('/unfriend')
         .post(function(req, res){
-          Person.updateOne({id: req.body.id} ,
+          Person.update({id: req.body.id} ,
             {
               $pull : {
-                friends : {user_id:req.body.user_id}
+                "friends" : {user_id:req.body.user_id}
               }
             },false,true);
 })
