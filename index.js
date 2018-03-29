@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
+var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
@@ -14,30 +15,37 @@ server.listen(2309,'112.213.94.96');
 io.on('connection',function(socket){
   //show handleEnterText
   socket.on('handleEnterText',function(port,data){
-    console.log(data);
+    //console.log(data);
     io.sockets.emit('replyStatus-'+port, data);
   });
   // handle send message
   socket.on('sendMessage',function(port,data){
-    console.log(data);
+    //console.log(data);
+
     if(data.group===undefined){
       Conversation.find({group:port},function(err,item){
         if(item.length===0){
+          //dont send message yet
           io.sockets.emit('replyMessage-'+port, data);
+
         }else {
+          //had even send message and send history chat
           io.sockets.emit('replyMessage-'+port, item);
         }
+
       });
     }else {
+      //chatting...
       var conversation = new Conversation();
       //conversation = data;
       conversation.group= data.group,
       conversation.user_id= data.user_id,
       conversation.message= data.message,
-      conversation.urlhinh= data.urlhinh,
+      conversation.urlhinh = req.body.urlhinh,
       conversation.save(function(err) {
         console.log('err',err);
       });
+
       io.sockets.emit('replyMessage-'+port, data);
     }
 
@@ -108,26 +116,10 @@ router.route('/except-person/:id')
 router.route('/chat-message/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id}},function(err, arr){
+            Conversation.findOne({id:{$ne : req.params.id}}).sort('-create_at').exec(function(err,data){
               //res.json({data:arr});
               if(err) res.json({error:err})
-              var data = [];
-              arr.forEach(function(item,index){
-                let param = req.params.id<item.id ?  req.params.id+'_'+item.id : item.id+'_'+req.params.id;
-
-                Conversation.findOne({group:param}).sort('-create_at').exec(function(err,el){
-                  if(el!==null){
-                    const obj = Object.assign({'create_at':el.create_at,'message':el.message}, item._doc)
-                    data.push(obj);
-                  }
-                  if(index===arr.length-1){
-                    data.sort(function(a, b){ new Date(a.create_at) - new Date(b.create_at) ? 1 : -1 })
-                    res.json({data})
-                  }
-                })
-
-              });
-
+              res.json({data});
             });
           }else {
             res.json({error:"Cant not GET"})
