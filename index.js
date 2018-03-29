@@ -138,7 +138,7 @@ router.route('/add-friend')
         .post(function(req, res){
           Person.update({id: req.body.id} ,
             {
-              $push : {
+              $addToSet : {
                 "friends" : {user_id:req.body.user_id,status:1}
               }
             },function(){
