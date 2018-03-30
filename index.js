@@ -132,26 +132,17 @@ router.route('/list-friend/:id/:status')
         .get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate(
-              {$match: {id:req.params.id}},
-              { $project: {
-                  friends: {$filter: {
-                      input: '$friends',
-                      as: 'friend',
-                      cond: {$eq: ['$$friend.status', req.params.status]}
-                  }}}
-              }
-            	// {$addFields : {"friends":{$filter:{ // We override the existing field!
-            	// 	input: "$friends",
-            	// 	as: "friend",
-            	// 	cond: {$eq: ["$$friend.status", req.params.status]}
-            	// }}}}
-            ).exec(function(err, arr){
-                  if(arr!==null){
-                      res.json({arr})
-                  }else {
-                    res.json({code:200,data:[]})
-                  }
-            });
+              { "$match": { "id":req.params.id}},
+              { "$unwind": "$friends" },
+              { "$match": { "friends.status": 0 } },
+                function(err, arr){
+                      if(arr!==null){
+                          res.json({arr})
+                      }else {
+                        res.json({code:200,data:[]})
+                      }
+                }
+            );
         }else {
           res.json({error:"Cant not GET"})
         }
