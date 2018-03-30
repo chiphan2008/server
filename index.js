@@ -136,6 +136,7 @@ router.route('/list-friend/:id/:status')
                 var item=[];
                 var p = new Promise((resolve,reject)=>{
                   arr.friends.forEach((e,i)=>{
+                    res.json({e.status,req.params.status})
                     if(e.status===req.params.status) item.push(e);
                     resolve(item);
                   })
