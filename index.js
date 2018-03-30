@@ -140,7 +140,7 @@ router.route('/list-friend/:id/:status')
             	}}}}
             ).exec(function(err, arr){
                   if(arr!==null){
-                      res.json({data:arr})
+                      res.json({arr})
                   }else {
                     res.json({code:200,data:[]})
                   }
