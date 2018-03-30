@@ -150,7 +150,7 @@ router.route('/add-friend')
                 listfriend.id= req.body.id;
                 listfriend.friends= friends;
                 listfriend.save(function(err) {
-                  console.log('err',err);
+                  res.json({code:200,message:'Data inserted successful!'})
                 });
             }
           })
