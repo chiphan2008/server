@@ -134,9 +134,9 @@ router.route('/list-friend/:id/:status')
             ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
               if(arr!==null){
                 var data=[];
+                res.json({req.params.status})
                 arr.friends.forEach((e,i)=>{
-                  if(e.status===req.params.status)
-                  data.push(e);
+                  if(e.status===req.params.status) data.push(e);
                   if(i===arr.friends.length-1) res.json({data})
                 })
               }
