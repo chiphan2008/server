@@ -133,11 +133,11 @@ router.route('/list-friend/:id/:status')
           if(req.params.id>0){
             ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
               if(arr!==null){
-                var data=[];
+                var item=[];
                 var p = new Promise((resolve,reject)=>{
                   arr.friends.forEach((e,i)=>{
-                    if(e.status===req.params.status) data.push(e);
-                    resolve(data);
+                    if(e.status===req.params.status) item.push(e);
+                    resolve(item);
                   })
                 })
                 p.then((data)=>{ res.json({data}) })
