@@ -134,15 +134,14 @@ router.route('/list-friend/:id/:status')
             ListFriend.aggregate(
               { "$match": { "id":req.params.id}},
               { "$unwind": "$friends" },
-              { "$match": { "friends.status": 0 } },
-                function(err, arr){
-                      if(arr!==null){
-                          res.json({arr})
-                      }else {
-                        res.json({code:200,data:[]})
-                      }
-                }
-            );
+              { "$match": { "friends.status": 0 } }
+            ).exec(function(err, arr){
+                  if(arr!==null){
+                      res.json({arr})
+                  }else {
+                    res.json({code:200,data:[]})
+                  }
+            });
         }else {
           res.json({error:"Cant not GET"})
         }
