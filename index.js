@@ -171,13 +171,13 @@ router.route('/unfriend')
               res.json({data:'Data updated'})
             });
 })
-router.route('/acept-friend')
-    .post(function(req, res){
-            ListFriend.updateOne({id: req.body.id,friends.$.user_id:req.body.user_id} ,
-            {
-              $set : {status:1}
-            },function(){ res.json({data:'Data updated'}) });
-})
+// router.route('/acept-friend')
+//     .post(function(req, res){
+//             ListFriend.updateOne({id: req.body.id,friends.$.user_id:req.body.user_id} ,
+//             {
+//               $set : {status:1}
+//             },function(){ res.json({data:'Data updated'}) });
+// })
 
 router.route('/conversation/:group')
         .get(function(req, res){
