@@ -131,30 +131,24 @@ router.route('/list-friend/:id')
 router.route('/list-friend/:id/:status')
         .get(function(req, res){
           if(req.params.id>0){
-            ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
-              if(arr!==null){
-
-                var p = new Promise((resolve,reject)=>{
-                  var item=[];
-                  arr.friends.forEach((e,i)=>{
-                    //res.json({e:e.status,red:req.params.status})
-                    if(e.status===req.params.status){
-                      item.push(e);
-                      resolve(item);
-                    }else{
-                      reject(item);
-                    }
-
-                  })
-                })
-                p.then((data)=>{ res.json({data}) })
-              }else {
-                res.json({code:200,data:[]})
-              }
+            ListFriend.aggregate(
+              {id:req.params.id},
+              //{$match: {"friends.status": req.params.status}},
+            	{$addFields : {"friends":{$filter:{ // We override the existing field!
+            		input: "$friends",
+            		as: "friend",
+            		cond: {$eq: ["$$friend.status", req.params.status]}
+            	}}}}
+            ).exec(function(err, arr){
+                  if(arr!==null){
+                      res.json({data:arr})
+                  }else {
+                    res.json({code:200,data:[]})
+                  }
             });
-          }else {
-            res.json({error:"Cant not GET"})
-          }
+        }else {
+          res.json({error:"Cant not GET"})
+        }
 })
 router.route('/add-friend')
         .post(function(req, res){
