@@ -119,7 +119,10 @@ router.route('/list-friend/:id')
         .get(function(req, res){
           if(req.params.id>0){
             ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
-              res.json({data:arr.friends})
+              if(arr!==null){
+                res.json({data:arr.friends})
+              }
+              res.json({code:200,data:[]})
             });
           }else {
             res.json({error:"Cant not GET"})
