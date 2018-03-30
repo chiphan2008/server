@@ -137,9 +137,10 @@ router.route('/list-friend/:id/:status')
                 arr.friends.forEach((e,i)=>{
                   if(e.status===req.params.status)
                   data.push(e);
-                  if(i===arr.friends.length-1) res.json({code:200,data:[]})
+                  if(i===arr.friends.length-1) res.json({data})
                 })
               }
+              res.json({code:200,data:[]})
             });
           }else {
             res.json({error:"Cant not GET"})
