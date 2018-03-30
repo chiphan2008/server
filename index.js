@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
-//var ListFriend = require('./app/models/ListFriend')
+var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(2309,'112.213.94.96');
@@ -68,6 +68,7 @@ router.get('/',function(req,res){
 
 router.route('/person')
         .post(function(req, res){
+
           Person.find({id:req.body.id},function(err,item){
             if(err){
                res.json({error:err})
@@ -117,21 +118,8 @@ router.route('/except-person/:id')
 router.route('/list-friend/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            var p1;
-            Person.findOne({id:req.params.id}).exec(function(err, arr){
-              var data = [];
-              p1 = new Promise(function (resolve, reject) {
-                arr.friends.forEach((item,index)=>{
-                        Person.findOne({id:item.user_id}).exec(function(err, el){
-                          if(err) reject(err)
-                          data.push(el)
-                          resolve(data)
-                        });
-                  })
-              })
-              p1.then(function(data) {
-                 res.json({data,count:arr.friends.length})
-              });
+            ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
+              res.json({data:arr.friends})
             });
           }else {
             res.json({error:"Cant not GET"})
@@ -139,14 +127,34 @@ router.route('/list-friend/:id')
         })
 router.route('/add-friend')
         .post(function(req, res){
-          Person.update({id: req.body.id} ,
-            {
-              $addToSet : {
-                "friends" : {user_id:req.body.user_id,status:1}
-              }
-            },function(){
-              res.json({data:'Data updated'})
-            });
+          ListFriend.find({id:req.body.id},function(err,item){
+            if(item.length>0){
+              Person.update({id: req.body.id} ,
+              {
+                $addToSet : {
+                  "friends" : {
+                    user_id:req.body.user_id,
+                    name:req.body.name,
+                    urlhinh:req.body.urlhinh,
+                    status:1
+                  }
+                }
+              },function(){ res.json({data:'Data updated'}) });
+            }else {
+              let friends = [{
+                  user_id:req.body.user_id,
+                  name:req.body.name,
+                  urlhinh:req.body.urlhinh
+                }]
+                var listfriend = new ListFriend();
+                listfriend.id= req.body.id;
+                listfriend.friends= friends;
+                listfriend.save(function(err) {
+                  console.log('err',err);
+                });
+            }
+          })
+
 })
 router.route('/unfriend')
         .post(function(req, res){
