@@ -133,7 +133,7 @@ router.route('/list-friend/:id/:status')
           if(req.params.id>0){
             ListFriend.aggregate(
               {id:req.params.id},
-              //{$match: {"friends.status": req.params.status}},
+              {$match: {"friends.status": req.params.status}},
             	{$addFields : {"friends":{$filter:{ // We override the existing field!
             		input: "$friends",
             		as: "friend",
