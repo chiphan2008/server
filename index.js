@@ -134,12 +134,13 @@ router.route('/list-friend/:id/:status')
             ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
               if(arr!==null){
                 var data=[];
-                arr.friends.forEach((e,i)=>{
-                  //res.json({i:i,count:arr.friends.length-1})
-                  //res.json({params:req.params.status,e:e.status})
-                  if(e.status===req.params.status) data.push(e);
-                  if(i===arr.friends.length-2) res.json({data})
+                var p = new Promise((resolve,reject)=>{
+                  arr.friends.forEach((e,i)=>{
+                    if(e.status===req.params.status) data.push(e);
+                    resolve(data);
+                  })
                 })
+                p.then((data)=>{ res.json({data}) })
               }
               res.json({code:200,data:[]})
             });
