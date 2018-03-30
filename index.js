@@ -132,14 +132,14 @@ router.route('/add-friend')
         .post(function(req, res){
           ListFriend.find({id:req.body.id},function(err,item){
             if(item.length>0){
-              Person.update({id: req.body.id} ,
+              ListFriend.update({id: req.body.id} ,
               {
                 $addToSet : {
                   "friends" : {
                     user_id:req.body.user_id,
                     name:req.body.name,
                     urlhinh:req.body.urlhinh,
-                    status:1
+                    status:0
                   }
                 }
               },function(){ res.json({data:'Data updated'}) });
@@ -147,7 +147,8 @@ router.route('/add-friend')
               let friends = [{
                   user_id:req.body.user_id,
                   name:req.body.name,
-                  urlhinh:req.body.urlhinh
+                  urlhinh:req.body.urlhinh,
+                  status:0,
                 }]
                 var listfriend = new ListFriend();
                 listfriend.id= req.body.id;
@@ -161,7 +162,7 @@ router.route('/add-friend')
 })
 router.route('/unfriend')
         .post(function(req, res){
-          Person.updateOne({id: req.body.id} ,
+          ListFriend.updateOne({id: req.body.id} ,
             {
               $pull : {
                 "friends" : {user_id:req.body.user_id}
@@ -169,7 +170,14 @@ router.route('/unfriend')
             },function(){
               res.json({data:'Data updated'})
             });
-        })
+})
+router.route('/acept-friend')
+    .post(function(req, res){
+            ListFriend.updateOne({id: req.body.id,friends.$.user_id:req.body.user_id} ,
+            {
+              $set : {status:1}
+            },function(){ res.json({data:'Data updated'}) });
+})
 
 router.route('/conversation/:group')
         .get(function(req, res){
