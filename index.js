@@ -141,8 +141,9 @@ router.route('/list-friend/:id/:status')
                   })
                 })
                 p.then((data)=>{ res.json({data}) })
+              }else {
+                res.json({code:200,data:[]})
               }
-              res.json({code:200,data:[]})
             });
           }else {
             res.json({error:"Cant not GET"})
