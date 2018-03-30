@@ -137,7 +137,7 @@ router.route('/list-friend/:id/:status')
                   var item=[];
                   arr.friends.forEach((e,i)=>{
                     //res.json({e:e.status,red:req.params.status})
-                    if(e.status===req.params.status) item.push(e);
+                    item.push(e);
                     resolve(item);
                   })
                 })
