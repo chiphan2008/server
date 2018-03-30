@@ -127,7 +127,25 @@ router.route('/list-friend/:id')
           }else {
             res.json({error:"Cant not GET"})
           }
-        })
+})
+router.route('/list-friend/:id/:status')
+        .get(function(req, res){
+          if(req.params.id>0){
+            ListFriend.findOne({id:req.params.id}).exec(function(err, arr){
+              if(arr!==null){
+                var data=[];
+                arr.friends.forEach((e)=>{
+                  if(e.status===req.params.status)
+                  data.push(e);
+                })
+                res.json({data:arr.friends})
+              }
+              res.json({code:200,data:[]})
+            });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+})
 router.route('/add-friend')
         .post(function(req, res){
           ListFriend.find({id:req.body.id},function(err,item){
