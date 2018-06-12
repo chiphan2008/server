@@ -10,7 +10,7 @@ var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 const hostname = '112.213.94.96';
-const port = 2308;
+const port = 2309;
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
