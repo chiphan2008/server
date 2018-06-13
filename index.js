@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var server = require('http').Server(app);
+var server = require('https').Server(app);
 var io = require('socket.io')(server, {pingTimeout: 30000});
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -13,7 +13,7 @@ const hostname = '112.213.94.96';
 const port = 2309;
 mongoose.connect('mongodb://localhost:27017/chat');
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`Server running at https://${hostname}:${port}/`);
 });
 
 io.on('connection',function(socket){
