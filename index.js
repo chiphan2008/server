@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var fs = require("fs");
+var crypto = require('crypto');
 var server = require('http').Server(app);
 var io = require('socket.io')(server, {pingTimeout: 30000});
 var bodyParser = require('body-parser');
@@ -9,9 +11,14 @@ var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
+var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
+var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
+var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
+
 const hostname = 'node.kingmap.vn';
 const port = 2309;
 mongoose.connect('mongodb://localhost:27017/chat');
+server.setSecure(credentials);
 server.listen(port, hostname, () => {
   console.log(`Server running at https://${hostname}:${port}/`);
 });
