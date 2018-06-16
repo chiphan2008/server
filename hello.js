@@ -1,11 +1,12 @@
+const https = require('https');
+const fs = require('fs');
 
-const http = require('http');
-const port = 8181;
-const ip = '112.213.94.96';
+const options = {
+  key: fs.readFileSync('/etc/ssl/private/apache-selfsigned.key'),
+  cert: fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt')
+};
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World');
-}).listen(port,ip);
-
-console.log(`server is running on ${ip}:${port}`);
+https.createServer(options, (req, res) => {
+  res.writeHead(200);
+  res.end('hello world\n');
+}).listen(8000);
