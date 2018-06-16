@@ -15,7 +15,7 @@ var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toStr
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
 var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
 
-const hostname = 'node.kingmap.vn';
+const hostname = '112.213.94.96';
 const port = 2309;
 mongoose.connect('mongodb://localhost:27017/chat');
 server.setSecure(credentials);
