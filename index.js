@@ -13,12 +13,18 @@ var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
-var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
+
+https.createServer({
+    key: privateKey,
+    cert: certificate
+}, app).listen(port);
+
+//var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
 
 const hostname = '112.213.94.96';
 const port = 2309;
 mongoose.connect('mongodb://localhost:27017/chat');
-server.setSecure(credentials);
+//server.setSecure(credentials);
 server.listen(port, hostname, () => {
   console.log(`Server running at https://${hostname}:${port}/`);
 });
