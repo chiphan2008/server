@@ -83,7 +83,6 @@ router.get('/',function(req,res){
 
 router.route('/person')
         .post(function(req, res){
-
           Person.find({id:req.body.id},function(err,item){
             if(err){
                res.json({error:err})
@@ -122,8 +121,12 @@ router.route('/person')
         })
 router.route('/except-person/:id')
         .get(function(req, res){
+          var skipping = parseInt(req.query.skip) || 0;
+          var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id}}).sort('-_id').exec(function(err, data){
+            Person.find({id:{$ne : req.params.id}})
+            .limit(limiting).skip(skipping).sort('-_id')
+            .exec(function(err, data){
               res.json({data});
             });
           }else {
