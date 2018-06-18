@@ -13,7 +13,7 @@ var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
-//const hostname = '112.213.94.96';
+const hostname = '112.213.94.96';
 var server = https.createServer({
     key: privateKey,
     cert: certificate
