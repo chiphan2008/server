@@ -12,18 +12,20 @@ var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
-const hostname = 'node.kingmap.vn';
+//const hostname = 'node.kingmap.vn';
 const port = 2309;
 var server = https.createServer({
     key: privateKey,
     cert: certificate
-}, app).listen(port, hostname);
+}, app);
+var io = require('socket.io').listen(server, {secure: true,pingTimeout: 30000});
+server.listen(port);
+
 mongoose.connect('mongodb://localhost:27017/chat');
 //server.setSecure(credentials);
 // server.listen(port, hostname, () => {
 //   console.log(`Server running at https://${hostname}:${port}/`);
 // });
-var io = require('socket.io')(server, {secure: true,pingTimeout: 30000});
 
 io.on('connection',function(socket){
   //show handleEnterText
