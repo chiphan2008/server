@@ -3,7 +3,6 @@ const fs = require("fs"),
   bodyParser = require('body-parser'),
   mongoose = require('mongoose'),
   express = require('express');
-const port = 2309;
 var app = express();
 //var server = require('http').Server(app);
 var router = express.Router();
@@ -13,13 +12,12 @@ var ListFriend = require('./app/models/ListFriend')
 //var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
-const hostname = '112.213.94.96';
+const hostname = 'node.kingmap.vn';
+const port = 2309;
 var server = https.createServer({
     key: privateKey,
     cert: certificate
-}, app).listen(port, hostname, () => {
-  console.log(`Server running at https://${hostname}:${port}/`);
-});
+}, app).listen(port, hostname);
 mongoose.connect('mongodb://localhost:27017/chat');
 //server.setSecure(credentials);
 // server.listen(port, hostname, () => {
