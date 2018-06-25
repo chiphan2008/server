@@ -36,30 +36,32 @@ io.on('connection',function(socket){
   // handle send message
   socket.on('sendMessage',function(port,data){
     //console.log(data);
-    if(data.group===undefined){
-      Conversation.find({group:port},function(err,item){
-        if(item.length===0){
-          //dont send message yet
-          io.sockets.emit('replyMessage-'+port, data);
-
-        }else {
-          //had even send message and send history chat
-          io.sockets.emit('replyMessage-'+port, item);
-        }
-
-      });
-    }else {
-      //chatting...
-      var conversation = new Conversation();
-      //conversation = data;
-      conversation.group= data.group;
-      conversation.user_id= data.user_id;
-      conversation.message= data.message;
-      conversation.save(function(err) {
-        console.log('err',err);
-      });
-
+    if(data.notification!==undefined){
       io.sockets.emit('replyMessage-'+port, data);
+    }else{
+      if(data.group===undefined){
+        Conversation.find({group:port},function(err,item){
+          if(item.length===0){
+            //dont send message yet
+            io.sockets.emit('replyMessage-'+port, data);
+          }else {
+            //had even send message and send history chat
+            io.sockets.emit('replyMessage-'+port, item);
+          }
+        });
+      }else {
+        //chatting...
+        var conversation = new Conversation();
+        //conversation = data;
+        conversation.group= data.group;
+        conversation.user_id= data.user_id;
+        conversation.message= data.message;
+        conversation.save(function(err) {
+          console.log('err',err);
+        });
+
+        io.sockets.emit('replyMessage-'+port, data);
+      }
     }
 
   })
