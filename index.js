@@ -140,7 +140,8 @@ router.route('/person/inactive')
                $set: {
                  "active": 0,
                }
-           }, function() {
+           }, function(err, res) {
+               res.json(err);
                res.json({code:200,message:'User inactived!'})
           });
 })
