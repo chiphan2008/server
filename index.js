@@ -138,6 +138,8 @@ router.route('/person/update')
                $set: {
                  "name": req.body.name,
                  "urlhinh": req.body.urlhinh,
+                 "name": req.body.email,
+                 "urlhinh": req.body.phone,
                  "active": 1,
                  "online_at": Date.now()
                }
