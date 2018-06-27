@@ -82,10 +82,21 @@ router.use(function(req, res, next){
 router.get('/',function(req,res){
 	res.json({message:"Welcome to RESTFUL API NodeJS"})
 })
-
+//check info person
+router.route('/person/:id')
+        .get(function(req, res){
+          if(req.params.id>0){
+            Person.find({id:req.body.id}).exec(function(err, data){
+              res.json({data});
+            });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+})
+// /person add/update user when login app
 router.route('/person')
         .post(function(req, res){
-          Person.find({id:req.body.id},function(err,item){
+          Person.find({id:req.body.id,active:1},function(err,item){
             if(err){
                res.json({error:err})
              }
@@ -96,6 +107,7 @@ router.route('/person')
                    $set: {
                      "name": req.body.name,
                      "urlhinh": req.body.urlhinh,
+                     "active": 1,
                      "online_at": Date.now()
                    }
                }, function() {
