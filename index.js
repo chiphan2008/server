@@ -99,7 +99,7 @@ router.route('/person/:id')
 })
 router.route('/person/inactive')
         .post(function(req, res){
-          res.json({code:200,message:req})
+          res.json({req})
           Person.updateOne(
             {id: req.body.id },
             {
