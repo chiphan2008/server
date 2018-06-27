@@ -97,6 +97,19 @@ router.route('/person/:id')
             res.json({error:"Cant not GET"})
           }
 })
+router.route('/person/inactive')
+        .post(function(req, res){
+          res.json({code:200,message:req})
+          Person.updateOne(
+            {id: req.body.id },
+            {
+               $set: {
+                 "active": 0,
+               }
+           }, function() {
+               res.json({code:200,message:'User inactived!'})
+          });
+})
 // /person add/update user when login app
 router.route('/person/add')
         .post(function(req, res){
@@ -132,25 +145,13 @@ router.route('/person/update')
                res.json({code:200,message:'Update successfully!'})
           });
 })
-router.route('/person/inactive')
-        .post(function(req, res){
-          Person.updateOne(
-            {id: req.body.id },
-            {
-               $set: {
-                 "active": 0,
-               }
-           }, function(err, res) {
-               if(err) res.json(err)
-               res.json({code:200,message:'User inactived!'})
-          });
-})
+
 router.route('/except-person/:id')
         .get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id},active:1})
+            Person.find({id:{$ne : req.params.id} ,active:1})
             .limit(limiting).skip(skipping).sort('-_id')
             .exec(function(err, data){
               res.json({data});
