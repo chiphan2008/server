@@ -98,51 +98,58 @@ router.route('/person/:id')
           }
 })
 // /person add/update user when login app
-router.route('/person')
+router.route('/person/add')
         .post(function(req, res){
-          Person.find({id:req.body.id,active:1},function(err,item){
+          var person = new Person();
+          person.id = req.body.id;
+          person.name = req.body.name;
+          person.urlhinh = req.body.urlhinh;
+          person.save(function(err){
             if(err){
                res.json({error:err})
              }
-            if(item.length>0){
-              Person.updateOne(
-                {id: req.body.id },
-                {
-                   $set: {
-                     "name": req.body.name,
-                     "urlhinh": req.body.urlhinh,
-                     "active": 1,
-                     "online_at": Date.now()
-                   }
-               }, function() {
-                   res.json({code:200,message:'Data exists!'})
-               });
-            }else {
-              var person = new Person();
-              person.id = req.body.id;
-              person.name = req.body.name;
-              person.urlhinh = req.body.urlhinh;
-              person.save(function(err){
-                if(err){
-                   res.json({error:err})
-                 }
-                 res.json({code:200,message:'Data inserted successful!'})
-              })
-            }
+             res.json({code:200,message:'Data inserted successfully!'})
+          })
+})
+// .get(function(req, res){
+//   Person.find(function(err, person){
+//     if(err) res.json({error:err})
+//     res.json({person})
+//   });
+// })
+router.route('/person/update')
+        .post(function(req, res){
+          Person.updateOne(
+            {id: req.body.id },
+            {
+               $set: {
+                 "name": req.body.name,
+                 "urlhinh": req.body.urlhinh,
+                 "active": 1,
+                 "online_at": Date.now()
+               }
+           }, function() {
+               res.json({code:200,message:'Update successfully!'})
           });
-        })
-        .get(function(req, res){
-          Person.find(function(err, person){
-            if(err) res.json({error:err})
-            res.json({person})
+})
+router.route('/person/inactive')
+        .post(function(req, res){
+          Person.updateOne(
+            {id: req.body.id },
+            {
+               $set: {
+                 "active": 0,
+               }
+           }, function() {
+               res.json({code:200,message:'User inactived!'})
           });
-        })
+})
 router.route('/except-person/:id')
         .get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id}})
+            Person.find({id:{$ne : req.params.id},active:1})
             .limit(limiting).skip(skipping).sort('-_id')
             .exec(function(err, data){
               res.json({data});
