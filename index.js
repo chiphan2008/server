@@ -87,7 +87,11 @@ router.route('/person/:id')
         .get(function(req, res){
           if(req.params.id>0){
             Person.find({id:req.params.id}).exec(function(err, data){
-              res.json({data:data[0]});
+              if(data.length>0){
+                res.json({data:data[0]});
+              }else {
+                res.json({data:{}});
+              }
             });
           }else {
             res.json({error:"Cant not GET"})
