@@ -141,7 +141,7 @@ router.route('/person/inactive')
                  "active": 0,
                }
            }, function(err, res) {
-               res.json(err);
+               if(err) res.json(err)
                res.json({code:200,message:'User inactived!'})
           });
 })
