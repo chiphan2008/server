@@ -113,16 +113,22 @@ router.route('/person/inactive')
 // /person add/update user when login app
 router.route('/person/add')
         .post(function(req, res){
-          var person = new Person();
-          person.id = req.body.id;
-          person.name = req.body.name;
-          person.urlhinh = req.body.urlhinh;
-          person.save(function(err){
-            if(err){
-               res.json({error:err})
-             }
-             res.json({code:200,message:'Data inserted successfully!'})
-          })
+          Person.find({id:req.body.id}).exec(function(err, data){
+            if(data.length===0){
+              var person = new Person();
+              person.id = req.body.id;
+              person.name = req.body.name;
+              person.urlhinh = req.body.urlhinh;
+              person.save(function(err){
+                if(err){
+                   res.json({error:err})
+                 }
+                 res.json({code:200,message:'Data inserted successfully!'})
+              })
+            }else {
+              res.json({code:200,message:'User existing!'})
+            }
+          });        
 })
 // .get(function(req, res){
 //   Person.find(function(err, person){
