@@ -86,7 +86,7 @@ router.get('/',function(req,res){
 router.route('/person/:id')
         .get(function(req, res){
           if(req.params.id>0){
-            Person.find({id:req.body.id}).exec(function(err, data){
+            Person.find({id:req.params.id}).exec(function(err, data){
               res.json({data});
             });
           }else {
