@@ -119,6 +119,8 @@ router.route('/person/add')
               person.id = req.body.id;
               person.name = req.body.name;
               person.urlhinh = req.body.urlhinh;
+              person.email = req.body.email;
+              person.phone = req.body.phone;
               person.save(function(err){
                 if(err){
                    res.json({error:err})
@@ -128,7 +130,7 @@ router.route('/person/add')
             }else {
               res.json({code:200,message:'User existing!'})
             }
-          });        
+          });
 })
 // .get(function(req, res){
 //   Person.find(function(err, person){
@@ -144,8 +146,8 @@ router.route('/person/update')
                $set: {
                  "name": req.body.name,
                  "urlhinh": req.body.urlhinh,
-                 "name": req.body.email,
-                 "urlhinh": req.body.phone,
+                 "email": req.body.email,
+                 "phone": req.body.phone,
                  "active": 1,
                  "online_at": Date.now()
                }
