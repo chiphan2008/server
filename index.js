@@ -87,11 +87,7 @@ router.route('/person/:id')
         .get(function(req, res){
           if(req.params.id>0){
             Person.find({id:req.params.id}).exec(function(err, data){
-              if(data.length>0){
-                res.json({data:data[0]});
-              }else {
-                res.json({data:{}});
-              }
+              res.json({data});
             });
           }else {
             res.json({error:"Cant not GET"})
@@ -99,7 +95,6 @@ router.route('/person/:id')
 })
 router.route('/person/inactive')
         .post(function(req, res){
-          //res.json({data:req.body})
           Person.updateOne(
             {id: req.body.id },
             {
@@ -110,10 +105,39 @@ router.route('/person/inactive')
                res.json({code:200,message:'User inactived!'})
           });
 })
+router.route('/person/offline')
+        .post(function(req, res){
+          Person.updateOne(
+            {id: req.body.id },
+            {
+               $set: {
+                 "offline_at": Date.now()
+               }
+           }, function() {
+               res.json({code:200,message:'Update successfully!'})
+          });
+})
+router.route('/person/update')
+        .post(function(req, res){
+          Person.updateOne(
+            {id: req.body.id },
+            {
+               $set: {
+                 "name": req.body.name,
+                 "urlhinh": req.body.urlhinh,
+                 "email": req.body.email,
+                 "phone": req.body.phone,
+                 "active": 1,
+                 "online_at": Date.now()
+               }
+           }, function() {
+               res.json({code:200,message:'Update successfully!'})
+          });
+})
+
 // /person add/update user when login app
 router.route('/person/add')
         .post(function(req, res){
-          console.log('/person/add');
           Person.find({id:req.body.id}).exec(function(err, data){
             if(data.length===0){
               var person = new Person();
@@ -139,24 +163,6 @@ router.route('/person/add')
 //     res.json({person})
 //   });
 // })
-router.route('/person/update')
-        .post(function(req, res){
-          console.log('/person/update');
-          Person.updateOne(
-            {id: req.body.id },
-            {
-               $set: {
-                 "name": req.body.name,
-                 "urlhinh": req.body.urlhinh,
-                 "email": req.body.email,
-                 "phone": req.body.phone,
-                 "active": 1,
-                 "online_at": Date.now()
-               }
-           }, function() {
-               res.json({code:200,message:'Update successfully!'})
-          });
-})
 
 router.route('/except-person/:id')
         .get(function(req, res){
