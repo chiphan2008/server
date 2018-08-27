@@ -145,6 +145,7 @@ router.route('/person/add').post(function(req, res){
               person.urlhinh = req.body.urlhinh;
               person.email = req.body.email;
               person.phone = req.body.phone;
+              person.friends = [];
               person.save(function(err){
                 if(err){
                    res.json({error:err})
