@@ -136,7 +136,7 @@ router.route('/person/update').post(function(req, res){
 // /person add/update user when login app
 router.route('/person/add').post(function(req, res){
           console.log('/person/add',req.body);
-          res.json({error:req.body})
+          //res.json({error:req.body})
           Person.find({id:req.body.id}).exec(function(err, data){
             if(data.length===0){
               var person = new Person();
