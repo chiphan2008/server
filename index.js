@@ -84,8 +84,7 @@ router.get('/',function(req,res){
 	res.json({message:"Welcome to RESTFUL API NodeJS"})
 })
 //check info person
-router.route('/person/:id')
-        .get(function(req, res){
+router.route('/person/:id').get(function(req, res){
           if(req.params.id>0){
             Person.find({id:req.params.id}).exec(function(err, data){
               res.json({data});
@@ -94,8 +93,7 @@ router.route('/person/:id')
             res.json({error:"Cant not GET"})
           }
 })
-router.route('/person/inactive')
-        .post(function(req, res){
+router.route('/person/inactive').post(function(req, res){
           Person.updateOne(
             {id: req.body.id },
             {
@@ -106,8 +104,7 @@ router.route('/person/inactive')
                res.json({code:200,message:'User inactived!'})
           });
 })
-router.route('/person/offline')
-        .post(function(req, res){
+router.route('/person/offline').post(function(req, res){
           Person.updateOne(
             {id: req.body.id },
             {
@@ -147,6 +144,7 @@ router.route('/person/add')
               person.urlhinh = req.body.urlhinh;
               person.email = req.body.email;
               person.phone = req.body.phone;
+              person.friends = [];
               person.save(function(err){
                 if(err){
                    res.json({error:err})
@@ -224,7 +222,8 @@ router.route('/list-friend/:id').get(function(req, res){
               if(err || item===null){
                 res.json({code:200,data:[]})
               }else {
-                res.json({data:item.friends})
+                let data = item.friends.length===0?[]:item.friends;
+                res.json({data})
               }
             });
           }else {
