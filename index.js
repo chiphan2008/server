@@ -115,8 +115,7 @@ router.route('/person/offline').post(function(req, res){
                res.json({code:200,message:'Update successfully!'})
           });
 })
-router.route('/person/update')
-        .post(function(req, res){
+router.route('/person/update').post(function(req, res){
           Person.updateOne(
             {id: req.body.id },
             {
@@ -135,7 +134,7 @@ router.route('/person/update')
 
 // /person add/update user when login app
 router.route('/person/add').post(function(req, res){
-          console.log('req',req);
+          //console.log('req',req);
           Person.find({id:req.body.id}).exec(function(err, data){
             if(data.length===0){
               var person = new Person();
@@ -144,7 +143,7 @@ router.route('/person/add').post(function(req, res){
               person.urlhinh = req.body.urlhinh;
               person.email = req.body.email;
               person.phone = req.body.phone;
-              person.friends = [];
+              person.friends = array();
               person.save(function(err){
                 if(err){
                    res.json({error:err})
