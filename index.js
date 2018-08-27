@@ -9,7 +9,7 @@ var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
-var History = require('./app/models/History')
+var HistoryChat = require('./app/models/HistoryChat')
 //var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
@@ -165,6 +165,45 @@ router.route('/person/add')
 //   });
 // })
 
+router.route('/history-chat/:id')
+        .get(function(req, res){
+          var skipping = parseInt(req.query.skip) || 0;
+          var limiting = parseInt(req.query.limit) || 0;
+          if(req.params.id>0){
+            HistoryChat.find({user_id:req.params.id})
+            .limit(limiting).skip(skipping).sort('-_update_at')
+            .exec(function(err, data){
+              res.json({data});
+            });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+        })
+        .post(function(req, res){
+            HistoryChat.find({user_id:req.params.id,friend_id:req.body.friend_id},function(err,item){
+              if(item.length>0){
+                HistoryChat.updateOne({friend_id: req.body.friend_id },
+                  {
+                     $set: {
+                       "last_message":req.body.last_message,
+                       "update_at": Date.now()
+                     }
+                  }, function() {
+                     res.json({code:200,message:'Update successfully!'})
+                  });
+              }else {
+                  var historychat = new HistoryChat();
+                  historychat.user_id= req.params.id;
+                  historychat.friend_id= req.body.friend_id;
+                  historychat.last_message= req.body.last_message;
+                  historychat.update_at= Date.now();
+                  historychat.save(function(err) {
+                    res.json({code:200,message:'Data inserted successful!'})
+                  });
+              }
+            })
+
+        })
 router.route('/except-person/:id')
         .get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
