@@ -230,7 +230,7 @@ router.route('/list-friend/:id').get(function(req, res){
             res.json({error:"Cant not GET"})
           }
 })
-router.route('/list-friend/:id/:addfriend').get(function(req, res){
+router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             Person.aggregate(
               {$match: {id:req.params.id}},
@@ -238,7 +238,7 @@ router.route('/list-friend/:id/:addfriend').get(function(req, res){
                   friends: {$filter: {
                       input: '$friends',
                       as: 'friend',
-                      cond: {$eq: ['$$friend.addfriend', req.params.addfriend]}
+                      cond: {$eq: ['$$friend.addfriend', req.params.status]}
                   }}}
               }
             	// {$addFields : {"friends":{$filter:{ // We override the existing field!
@@ -248,7 +248,7 @@ router.route('/list-friend/:id/:addfriend').get(function(req, res){
             	// }}}}
             ).exec(function(err, arr){
                   if(arr!==null){
-                      res.json({arr})
+                      res.json({data:arr})
                   }else {
                     res.json({code:200,data:[]})
                   }
