@@ -222,8 +222,17 @@ router.route('/list-friend/:id').get(function(req, res){
               if(err || item===null){
                 res.json({code:200,data:[]})
               }else {
-                let data = item.friends.length===0?[]:item.friends;
-                res.json({data})
+                if(item.friends===undefined){
+                  Person.updateOne({id: req.params.id },
+                    {
+                       $set: {
+                         "friends": []
+                       }
+                   }, function() {
+                       res.json({data:[]})
+                  });
+                }
+                res.json({data:item.friends})
               }
             });
           }else {
