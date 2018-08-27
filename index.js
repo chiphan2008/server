@@ -234,15 +234,13 @@ router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             Person.aggregate(
               {$match: {id:req.params.id}},
-              { "$match": { "friends.addfriend": req.params.status } }
-
-              // { $project: {
-              //     friends: {$filter: {
-              //         input: '$friends',
-              //         as: 'friend',
-              //         cond: {$eq: ['$$friend.addfriend', req.params.status]}
-              //     }}}
-              // }
+              { $project: {
+                  friends: {$filter: {
+                      input: '$friends',
+                      as: 'friend',
+                      cond: {$eq: ['$$friend.addfriend', req.params.status]}
+                  }}}
+              }
             	// {$addFields : {"friends":{$filter:{ // We override the existing field!
             	// 	input: "$friends",
             	// 	as: "friend",
