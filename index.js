@@ -259,28 +259,16 @@ router.route('/list-friend/:id/:status').get(function(req, res){
 })
 router.route('/add-friend').post(function(req, res){
   Person.find({id:req.body.id},function(err,item){
-    Person.update({id: req.body.friend_id} ,
+    Person.update({id: req.body.id} ,
     {
       $addToSet : {
         "friends" : {
-          friend_id:req.body.id,
-          status:0
+          friend_id:req.body.friend_id,
+          status:1
         }
       }
     },function(){
-      Person.find({id:req.body.id},function(err,item){
-        Person.update({id: req.body.id} ,
-        {
-          $addToSet : {
-            "friends" : {
-              friend_id:req.body.friend_id,
-              status:1
-            }
-          }
-        },function(){
-          res.json({data:'Data updated'})
-        });
-      })
+      res.json({data:'Data updated'})
     });
   })
 
