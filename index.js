@@ -203,8 +203,7 @@ router.route('/history-chat/:id')
             })
 
         })
-router.route('/except-person/:id')
-        .get(function(req, res){
+router.route('/except-person/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
@@ -259,19 +258,33 @@ router.route('/list-friend/:id/:status').get(function(req, res){
         }
 })
 router.route('/add-friend').post(function(req, res){
-          Person.find({id:req.body.id},function(err,item){
-            Person.update({id: req.body.id} ,
-            {
-              $addToSet : {
-                "friends" : {
-                  friend_id:req.body.friend_id,
-                  status:0
-                }
-              }
-            },function(){
-              res.json({data:'Data updated'})
-            });
-          })
+  Person.find({id:req.body.id},function(err,item){
+    Person.update({id: req.body.friend_id} ,
+    {
+      $addToSet : {
+        "friends" : {
+          friend_id:req.body.id,
+          status:1
+        }
+      }
+    },function(){
+      Person.find({id:req.body.id},function(err,item){
+        Person.update({id: req.body.id} ,
+        {
+          $addToSet : {
+            "friends" : {
+              friend_id:req.body.friend_id,
+              status:0
+            }
+          }
+        },function(){
+          res.json({data:'Data updated'})
+        });
+      })
+    });
+  })
+
+
 })
 router.route('/unfriend').post(function(req, res){
           Person.updateOne({id: req.body.id} ,
