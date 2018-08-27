@@ -7,7 +7,7 @@ var PersonShema = new Schema({
   urlhinh:String,
   email:String,
   phone:String,
-  friends:{ type : Array , "default" : [] },
+  friends:Array,
   active:{ type: Number, default: 1 },
   online_at:{ type: Date, default: Date.now() },
   offline_at:{ type: Date },
