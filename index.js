@@ -236,9 +236,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
               {$match: {id:req.params.id}},
               { $project: {
                   friends: {$filter: {
-                      input: '$friends',
-                      as: 'friend',
-                      cond: {$eq: ['$$friend.status', req.params.status]}
+                      input: "$friends",
+                      as: "friend",
+                      cond: {$eq: ["$$friend.status", req.params.status]}
                   }}}
               }
             	// {$addFields : {"friends":{$filter:{ // We override the existing field!
