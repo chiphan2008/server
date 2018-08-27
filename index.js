@@ -230,7 +230,7 @@ router.route('/list-friend/:id').get(function(req, res){
             res.json({error:"Cant not GET"})
           }
 })
-router.route('/list-friend/:id/:status').get(function(req, res){
+router.route('/list-friend/:id/:addfriend').get(function(req, res){
           if(req.params.id>0){
             Person.aggregate(
               {$match: {id:req.params.id}},
