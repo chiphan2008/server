@@ -264,11 +264,23 @@ router.route('/add-friend').post(function(req, res){
       $addToSet : {
         "friends" : {
           friend_id:req.body.friend_id,
-          status:1
+          addfriend:1
         }
       }
     },function(){
-      res.json({data:'Data updated'})
+      Person.find({id:req.body.friend_id},function(err,item){
+        Person.update({id: req.body.friend_id} ,
+        {
+          $addToSet : {
+            "friends" : {
+              friend_id:req.body.id,
+              addfriend:0
+            }
+          }
+        },function(){
+          res.json({data:'Data updated'})
+        });
+      })
     });
   })
 
