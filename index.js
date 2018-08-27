@@ -264,7 +264,7 @@ router.route('/add-friend').post(function(req, res){
       $addToSet : {
         "friends" : {
           friend_id:req.body.id,
-          status:1
+          status:0
         }
       }
     },function(){
@@ -274,7 +274,7 @@ router.route('/add-friend').post(function(req, res){
           $addToSet : {
             "friends" : {
               friend_id:req.body.friend_id,
-              status:0
+              status:1
             }
           }
         },function(){
