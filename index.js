@@ -231,10 +231,9 @@ router.route('/list-friend/:id')
             res.json({error:"Cant not GET"})
           }
 })
-router.route('/list-friend/:id/:status')
-        .get(function(req, res){
+router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
-            ListFriend.aggregate(
+            Person.aggregate(
               {$match: {id:req.params.id}},
               { $project: {
                   friends: {$filter: {
@@ -259,52 +258,33 @@ router.route('/list-friend/:id/:status')
           res.json({error:"Cant not GET"})
         }
 })
-router.route('/add-friend')
-        .post(function(req, res){
-          ListFriend.find({id:req.body.id},function(err,item){
-            if(item.length>0){
-              ListFriend.update({id: req.body.id} ,
-              {
-                $addToSet : {
-                  "friends" : {
-                    user_id:req.body.user_id,
-                    name:req.body.name,
-                    urlhinh:req.body.urlhinh,
-                    status:0
-                  }
+router.route('/add-friend').post(function(req, res){
+          Person.find({id:req.body.id},function(err,item){
+            Person.update({id: req.body.id} ,
+            {
+              $addToSet : {
+                "friends" : {
+                  friend_id:req.body.friend_id,
+                  status:0
                 }
-              },function(){ res.json({data:'Data updated'}) });
-            }else {
-              let friends = [{
-                  user_id:req.body.user_id,
-                  name:req.body.name,
-                  urlhinh:req.body.urlhinh,
-                  status:0,
-                }]
-                var listfriend = new ListFriend();
-                listfriend.id= req.body.id;
-                listfriend.friends= friends;
-                listfriend.save(function(err) {
-                  res.json({code:200,message:'Data inserted successful!'})
-                });
-            }
+              }
+            },function(){
+              res.json({data:'Data updated'})
+            });
           })
-
 })
-router.route('/unfriend')
-        .post(function(req, res){
-          ListFriend.updateOne({id: req.body.id} ,
+router.route('/unfriend').post(function(req, res){
+          Person.updateOne({id: req.body.id} ,
             {
               $pull : {
-                "friends" : {user_id:req.body.user_id}
+                "friends" : {friend_id:req.body.friend_id}
               }
             },function(){
               res.json({data:'Data updated'})
             });
 })
-router.route('/acept-friend')
-    .post(function(req, res){
-            ListFriend.updateOne({id: req.body.id,"friends.user_id":req.body.user_id} ,
+router.route('/acept-friend').post(function(req, res){
+            Person.updateOne({id: req.body.id,"friends.friend_id":req.body.friend_id} ,
             {
               $set : {"friends.$.status":1}
             },function(){ res.json({data:'Data updated'}) });
