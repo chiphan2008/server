@@ -247,10 +247,10 @@ router.route('/list-friend/:id/:status').get(function(req, res){
             	// 	cond: {$eq: ["$$friend.status", req.params.status]}
             	// }}}}
             ).exec(function(err, arr){
-                  if(arr!==null){
-                      res.json({data:arr})
+                  if(arr===null || err){
+                      res.json({code:200,data:[]})
                   }else {
-                    res.json({code:200,data:[]})
+                    res.json({data:arr})
                   }
             });
         }else {
