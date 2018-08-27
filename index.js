@@ -9,6 +9,7 @@ var router = express.Router();
 var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
+var History = require('./app/models/History')
 //var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
