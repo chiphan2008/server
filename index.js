@@ -220,11 +220,12 @@ router.route('/except-person/:id')
         })
 router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
-            Person.findOne({id:req.params.id}).exec(function(err, arr){
-              if(arr!==null){
-                res.json({data:arr.friends})
+            Person.findOne({id:req.params.id}).exec(function(err, item){
+              if(err || item===null){
+                res.json({code:200,data:[]})
+              }else {
+                res.json({data:item.friends})
               }
-              res.json({code:200,data:[]})
             });
           }else {
             res.json({error:"Cant not GET"})
