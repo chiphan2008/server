@@ -234,7 +234,6 @@ router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             Person.aggregate(
               {$match: {id:req.params.id}},
-              { "$unwind": "$friends" },
               { "$match": { "friends.addfriend": req.params.status } }
 
               // { $project: {
