@@ -271,6 +271,7 @@ router.route('/add-friend').post(function(req, res){
               if(err){
                 res.json({err:err})
               }else {
+                res.json({rs:rs})
                 if(rs.n===0 && rs.ok===1) {
                   Person.update({id:req.body.id},{
                     $addToSet : {
