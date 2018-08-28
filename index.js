@@ -228,19 +228,19 @@ router.route('/list-friend/:id').get(function(req, res){
           }
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
-          res.json({id:req.params.id,param:req.params.status})
+          //res.json({id:req.params.id,param:req.params.status})
           if(req.params.id>0){
             ListFriend.aggregate([
-              { $match : { id : req.params.id } },
-              { $project: {
-                  friends: {
-                    $filter: {
-                      input: "$friends",
-                      as: "friend",
-                      cond: {$eq: ['$$friend.status', req.params.status]}
-                  }}}
-              }]
-            ).exec(function(err, arr){
+              { $match : { id : req.params.id } }
+              // { $project: {
+              //     friends: {
+              //       $filter: {
+              //         input: "$friends",
+              //         as: "friend",
+              //         cond: {$eq: ['$$friend.status', req.params.status]}
+              //     }}}
+              // }
+            ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
