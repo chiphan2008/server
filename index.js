@@ -288,14 +288,13 @@ router.route('/add-friend').post(function(req, res){
                 "friends.$.status":"accept",
                 "friends.$.update_at":Date.now()
               }
-            },function(){
-              Person.updateOne({id:friend_id,"friends.friend_id":id},{
-                $set : {
-                  "friends.$.status":"accept",
-                  "friends.$.update_at":Date.now()
-                }
-              },function(){ res.json({data:'Data updated'}) });
             });
+            Person.updateOne({id:friend_id,"friends.friend_id":id},{
+              $set : {
+                "friends.$.status":"accept",
+                "friends.$.update_at":Date.now()
+              }
+            },function(){ res.json({data:'Data updated'}) });
           }
         });
 
