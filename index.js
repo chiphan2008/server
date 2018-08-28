@@ -255,23 +255,30 @@ router.route('/add-friend').post(function(req, res){
         Person.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           if(err || item===null){
             Person.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
-
-              let conds;
+              let conds,setVal;
               if(error || el===null){
                 conds = {id};
+                setVal = {
+                  $addToSet : {
+                    "friends" : {
+                      friend_id,
+                      status:"request",
+                      update_at: Date.now(),
+                      create_at: Date.now()
+                  }}
+                }
               }else {
                 conds = {id,"friends.friend_id":friend_id};
+                setVal = {
+                  $set : {
+                    "friends.$.friend_id":friend_id,
+                    "friends.$.status":"request",
+                    "friends.$.update_at":Date.now(),,
+                    "friends.$.create_at":Date.now(),,
+                  }
+                }
               }
-              //res.json({el:el,conds:conds})
-              Person.updateOne(conds,{
-                $addToSet : {
-                  "friends" : {
-                    friend_id,
-                    status:"request",
-                    update_at: Date.now(),
-                    create_at: Date.now(),
-                }}
-              },function(err,rs){ res.json({data:'Data added'})});
+              Person.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
             })
 
           }else {
