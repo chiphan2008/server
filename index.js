@@ -231,9 +231,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
               {
                 $lookup: {
                    from: "people",
-                   localField: "name",    // field in the orders collection
-                   foreignField: "name",  // field in the items collection
-                   as: "name"
+                   localField: "id",    // field in the orders collection
+                   foreignField: "id",  // field in the items collection
+                   as: "id"
                 }
               },
               { $project: {
