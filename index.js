@@ -233,7 +233,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                 "let": { "id": "$id" },
                 "pipeline": [
                   { "$match": {
-                    "value": "1",
+                    "id": parseInt(req.params.id),
                     "$expr": { "$in": [ "$$id", "$contain" ] }
                   }}
                 ],
