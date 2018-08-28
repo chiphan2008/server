@@ -298,14 +298,16 @@ router.route('/add-friend').post(function(req, res){
             if(err || item===null){
               Person.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
             }else {
-              Person.updateOne(conds,addVal);
-              Person.updateOne({id:friend_id,"friends.friend_id":id},{
-                $set : {
-                  "friends.$.status":"accept",
-                  "friends.$.update_at":Date.now()
-                }
-              },function(){ res.json({data:'Data updated'}) });
-            }
+              Person.updateOne(conds,addVal,function(){
+                Person.updateOne({id:friend_id,"friends.friend_id":id},{
+                  $set : {
+                    "friends.$.status":"accept",
+                    "friends.$.update_at":Date.now()
+                  }
+                },function(){ res.json({data:'Data updated'}) });
+              });
+
+           }
 
           })
       });
