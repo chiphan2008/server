@@ -232,8 +232,8 @@ router.route('/list-friend/:id').get(function(req, res){
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
-            Person.aggregate(
-              //{$match: {id:req.params.id}},
+            ListFriend.aggregate(
+              {$match: {id:req.params.id}},
               { $project: {
                   id:req.params.id,
                   friends: {
@@ -243,14 +243,8 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       cond: {
                         $eq: ["$$friend.status", req.params.status]
                       }
-                  }
-                }}
+                  }}}
               }
-            	// {$addFields : {"friends":{$filter:{ // We override the existing field!
-            	// 	input: "$friends",
-            	// 	as: "friend",
-            	// 	cond: {$eq: ["$$friend.status", req.params.status]}
-            	// }}}}
             ).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
@@ -264,32 +258,30 @@ router.route('/list-friend/:id/:status').get(function(req, res){
         }
 })
 router.route('/add-friend').post(function(req, res){
-  Person.find({id:req.body.id},function(err,item){
-    Person.update({id: req.body.id} ,
-    {
-      $addToSet : {
-        "friends" : {
-          friend_id:req.body.friend_id,
-          status:1
-        }
-      }
-    },function(){
-      Person.find({id:req.body.friend_id},function(err,item){
-        Person.update({id: req.body.friend_id} ,
-        {
-          $addToSet : {
-            "friends" : {
-              friend_id:req.body.id,
-              status:0
+  if(req.body.id<0) res.json({error:"Cant not GET"});
+  ListFriend.find({id:req.body.id},function(err,item){
+            if(item.length>0){
+              ListFriend.update({id: req.body.id} ,
+              {
+                $addToSet : {
+                  "friends" : {
+                    user_id:req.body.user_id,
+                    status:"request"
+                }}
+              },function(){ res.json({data:'Data updated'}) });
+            }else {
+                 let friends = [{
+                    user_id:req.body.user_id,
+                    status:"request",
+                  }]
+                  var listfriend = new ListFriend();
+                  listfriend.id= req.body.id;
+                  listfriend.friends= friends;
+                  listfriend.save(function(err) {
+                    res.json({code:200,message:'Data inserted successful!'})
+                  });
             }
-          }
-        },function(){
-          res.json({data:'Data updated'})
-        });
       })
-    });
-  })
-
 
 })
 router.route('/unfriend').post(function(req, res){
