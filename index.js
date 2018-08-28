@@ -244,8 +244,8 @@ router.route('/list-friend/:id/:status').get(function(req, res){
 
                     let newArr=[];
                     arr[0].friends.forEach(async (err, el)=>{
-                      await Person.findOne({id:el.friend_id}).exec(function(err, item){
-                        newArr.push(item);
+                      return Person.findOne({id:el.friend_id}).exec(function(err, item){
+                        await newArr.push(item);
                       });
                     });
 
