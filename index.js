@@ -228,10 +228,11 @@ router.route('/list-friend/:id').get(function(req, res){
           }
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
+          res.json({id:req.params.id,param:req.params.status})
           if(req.params.id>0){
             ListFriend.aggregate([
+              { $match : { id : req.params.id } },
               { $project: {
-                  id:req.params.id,
                   friends: {
                     $filter: {
                       input: "$friends",
