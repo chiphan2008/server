@@ -117,8 +117,7 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
-          Person.updateOne(
-            {id: req.body.id },
+          Person.updateOne({id: req.body.id },
             {
                $set: {
                  "name": req.body.name,
@@ -130,13 +129,11 @@ router.route('/person/update').post(function(req, res){
                }
            }, function() {
                res.json({code:200,message:'Update successfully!'})
-          });
+           });
 })
 
 // /person add/update user when login app
 router.route('/person/add').post(function(req, res){
-          //console.log('/person/add',req.body);
-          //res.json({error:req.body})
           Person.find({id:req.body.id}).exec(function(err, data){
             if(data.length===0){
               var person = new Person();
@@ -216,7 +213,7 @@ router.route('/except-person/:id').get(function(req, res){
         })
 router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
-            ListFriend.findOne({id:req.params.id}).exec(function(err, item){
+            Person.findOne({id:req.params.id}).exec(function(err, item){
               if(err || item===null){
                 res.json({code:200,data:[]})
               }else {
@@ -228,18 +225,17 @@ router.route('/list-friend/:id').get(function(req, res){
           }
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
-          //res.json({id:req.params.id,param:req.params.status})
           if(req.params.id>0){
-            ListFriend.aggregate([
-              { $match : { id : parseInt(req.params.id) } }
-              // { $project: {
-              //     friends: {
-              //       $filter: {
-              //         input: "$friends",
-              //         as: "friend",
-              //         cond: {$eq: ['$$friend.status', req.params.status]}
-              //     }}}
-              // }
+            Person.aggregate([
+              { $match : { id : parseInt(req.params.id) } },
+              { $project: {
+                  friends: {
+                    $filter: {
+                      input: "$friends",
+                      as: "friend",
+                      cond: {$eq: ['$$friend.status', req.params.status]}
+                  }}}
+              }
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
@@ -253,33 +249,46 @@ router.route('/list-friend/:id/:status').get(function(req, res){
         }
 })
 router.route('/add-friend').post(function(req, res){
-  if(req.body.id<0) res.json({error:"Cant not GET"});
-  ListFriend.find({id:req.body.id},function(err,item){
-            if(item.length>0){
-              ListFriend.update({id: req.body.id} ,
-              {
-                $addToSet : {
-                  "friends" : {
-                    friend_id:req.body.friend_id,
-                    status:0,
-                    update_at: Date.now()
-                }}
-              },function(){ res.json({data:'Data updated'}) });
-            }else {
-                 let friends = [{
-                    friend_id:req.body.friend_id,
-                    status:0,
-                    update_at: Date.now(),
-                    create_at: Date.now()
-                  }]
-                  var listfriend = new ListFriend();
-                  listfriend.id= req.body.id;
-                  listfriend.friends= friends;
-                  listfriend.save(function(err) {
-                    res.json({code:200,message:'Data inserted successful!'})
-                  });
-            }
-      })
+        if(parseInt(req.body.id)<0) res.json({error:"Cant not GET"});
+        Person.aggregate([{ $match : { id : parseInt(req.body.friend_id) }},
+          { $project: {
+              friends: {
+                $filter: {
+                  input: "$friends",
+                  as: "friend",
+                  cond: {$eq: ['$$friend.friend_id', parseInt(req.body.id)]}
+          }}}}
+        ]).exec(function(err, arr){
+              if(arr===null || err){
+                Person.update({id:req.body.id},{
+                  $addToSet : {
+                    "friends" : {
+                      friend_id:req.body.friend_id,
+                      status:"request",
+                      update_at: Date.now(),
+                      create_at: Date.now(),
+                  }}
+                },function(){ res.json({data:'Data updated'}) });
+              }else {
+                Person.update({id:req.body.id},{
+                  $addToSet : {
+                    "friends" : {
+                      friend_id:req.body.friend_id,
+                      status:"accept",
+                      update_at: Date.now()
+                  }}
+                },function(){
+                  Person.update({id:req.body.friend_id},{
+                    $addToSet : {
+                      "friends" : {
+                        friend_id:req.body.id,
+                        status:"accept",
+                        update_at: Date.now()
+                    }}
+                  },function(){ res.json({data:'Data updated'}) });
+                });
+              }
+        });
 
 })
 router.route('/unfriend').post(function(req, res){
@@ -295,7 +304,7 @@ router.route('/unfriend').post(function(req, res){
 router.route('/acept-friend').post(function(req, res){
             Person.updateOne({id: req.body.id,"friends.friend_id":req.body.friend_id} ,
             {
-              $set : {"friends.$.status":1}
+              $set : {"friends.$.status":"accept"}
             },function(){ res.json({data:'Data updated'}) });
 })
 
