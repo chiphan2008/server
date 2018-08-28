@@ -238,7 +238,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       input: "$friends",
                       as: "friend",
                       cond: {
-                        $eq: ["$$friend.status", req.params.status.toString()]
+                        $eq: ["$$friend.status", req.params.status]
                       }
                   }}}
               }]
@@ -263,13 +263,16 @@ router.route('/add-friend').post(function(req, res){
                 $addToSet : {
                   "friends" : {
                     friend_id:req.body.friend_id,
-                    status:"request"
+                    status:0,
+                    update_at: Data.now()
                 }}
               },function(){ res.json({data:'Data updated'}) });
             }else {
                  let friends = [{
                     friend_id:req.body.friend_id,
-                    status:"request",
+                    status:0,
+                    update_at: Data.now(),
+                    create_at: Data.now()
                   }]
                   var listfriend = new ListFriend();
                   listfriend.id= req.body.id;
