@@ -241,13 +241,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-
-                    let newArr=[];
-                    arr[0].friends.forEach(async (err, el)=>{
-                      await newArr.push(el.friend_id);
+                    Person.find({id: { $elemMatch: { friend_id: arr[0].friends }} }).exec(function(err, item){
+                      res.json({data:item})
                     });
-
-                    res.json({data:newArr})
                   }
             });
         }else {
