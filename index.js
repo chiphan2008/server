@@ -274,7 +274,7 @@ router.route('/add-friend').post(function(req, res){
                     "friends.$.friend_id":friend_id,
                     "friends.$.status":"request",
                     "friends.$.update_at":Date.now(),
-                    "friends.$.create_at":Date.now(),
+                    "friends.$.create_at":Date.now()
                   }
                 }
               }
@@ -282,21 +282,18 @@ router.route('/add-friend').post(function(req, res){
             })
 
           }else {
-            Person.update({id},{
-              $addToSet : {
-                "friends" : {
-                  friend_id,
-                  status:"accept",
-                  update_at: Date.now()
-              }}
+            Person.updateOne({id,"friends.friend_id":friend_id},{
+              $set : {
+                "friends.$.friend_id":friend_id,
+                "friends.$.status":"accept",
+                "friends.$.update_at":Date.now()
+              }
             },function(){
-              Person.update({id:friend_id},{
-                $addToSet : {
-                  "friends" : {
-                    friend_id:id,
-                    status:"accept",
-                    update_at: Date.now()
-                }}
+              Person.updateOne({id:friend_id,"friends.friend_id":id},{
+                $set : {
+                  "friends.$.status":"accept",
+                  "friends.$.update_at":Date.now()
+                }
               },function(){ res.json({data:'Data updated'}) });
             });
           }
