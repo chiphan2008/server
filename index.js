@@ -249,22 +249,24 @@ router.route('/list-friend/:id/:status').get(function(req, res){
         }
 })
 router.route('/add-friend').post(function(req, res){
-        if(parseInt(req.body.id)<0) res.json({error:"Cant not GET"});
-        Person.findOne({id:req.body.friend_id,"friends.friend_id":req.body.id}).exec(function(err, item){
+        const id = parseInt(req.body.id);
+        const friend_id = parseInt(req.body.friend_id);
+        if(parseInt(id)<0) res.json({error:"Cant not GET"});
+        Person.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           if(err || item===null){
-            Person.findOne({id:req.body.id,"friends.friend_id":req.body.friend_id}).exec(function(error, el){
-              res.json({id:req.body.id,"friends.friend_id":req.body.friend_id})
+            Person.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
+              //res.json({id,"friends.friend_id":friend_id})
               let conds;
               if(error || el===null){
-                conds = {id: req.body.id};
+                conds = {id};
               }else {
-                conds = {id: parseInt(req.body.id),"friends.friend_id":req.body.friend_id};
+                conds = {id,"friends.friend_id":friend_id};
               }
 
               Person.update(conds,{
                 $addToSet : {
                   "friends" : {
-                    friend_id:parseInt(req.body.friend_id),
+                    friend_id,
                     status:"request",
                     update_at: Date.now(),
                     create_at: Date.now(),
@@ -273,18 +275,18 @@ router.route('/add-friend').post(function(req, res){
             })
 
           }else {
-            Person.update({id:req.body.id},{
+            Person.update({id},{
               $addToSet : {
                 "friends" : {
-                  friend_id:req.body.friend_id,
+                  friend_id,
                   status:"accept",
                   update_at: Date.now()
               }}
             },function(){
-              Person.update({id:req.body.friend_id},{
+              Person.update({id:friend_id},{
                 $addToSet : {
                   "friends" : {
-                    friend_id:req.body.id,
+                    friend_id:id,
                     status:"accept",
                     update_at: Date.now()
                 }}
