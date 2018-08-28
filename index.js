@@ -259,6 +259,7 @@ router.route('/add-friend').post(function(req, res){
                   cond: {$eq: ['$$friend.friend_id', parseInt(req.body.id)]}
           }}}}
         ]).exec(function(err, arr){
+              res.json({data:arr})
               if(arr===null || err){
                 Person.update({id:req.body.id},{
                   $addToSet : {
