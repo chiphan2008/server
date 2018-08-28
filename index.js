@@ -238,7 +238,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       input: "$friends",
                       as: "friend",
                       cond: {
-                        $eq: ["$$friend.status", req.params.status]
+                        $eq: ["$$friend.status", req.params.status.toString()]
                       }
                   }}}
               }]
