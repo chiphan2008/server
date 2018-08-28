@@ -218,7 +218,7 @@ router.route('/except-person/:id').get(function(req, res){
         })
 router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
-            Person.findOne({id:req.params.id}).exec(function(err, item){
+            ListFriend.findOne({id:req.params.id}).exec(function(err, item){
               //res.json({data:item})
               if(err || item===null){
                 res.json({code:200,data:[]})
