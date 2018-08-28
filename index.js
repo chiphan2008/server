@@ -264,15 +264,15 @@ router.route('/add-friend').post(function(req, res){
                   "friends" : {
                     friend_id:req.body.friend_id,
                     status:0,
-                    update_at: Data.now()
+                    update_at: Date.now()
                 }}
               },function(){ res.json({data:'Data updated'}) });
             }else {
                  let friends = [{
                     friend_id:req.body.friend_id,
                     status:0,
-                    update_at: Data.now(),
-                    create_at: Data.now()
+                    update_at: Date.now(),
+                    create_at: Date.now()
                   }]
                   var listfriend = new ListFriend();
                   listfriend.id= req.body.id;
