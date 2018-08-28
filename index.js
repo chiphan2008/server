@@ -253,14 +253,14 @@ router.route('/add-friend').post(function(req, res){
         Person.findOne({id:req.body.friend_id,"friends.friend_id":req.body.id}).exec(function(err, item){
           if(err || item===null){
             Person.findOne({id:req.body.id,"friends.friend_id":req.body.friend_id}).exec(function(error, el){
-
+              res.json({id:req.body.id,"friends.friend_id":req.body.friend_id})
               let conds;
               if(error || el===null){
                 conds = {id: req.body.id};
               }else {
                 conds = {id: parseInt(req.body.id),"friends.friend_id":req.body.friend_id};
               }
-              res.json({el:el,conds:conds})
+
               Person.update(conds,{
                 $addToSet : {
                   "friends" : {
