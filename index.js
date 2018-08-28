@@ -230,7 +230,7 @@ router.route('/list-friend/:id').get(function(req, res){
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate(
-              {$match: {id:req.params.id}},
+              [{$match: {id:req.params.id}},
               { $project: {
                   id:req.params.id,
                   friends: {
@@ -241,7 +241,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                         $eq: ["$$friend.status", req.params.status]
                       }
                   }}}
-              }
+              }]
             ).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
