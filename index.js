@@ -164,14 +164,12 @@ router.route('/person/add').post(function(req, res){
 //   });
 // })
 
-router.route('/history-chat/:id')
-        .get(function(req, res){
+router.route('/history-chat/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
             HistoryChat.find({user_id:req.params.id})
-            .limit(limiting).skip(skipping).sort('-_update_at')
-            .exec(function(err, data){
+            .limit(limiting).skip(skipping).sort('-_update_at').exec(function(err, data){
               res.json({data});
             });
           }else {
@@ -219,7 +217,6 @@ router.route('/except-person/:id').get(function(req, res){
 router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.findOne({id:req.params.id}).exec(function(err, item){
-              //res.json({data:item})
               if(err || item===null){
                 res.json({code:200,data:[]})
               }else {
@@ -265,13 +262,13 @@ router.route('/add-friend').post(function(req, res){
               {
                 $addToSet : {
                   "friends" : {
-                    user_id:req.body.user_id,
+                    friend_id:req.body.friend_id,
                     status:"request"
                 }}
               },function(){ res.json({data:'Data updated'}) });
             }else {
                  let friends = [{
-                    user_id:req.body.user_id,
+                    friend_id:req.body.friend_id,
                     status:"request",
                   }]
                   var listfriend = new ListFriend();
