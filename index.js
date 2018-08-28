@@ -259,10 +259,10 @@ router.route('/add-friend').post(function(req, res){
             //   }
             // },function(){ res.json({data:'Data updated'}) });
 
-            Person.updateOne({id: req.body.id,"friends.friend_id":req.body.friend_id},{
+            Person.update({id: parseInt(req.body.id),friends:{"friend_id":parseInt(req.body.friend_id)}},{
               $addToSet : {
                 "friends" : {
-                  friend_id:req.body.friend_id,
+                  friend_id:parseInt(req.body.friend_id),
                   status:"request",
                   update_at: Date.now(),
                   create_at: Date.now(),
