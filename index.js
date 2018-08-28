@@ -253,6 +253,7 @@ router.route('/add-friend').post(function(req, res){
         Person.findOne({id:req.body.friend_id,"friends.friend_id":req.body.id}).exec(function(err, item){
           if(err || item===null){
             Person.findOne({id:req.body.id,"friends.friend_id":req.body.friend_id}).exec(function(error, el){
+              res.json({el:el})
               let conds;
               if(error || el===null){
                 conds = {id: req.body.id};
