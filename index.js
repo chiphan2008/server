@@ -242,9 +242,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       res.json({code:200,data:[]})
                   }else {
                     let newArr = [];
-                    arr[0].friends.forEach(async (i)=>{
-                      await newArr.push(BaseController.findListFriend(i.friend_id));
-                    })
+                    // arr[0].friends.forEach(async (i)=>{
+                    //   await newArr.push(BaseController.findListFriend(i.friend_id));
+                    // })
                     res.json({data:newArr})
                   }
             });
