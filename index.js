@@ -268,7 +268,6 @@ router.route('/add-friend').post(function(req, res){
                   create_at: Date.now(),
               }}
             },function(err,rs){
-              res.json({rs:rs})
               res.json({data:'Data added'})
             });
           }else {
