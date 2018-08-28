@@ -255,14 +255,14 @@ router.route('/add-friend').post(function(req, res){
         Person.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           if(err || item===null){
             Person.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
-              res.json({id,"friends.friend_id":friend_id})
+
               let conds;
               if(error || el===null){
                 conds = {id};
               }else {
                 conds = {id,"friends.friend_id":friend_id};
               }
-
+              res.json({el:el,conds:conds})
               Person.update(conds,{
                 $addToSet : {
                   "friends" : {
