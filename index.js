@@ -273,8 +273,8 @@ router.route('/add-friend').post(function(req, res){
                   $set : {
                     "friends.$.friend_id":friend_id,
                     "friends.$.status":"request",
-                    "friends.$.update_at":Date.now(),,
-                    "friends.$.create_at":Date.now(),,
+                    "friends.$.update_at":Date.now(),
+                    "friends.$.create_at":Date.now(),
                   }
                 }
               }
