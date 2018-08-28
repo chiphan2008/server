@@ -228,14 +228,6 @@ router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             Person.aggregate([
               { $match : { id : parseInt(req.params.id) } },
-              {
-                $lookup: {
-                   from: "people",
-                   localField: "id",    // field in the orders collection
-                   foreignField: "id",  // field in the items collection
-                   as: "id"
-                }
-              },
               { $project: {
                   friends: {
                     $filter: {
@@ -249,7 +241,15 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    res.json({data:arr})
+
+                    let newArr=[];
+                    arr[0].friends.forEach(async (err, el)=>{
+                      await Person.findOne({id:el.friend_id}).exec(function(err, item){
+                        newArr.push(item);
+                      });
+                    });
+
+                    res.json({data:newArr})
                   }
             });
         }else {
