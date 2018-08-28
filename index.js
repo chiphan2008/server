@@ -267,7 +267,10 @@ router.route('/add-friend').post(function(req, res){
                   update_at: Date.now(),
                   create_at: Date.now(),
               }}
-            },function(){ res.json({data:'Data added'}) });
+            },function(err){
+              if(err) res.json({err:err})
+              res.json({data:'Data added'})
+            });
           }else {
             Person.update({id:req.body.id},{
               $addToSet : {
