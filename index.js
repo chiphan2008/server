@@ -253,9 +253,9 @@ router.route('/add-friend').post(function(req, res){
         const friend_id = parseInt(req.body.friend_id);
         if(parseInt(id)<0) res.json({error:"Cant not GET"});
         Person.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
-          if(err || item===null){
-            Person.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
-              let conds,setVal;
+          Person.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
+            let conds,setVal,addVal;
+              //I not added friend yet
               if(error || el===null){
                 conds = {id};
                 setVal = {
@@ -263,6 +263,15 @@ router.route('/add-friend').post(function(req, res){
                     "friends" : {
                       friend_id,
                       status:"request",
+                      update_at: Date.now(),
+                      create_at: Date.now()
+                  }}
+                };
+                addVal = {
+                  $addToSet : {
+                    "friends" : {
+                      friend_id,
+                      status:"accept",
                       update_at: Date.now(),
                       create_at: Date.now()
                   }}
@@ -276,29 +285,30 @@ router.route('/add-friend').post(function(req, res){
                     "friends.$.update_at":Date.now(),
                     "friends.$.create_at":Date.now()
                   }
-                }
+                };
+                addVal = {
+                  $set : {
+                    "friends.$.status":"accept",
+                    "friends.$.update_at":Date.now()
+                  }
+                };
+
               }
+            //friend not requested me yet
+            if(err || item===null){
               Person.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
-            })
+            }else {
+              Person.updateOne(conds,addVal);
+              Person.updateOne({id:friend_id,"friends.friend_id":id},{
+                $set : {
+                  "friends.$.status":"accept",
+                  "friends.$.update_at":Date.now()
+                }
+              },function(){ res.json({data:'Data updated'}) });
+            }
 
-          }else {
-            Person.updateOne({id,"friends.friend_id":friend_id},{
-              $set : {
-                "friends.$.friend_id":friend_id,
-                "friends.$.status":"accept",
-                "friends.$.update_at":Date.now()
-              }
-            });
-            Person.updateOne({id:friend_id,"friends.friend_id":id},{
-              $set : {
-                "friends.$.status":"accept",
-                "friends.$.update_at":Date.now()
-              }
-            },function(){ res.json({data:'Data updated'}) });
-          }
-        });
-
-
+          })
+      });
 })
 router.route('/unfriend').post(function(req, res){
           Person.updateOne({id: req.body.id} ,
