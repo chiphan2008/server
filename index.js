@@ -280,8 +280,10 @@ router.route('/add-friend').post(function(req, res){
                         update_at: Date.now()
                     }}
                   },function(){ res.json({data:'Data added'}) });
+                }else {
+                  res.json({data:'Data added'})
                 }
-                res.json({data:'Data added'})
+
               }
 
             });
