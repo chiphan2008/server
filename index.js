@@ -262,8 +262,8 @@ router.route('/add-friend').post(function(req, res){
               }else {
                 conds = {id,"friends.friend_id":friend_id};
               }
-              res.json({el:el,conds:conds})
-              Person.update(conds,{
+              //res.json({el:el,conds:conds})
+              Person.updateOne(conds,{
                 $addToSet : {
                   "friends" : {
                     friend_id,
