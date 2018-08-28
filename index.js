@@ -268,25 +268,7 @@ router.route('/add-friend').post(function(req, res){
                   create_at: Date.now(),
               }}
             },function(err,rs){
-              if(err){
-                res.json({err:err})
-              }else {
-                res.json({rs:rs})
-                if(rs.n===0 && rs.ok===1) {
-                  Person.update({id:req.body.id},{
-                    $addToSet : {
-                      "friends" : {
-                        friend_id:req.body.id,
-                        status:"request",
-                        update_at: Date.now()
-                    }}
-                  },function(){ res.json({data:'Data added'}) });
-                }else {
-                  res.json({data:'Data added'})
-                }
-
-              }
-
+              res.json({data:'Data added'})
             });
           }else {
             Person.update({id:req.body.id},{
