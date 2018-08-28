@@ -10,7 +10,7 @@ var Person = require('./app/models/person')
 var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
 var HistoryChat = require('./app/models/HistoryChat')
-//var BaseController = require('./app/controllers/BaseController')
+var BaseController = require('./app/controllers/BaseController')
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
 //const hostname = 'node.kingmap.vn';
@@ -241,9 +241,11 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    Person.find({id: { $elemMatch: { friend_id: arr[0].friends }} }).exec(function(err, item){
-                      res.json({data:item})
-                    });
+                    let newArr = [];
+                    arr[0].friends.forEach(async (i)=>{
+                      await newArr.push(BaseController.findListFriend(i.friend_id));
+                    })
+                    res.json({data:newArr})
                   }
             });
         }else {
