@@ -250,7 +250,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
 })
 router.route('/add-friend').post(function(req, res){
         if(parseInt(req.body.id)<0) res.json({error:"Cant not GET"});
-        Person.findOne({id:req.body.friend_id,friends:{"friend_id":req.params.id}}).exec(function(err, item){
+        Person.findOne({id:req.body.friend_id,"friends.friend_id":req.params.id}).exec(function(err, item){
           if(err || item===null){
             // Person.updateOne({id: req.body.id,"friends.friend_id":req.body.friend_id} ,
             // {
@@ -259,7 +259,7 @@ router.route('/add-friend').post(function(req, res){
             //   }
             // },function(){ res.json({data:'Data updated'}) });
 
-            Person.update({id: parseInt(req.body.id)},{
+            Person.update({id: parseInt(req.body.id),"friends.friend_id":req.body.friend_id},{
               $addToSet : {
                 "friends" : {
                   friend_id:parseInt(req.body.friend_id),
