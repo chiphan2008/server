@@ -241,12 +241,14 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    const newData = arr[0].friends;
-                    Person.aggregate([
-                      { $match : { id : parseInt(req.params.id) } }
-                    ]).exec(function(err, item){
-                      res.json({data:item})
+                    //const newData = arr[0].friends;
+                    var newData = arr[0].friends.map(function(item){
+                        return item.friend_id;
                     });
+                    Person.find({ id : { $in: newData } }).exec(function(err, item){
+                      res.json({data:item})
+                    });;
+
                   }
             });
         }else {
