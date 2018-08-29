@@ -9,7 +9,7 @@ var PersonShema = new Schema({
   phone:String,
   active:{ type: Number, default: 1 },
   online_at:{ type: Date, default: Date.now() },
-  offline_at:{ type: Date },
+  offline_at:{ type: Date, default: Date.now() },
   create_at:{ type: Date, default: Date.now() }
 });
 

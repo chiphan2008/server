@@ -105,15 +105,12 @@ router.route('/person/inactive').post(function(req, res){
           });
 })
 router.route('/person/offline').post(function(req, res){
-          Person.updateOne(
-            {id: req.body.id },
-            {
-               $set: {
-                 "offline_at": Date.now()
-               }
+          Person.updateOne({id: req.body.id },
+           {
+               $set: {"offline_at": Date.now()}
            }, function() {
                res.json({code:200,message:'Update successfully!'})
-          });
+           });
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
@@ -125,6 +122,7 @@ router.route('/person/update').post(function(req, res){
                  "email": req.body.email,
                  "phone": req.body.phone,
                  "active": 1,
+                 "offline_at": Date.now(),
                  "online_at": Date.now()
                }
            }, function() {
@@ -325,7 +323,7 @@ router.route('/add-friend').post(function(req, res){
                 ListFriend.updateOne({id},{
                   $addToSet : {
                     "friends" : {
-                      friend_id:id,
+                      friend_id,
                       status:"waiting",
                       update_at: Date.now(),
                       create_at: Date.now()
