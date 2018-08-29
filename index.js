@@ -249,7 +249,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                     var newData = arr[0].friends.map(function(item){
                         return item.friend_id;
                     });
-                    ListFriend.find({ id : { $in: newData } }).exec(function(err, item){
+                    Person.find({ id : { $in: newData } }).exec(function(err, item){
                       res.json({data:item})
                     });
 
