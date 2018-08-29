@@ -128,7 +128,17 @@ router.route('/person/update').post(function(req, res){
                  "online_at": Date.now()
                }
            }, function() {
-               res.json({code:200,message:'Update successfully!'})
+             ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+               if(err || item===null){
+                 let listfriend = new ListFriend();
+                 listfriend.id=req.body.id;
+                 listfriend.friends=[];
+                 listfriend.save();
+               }else {
+                 res.json({code:200,message:'Update successfully!'})
+               }
+             });
+
            });
 })
 
@@ -152,7 +162,6 @@ router.route('/person/add').post(function(req, res){
                     listfriend.id=req.body.id;
                     listfriend.friends=[];
                     listfriend.save();
-                  }else {
                     res.json({code:200,message:'Data inserted successfully!'})
                   }
                 });
