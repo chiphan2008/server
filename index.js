@@ -266,13 +266,13 @@ router.route('/add-friend').post(function(req, res){
         ListFriend.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
             let conds,setVal,addVal;
-              //I not inserted friend yet
-              if(err || item===null){
-                conds = {id};
+              //I not inserte friend yet
+              if(error || el===null){
+                conds = {id:friend_id};
                 setVal = {
                   $addToSet : {
                     "friends" : {
-                      friend_id,
+                      friend_id:id,
                       status:"request",
                       update_at: Date.now(),
                       create_at: Date.now()
@@ -281,17 +281,17 @@ router.route('/add-friend').post(function(req, res){
                 addVal = {
                   $addToSet : {
                     "friends" : {
-                      friend_id,
+                      friend_id:id,
                       status:"accept",
                       update_at: Date.now(),
                       create_at: Date.now()
                   }}
                 }
               }else {
-                conds = {id,"friends.friend_id":friend_id};
+                conds = {id:friend_id,"friends.friend_id":id};
                 setVal = {
                   $set : {
-                    "friends.$.friend_id":friend_id,
+                    "friends.$.friend_id":id,
                     "friends.$.status":"request",
                     "friends.$.update_at":Date.now(),
                     "friends.$.create_at":Date.now()
@@ -306,11 +306,11 @@ router.route('/add-friend').post(function(req, res){
 
               }
             //friend not requested me yet
-            if(error || el===null){
+            if(err || item===null){
               ListFriend.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
             }else {
               ListFriend.updateOne(conds,addVal,function(){
-                ListFriend.updateOne({id:friend_id,"friends.friend_id":id},{
+                ListFriend.updateOne({id,"friends.friend_id":friend_id},{
                   $set : {
                     "friends.$.status":"accept",
                     "friends.$.update_at":Date.now()
