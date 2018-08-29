@@ -146,7 +146,17 @@ router.route('/person/add').post(function(req, res){
                 if(err){
                    res.json({error:err})
                 }
-                 res.json({code:200,message:'Data inserted successfully!'})
+                ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+                  if(err || item===null){
+                    let listfriend = new ListFriend();
+                    listfriend.id=req.body.id;
+                    listfriend.friends=[];
+                    listfriend.save();
+                  }else {
+                    res.json({code:200,message:'Data inserted successfully!'})
+                  }
+                });
+
               })
             }else {
               res.json({code:200,message:'User existing!'})
@@ -307,7 +317,14 @@ router.route('/add-friend').post(function(req, res){
               }
             //friend not requested me yet
             if(error || el===null){
-              ListFriend.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
+              ListFriend.updateOne(conds,setVal,function(err,rs){
+                ListFriend.updateOne({id,"friends.friend_id":friend_id},{
+                  $set : {
+                    "friends.$.status":"waiting",
+                    "friends.$.update_at":Date.now()
+                  }
+                },function(){ res.json({data:el}) });
+              });
             }else {
               ListFriend.updateOne(conds,addVal,function(){
                 ListFriend.updateOne({id,"friends.friend_id":friend_id},{
@@ -315,7 +332,7 @@ router.route('/add-friend').post(function(req, res){
                     "friends.$.status":"accept",
                     "friends.$.update_at":Date.now()
                   }
-                },function(){ res.json({data:'Data updated'}) });
+                },function(){ res.json({data:el}) });
               });
 
            }
