@@ -262,12 +262,12 @@ router.route('/list-friend/:id/:status').get(function(req, res){
 router.route('/add-friend').post(function(req, res){
         const id = parseInt(req.body.id);
         const friend_id = parseInt(req.body.friend_id);
-        if(parseInt(id)<0) res.json({error:"Cant not GET"});
+        if(id<0) res.json({error:"Cant not GET"});
         ListFriend.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
             let conds,setVal,addVal;
-              //I not added friend yet
-              if(error || el===null){
+              //I not inserted friend yet
+              if(err || item===null){
                 conds = {id};
                 setVal = {
                   $addToSet : {
@@ -306,7 +306,7 @@ router.route('/add-friend').post(function(req, res){
 
               }
             //friend not requested me yet
-            if(err || item===null){
+            if(error || el===null){
               ListFriend.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
             }else {
               ListFriend.updateOne(conds,addVal,function(){
