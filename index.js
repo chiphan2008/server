@@ -260,7 +260,8 @@ router.route('/list-friend/:id/:status').get(function(req, res){
         }
 })
 router.route('/add-friend').post(function(req, res){
-        const id,friend_id = parseInt(req.body.id),parseInt(req.body.friend_id);
+        const id = parseInt(req.body.id);
+        const friend_id = parseInt(req.body.friend_id);
         if(parseInt(id)<0) res.json({error:"Cant not GET"});
         ListFriend.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
@@ -323,14 +324,15 @@ router.route('/add-friend').post(function(req, res){
       });
 })
 router.route('/unfriend').post(function(req, res){
-        const id,friend_id = parseInt(req.body.id),parseInt(req.body.friend_id);
+        const id = parseInt(req.body.id);
+        const friend_id = parseInt(req.body.friend_id);
         ListFriend.updateOne({id} ,
         {
           $pull : {
             "friends" : {friend_id}
           }
         },function(){
-          ListFriend.updateOne({id:friend_id} ,
+          ListFriend.updateOne({id: friend_id} ,
           {
             $pull : {
               "friends" : {friend_id:id}
