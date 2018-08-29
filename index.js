@@ -331,8 +331,9 @@ router.route('/add-friend').post(function(req, res){
                 },function(){ res.json({data:el}) });
               });
             }else {
-              res.json({item:item,el:el})
-              if(item.status==='waiting'){
+              //res.json({item:item,el:el})
+              const index = item.friends.findIndex(e => e.friend_id==id)
+              if(item.friends[index].status==='waiting'){
                 ListFriend.updateOne(conds,addVal,function(){
                   ListFriend.updateOne({id,"friends.friend_id":friend_id},{
                     $set : {
