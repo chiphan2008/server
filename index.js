@@ -214,7 +214,12 @@ router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.findOne({id:req.params.id}).exec(function(err, item){
               if(err || item===null){
-                res.json({code:200,data:[]})
+                let listfriend = new ListFriend();
+                listfriend.id=req.params.id;
+                listfriend.friends=[];
+                listfriend.save(function(){
+                  res.json({data:[]})
+                });
               }else {
                 res.json({data:item.friends})
               }
