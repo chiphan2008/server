@@ -267,7 +267,7 @@ router.route('/add-friend').post(function(req, res){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
             let conds,setVal,addVal;
               //I not inserte friend yet
-              if(error || el===null){
+              if(err || item===null){
                 conds = {id:friend_id};
                 setVal = {
                   $addToSet : {
@@ -306,7 +306,7 @@ router.route('/add-friend').post(function(req, res){
 
               }
             //friend not requested me yet
-            if(err || item===null){
+            if(error || el===null){
               ListFriend.updateOne(conds,setVal,function(err,rs){ res.json({data:'Data added'})});
             }else {
               ListFriend.updateOne(conds,addVal,function(){
