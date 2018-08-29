@@ -224,12 +224,7 @@ router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.findOne({id:req.params.id}).exec(function(err, item){
               if(err || item===null){
-                let listfriend = new ListFriend();
-                listfriend.id=req.params.id;
-                listfriend.friends=[];
-                listfriend.save(function(){
-                  res.json({data:[]})
-                });
+                res.json({data:[]})
               }else {
                 res.json({data:item.friends})
               }
@@ -319,21 +314,26 @@ router.route('/add-friend').post(function(req, res){
             if(error || el===null){
               ListFriend.updateOne(conds,setVal,function(err,rs){
                 ListFriend.updateOne({id,"friends.friend_id":friend_id},{
-                  $set : {
-                    "friends.$.status":"waiting",
-                    "friends.$.update_at":Date.now()
-                  }
+                  $addToSet : {
+                    "friends" : {
+                      friend_id:id,
+                      status:"waiting",
+                      update_at: Date.now(),
+                      create_at: Date.now()
+                  }}
                 },function(){ res.json({data:el}) });
               });
             }else {
-              ListFriend.updateOne(conds,addVal,function(){
-                ListFriend.updateOne({id,"friends.friend_id":friend_id},{
-                  $set : {
-                    "friends.$.status":"accept",
-                    "friends.$.update_at":Date.now()
-                  }
-                },function(){ res.json({data:el}) });
-              });
+              if(item.status==='waiting'){
+                ListFriend.updateOne(conds,addVal,function(){
+                  ListFriend.updateOne({id,"friends.friend_id":friend_id},{
+                    $set : {
+                      "friends.$.status":"accept",
+                      "friends.$.update_at":Date.now()
+                    }
+                  },function(){ res.json({data:el}) });
+                });
+              }
 
            }
 
