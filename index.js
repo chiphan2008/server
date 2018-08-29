@@ -313,7 +313,7 @@ router.route('/add-friend').post(function(req, res){
             //friend not requested me yet
             if(error || el===null){
               ListFriend.updateOne(conds,setVal,function(err,rs){
-                ListFriend.updateOne({id,"friends.friend_id":friend_id},{
+                ListFriend.updateOne({id},{
                   $addToSet : {
                     "friends" : {
                       friend_id:id,
