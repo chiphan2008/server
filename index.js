@@ -241,7 +241,10 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    Person.find({id: { $elemMatch: { friend_id: arr[0].friends }} }).exec(function(err, item){
+                    const newData = arr[0].friends;
+                    Person.aggregate([
+                      { $match : { id : parseInt(req.params.id) } }
+                    ]).exec(function(err, item){
                       res.json({data:item})
                     });
                   }
