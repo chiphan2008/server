@@ -255,13 +255,13 @@ router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
               { $match : { id : parseInt(req.params.id) } },
-              {$lookup: {
-                  from: "people",
-                  localField: "id",
-                  foreignField: "id",
-                  as:"person"
-                }
-              },
+              // {$lookup: {
+              //     from: "people",
+              //     localField: "id",
+              //     foreignField: "id",
+              //     as:"person"
+              //   }
+              // },
               { $project: {
                   friends_id:"$friends.friend_id",
                   urlhinh:"$person.urlhinh",
