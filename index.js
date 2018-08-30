@@ -43,8 +43,9 @@ io.on('connection',function(socket){
       conversation.save(function(err) {
         console.log('err',err);
       });
-      let newData = Object.assign(data,{create_at: new Date(1000* create_at)})
-      io.sockets.emit('replyMessage-'+port, data:newData);
+      const dateNow = new Date(1000* create_at);
+      data = Object.assign(data,{create_at: dateNow})
+      io.sockets.emit('replyMessage-'+port, data);
     }
     //console.log(data);
     // if(data.notification!==undefined){
