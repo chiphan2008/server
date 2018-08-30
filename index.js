@@ -32,38 +32,39 @@ io.on('connection',function(socket){
   });
   // handle send message
   socket.on('sendMessage',function(port,data){
-    //console.log(data);
-    if(data.notification!==undefined){
-      io.sockets.emit('replyMessage-'+port, data);
-    }else{
-      if(data.group===undefined){
-        Conversation.find({group:port},function(err,item){
-          if(item.length===0){
-            //dont send message yet
-            io.sockets.emit('replyMessage-'+port, data);
-          }else {
-            //had even send message and send history chat
-            io.sockets.emit('replyMessage-'+port, item);
-          }
-        });
-      }else {
-        //chatting...
-        if(data.message.trim()!==''){
-          var conversation = new Conversation();
-          const create_at = Date.now();
-          conversation.group= data.group;
-          conversation.user_id= data.user_id;
-          conversation.message= data.message;
-          conversation.create_at= create_at;
-          conversation.save(function(err) {
-            console.log('err',err);
-          });
-          let newData = Object.assign(data,{create_at})
-          io.sockets.emit('replyMessage-'+port, data);
-        }
-
-      }
+    //chatting...
+    if(data.message.trim()!=='' && data.group!==undefined){
+      var conversation = new Conversation();
+      const create_at = Date.now();
+      conversation.group= data.group;
+      conversation.user_id= data.user_id;
+      conversation.message= data.message;
+      conversation.create_at= create_at;
+      conversation.save(function(err) {
+        console.log('err',err);
+      });
+      let newData = Object.assign(data,{create_at: new Date(1000* create_at)})
+      io.sockets.emit('replyMessage-'+port, data:newData);
     }
+    //console.log(data);
+    // if(data.notification!==undefined){
+    //   io.sockets.emit('replyMessage-'+port, data);
+    // }else{
+    //   if(data.group===undefined){
+    //     Conversation.find({group:port},function(err,item){
+    //       if(item.length===0){
+    //         //dont send message yet
+    //         io.sockets.emit('replyMessage-'+port, data);
+    //       }else {
+    //         //had even send message and send history chat
+    //         io.sockets.emit('replyMessage-'+port, item);
+    //       }
+    //     });
+    //   }else {
+    //
+    //
+    //   }
+    // }
 
   })
 })
