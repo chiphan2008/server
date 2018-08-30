@@ -254,13 +254,21 @@ router.route('/list-friend/:id').get(function(req, res){
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
-              {
+              { $match : { id : parseInt(req.params.id) } },
+              { $project: {
+                  friends: {
+                    $filter: {
+                      input: "$friends",
+                      as: "friend",
+                      cond: {$eq: ['$$friend.status', req.params.status]}
+                  }}}
+              },{
                 $lookup:
                   {
                     from: "people",
                     localField: "id",
                     foreignField: "id",
-                    as: "list_friend"
+                    as: "friends"
                   }
              }
             ]).exec(function(err, item){
