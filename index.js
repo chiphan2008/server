@@ -273,8 +273,10 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                         return item.friend_id;
                     });
                     Person.aggregate([
-                      { $match : { id : { $in: newData } } }
-
+                      { $match : { id : { $in: newData } } },
+                      { $project: {
+                          friends: newData}
+                      }
                     ]).exec(function(err, item){
                       res.json({data:item})
                     });
