@@ -50,14 +50,15 @@ io.on('connection',function(socket){
         //chatting...
         if(data.message.trim()!==''){
           var conversation = new Conversation();
-          //conversation = data;
+          const create_at = Date.now();
           conversation.group= data.group;
           conversation.user_id= data.user_id;
           conversation.message= data.message;
+          conversation.create_at= create_at;
           conversation.save(function(err) {
             console.log('err',err);
           });
-          let newData = Object.assign(data,{create_at:Date.now()})
+          let newData = Object.assign(data,{create_at})
           io.sockets.emit('replyMessage-'+port, data);
         }
 
@@ -113,6 +114,7 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
+          const dateNow =Date.now();
           Person.updateOne({id: req.body.id },
             {
                $set: {
@@ -121,8 +123,8 @@ router.route('/person/update').post(function(req, res){
                  "email": req.body.email,
                  "phone": req.body.phone,
                  "active": 1,
-                 "offline_at": Date.now(),
-                 "online_at": Date.now()
+                 "offline_at": dateNow,
+                 "online_at": dateNow
                }
            }, function() {
              ListFriend.findOne({id:req.body.id}).exec(function(err, item){
@@ -143,12 +145,17 @@ router.route('/person/update').post(function(req, res){
 router.route('/person/add').post(function(req, res){
           Person.find({id:req.body.id}).exec(function(err, data){
             if(data.length===0){
+              const dateNow =Date.now();
               var person = new Person();
               person.id = req.body.id;
               person.name = req.body.name;
               person.urlhinh = req.body.urlhinh;
               person.email = req.body.email;
               person.phone = req.body.phone;
+              person.online_at = dateNow;
+              person.offline_at = dateNow;
+              person.create_at = dateNow;
+
               person.save(function(err){
                 if(err){
                    res.json({error:err})
@@ -190,22 +197,25 @@ router.route('/history-chat/:id').get(function(req, res){
         })
         .post(function(req, res){
             HistoryChat.find({user_id:req.params.id,friend_id:req.body.friend_id},function(err,item){
+              const dateNow =Date.now();
               if(item.length>0){
                 HistoryChat.updateOne({friend_id: req.body.friend_id },
                   {
                      $set: {
                        "last_message":req.body.last_message,
-                       "update_at": Date.now()
+                       "update_at": dateNow
                      }
                   }, function() {
                      res.json({code:200,message:'Update successfully!'})
                   });
               }else {
+
                   var historychat = new HistoryChat();
                   historychat.user_id= req.params.id;
                   historychat.friend_id= req.body.friend_id;
                   historychat.last_message= req.body.last_message;
-                  historychat.update_at= Date.now();
+                  historychat.update_at= dateNow;
+                  historychat.create_at= dateNow;
                   historychat.save(function(err) {
                     res.json({code:200,message:'Data inserted successful!'})
                   });
@@ -278,6 +288,7 @@ router.route('/add-friend').post(function(req, res){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
             let conds,setVal,addVal;
               //I not inserte friend yet
+              const dateNow = Date.now();
               if(err || item===null){
                 conds = {id:friend_id};
                 setVal = {
@@ -285,8 +296,8 @@ router.route('/add-friend').post(function(req, res){
                     "friends" : {
                       friend_id:id,
                       status:"request",
-                      update_at: Date.now(),
-                      create_at: Date.now()
+                      update_at: dateNow,
+                      create_at: dateNow
                   }}
                 };
                 addVal = {
@@ -294,8 +305,8 @@ router.route('/add-friend').post(function(req, res){
                     "friends" : {
                       friend_id:id,
                       status:"accept",
-                      update_at: Date.now(),
-                      create_at: Date.now()
+                      update_at: dateNow,
+                      create_at: dateNow
                   }}
                 }
               }else {
@@ -304,14 +315,14 @@ router.route('/add-friend').post(function(req, res){
                   $set : {
                     "friends.$.friend_id":id,
                     "friends.$.status":"request",
-                    "friends.$.update_at":Date.now(),
-                    "friends.$.create_at":Date.now()
+                    "friends.$.update_at":dateNow,
+                    "friends.$.create_at":dateNow
                   }
                 };
                 addVal = {
                   $set : {
                     "friends.$.status":"accept",
-                    "friends.$.update_at":Date.now()
+                    "friends.$.update_at":dateNow
                   }
                 };
 
@@ -324,8 +335,8 @@ router.route('/add-friend').post(function(req, res){
                     "friends" : {
                       friend_id,
                       status:"waiting",
-                      update_at: Date.now(),
-                      create_at: Date.now()
+                      update_at: dateNow,
+                      create_at: dateNow
                   }}
                 },function(){ res.json({data:el}) });
               });
@@ -337,7 +348,7 @@ router.route('/add-friend').post(function(req, res){
                   ListFriend.updateOne({id,"friends.friend_id":friend_id},{
                     $set : {
                       "friends.$.status":"accept",
-                      "friends.$.update_at":Date.now()
+                      "friends.$.update_at":dateNow
                     }
                   },function(){ res.json({data:el}) });
                 });

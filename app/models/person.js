@@ -8,9 +8,9 @@ var PersonShema = new Schema({
   email:String,
   phone:String,
   active:{ type: Number, default: 1 },
-  online_at:{ type: Date, default: Date.now() },
-  offline_at:{ type: Date, default: Date.now() },
-  create_at:{ type: Date, default: Date.now() }
+  online_at:Date,
+  offline_at:Date,
+  create_at:Date
 });
 
 module.exports = mongoose.model('Person',PersonShema);

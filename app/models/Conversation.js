@@ -6,7 +6,7 @@ var ConversationShema = new Schema({
   user_id:Number,
   message:String,
   watched:{ type: Number, default: 1 },
-  create_at:{ type: Date, default: Date.now() }
+  create_at:Date
 });
 
 module.exports = mongoose.model('Conversation',ConversationShema);

@@ -6,7 +6,7 @@ var HistoryChatShema = new Schema({
   friend_id:Number,
   last_message:String,
   update_at:Date,
-  create_at:{ type: Date, default: Date.now() }
+  create_at:Date
 });
 
 module.exports = mongoose.model('HistoryChat',HistoryChatShema);
