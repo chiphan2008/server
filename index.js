@@ -266,9 +266,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                 $lookup:
                   {
                     from: "people",
-                    localField: "id",
+                    localField: "$$friend.friend_id",
                     foreignField: "id",
-                    as: "friends"
+                    as: "list_friend"
                   }
              }
             ]).exec(function(err, item){
