@@ -262,6 +262,10 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       as: "friend",
                       cond: {$eq: ['$$friend.status', req.params.status]}
                   }}}
+              },{
+                $addFields: {
+                  _id : "friend_id"
+                }
               }
             ]).exec(function(err, arr){
                   if(arr===null || err){
