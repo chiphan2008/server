@@ -264,7 +264,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }}}
               },{
                 $addFields: {
-                  friend_id : "$friends.friend_id"
+                  friends_id : "$friends.friend_id"
                 }
               }
             ]).exec(function(err, arr){
@@ -273,12 +273,12 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       res.json({code:200,data:[]})
                   }else {
                     //const newData = arr[0].friends;
-                    res.json({data:arr})
+                    //res.json({data:arr})
                     var newData = arr[0].friends.map(function(item){
                         return item.friend_id;
                     });
 
-                    Person.find({ id : { $in: newData } }).exec(function(err, item){
+                    Person.find({ id : { $in: arr[0].friends_id } }).exec(function(err, item){
                       res.json({data:item})
                     });
 
