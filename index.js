@@ -254,15 +254,7 @@ router.route('/list-friend/:id').get(function(req, res){
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
-              {
-                $lookup:
-                  {
-                    from: "people",
-                    localField: "$$friend.friend_id",
-                    foreignField: "id",
-                    as: "list_friend"
-                  }
-             },
+              { $match : { id : parseInt(req.params.id) } },
               { $project: {
                   friends: {
                     $filter: {
@@ -271,35 +263,22 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       cond: {$eq: ['$$friend.status', req.params.status]}
                   }}}
               }
-            ]).exec(function(err, item){
-              res.json({data:item})
+            ]).exec(function(err, arr){
+                  if(arr===null || err){
+                      if(err) res.json(err)
+                      res.json({code:200,data:[]})
+                  }else {
+                    //const newData = arr[0].friends;
+                    var newData = arr[0].friends.map(function(item){
+                        return item.friend_id;
+                    });
+
+                    Person.find({ id : { $in: newData } }).exec(function(err, item){
+                      res.json({data:item})
+                    });
+
+                  }
             });
-            // ListFriend.aggregate([
-            //   { $match : { id : parseInt(req.params.id) } },
-            //   { $project: {
-            //       friends: {
-            //         $filter: {
-            //           input: "$friends",
-            //           as: "friend",
-            //           cond: {$eq: ['$$friend.status', req.params.status]}
-            //       }}}
-            //   }
-            // ]).exec(function(err, arr){
-            //       if(arr===null || err){
-            //           if(err) res.json(err)
-            //           res.json({code:200,data:[]})
-            //       }else {
-            //         //const newData = arr[0].friends;
-            //         var newData = arr[0].friends.map(function(item){
-            //             return item.friend_id;
-            //         });
-            //
-            //         Person.find({ id : { $in: newData } }).exec(function(err, item){
-            //           res.json({data:item})
-            //         });
-            //
-            //       }
-            // });
         }else {
           res.json({error:"Cant not GET"})
         }
