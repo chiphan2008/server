@@ -271,7 +271,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       cond: {$eq: ['$$friend.status', req.params.status]}
                   }}}
               },{
-                $addFields:"$friends.friend_id"
+                $addFields:{friends_id:"$friends.friend_id"}
               }
             ]).exec(function(err, arr){
                   if(arr===null || err){
