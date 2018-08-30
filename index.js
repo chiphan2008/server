@@ -263,7 +263,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                 }
               },
               { $project: {
-                  id:"$person.id",
+                  friends_id:"$person.id",
                   urlhinh:"$person.urlhinh",
                   name:"$person.name",
                   friends: {
@@ -278,7 +278,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    res.json({data:arr})
+                    //res.json({data:arr})
                     // const newData = arr[0].friends;
                     //
                     // //res.json({data:arr})
@@ -286,9 +286,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                     //     return item.friend_id;
                     // });
 
-                    // Person.find({ id : { $in: arr[0].friends_id } }).exec(function(err, item){
-                    //   res.json({data:item})
-                    // });
+                    Person.find({ id : { $in: arr[0].friends_id } }).exec(function(err, item){
+                      res.json({data:item})
+                    });
 
                   }
             });
