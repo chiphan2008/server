@@ -367,10 +367,13 @@ router.route('/unfriend').post(function(req, res){
         });
 })
 
-router.route('/conversation/:group')
-        .get(function(req, res){
-          Conversation.find({group:req.params.group},function(err, data){
-            if(err) res.json({error:"Cant not GET"})
-            res.json({data})
-          });
-        })
+router.route('/conversation/:group').get(function(req, res){
+    var skipping = parseInt(req.query.skip) || 0;
+    var limiting = parseInt(req.query.limit) || 0;
+    Conversation.find({group:req.params.group})
+    .limit(limiting).skip(skipping).sort('-_create_at')
+    .exec(function(err, data){
+      if(err) res.json({error:"Cant not GET"})
+      res.json({data})
+    });
+})
