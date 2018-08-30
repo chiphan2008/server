@@ -277,7 +277,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       { $match : { id : { $in: arr[0].friends_id } }},
                       { $project: {
                           name : "$name",
-                          friend_id: "$newData.friend_id"
+                          friend_id: "newData.$friend_id"
                         }
                       }
                     ]).exec(function(err, item){
