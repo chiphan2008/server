@@ -263,6 +263,8 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                 }
               },
               { $project: {
+                  id:"$person.id",
+                  urlhinh:"$person.urlhinh",
                   name:"$person.name",
                   friends: {
                     $filter: {
