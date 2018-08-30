@@ -278,7 +278,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    res.json({data:arr[0].friends_id})
+                    //res.json({data:arr[0].friends_id})
                     // const newData = arr[0].friends;
                     //
                     // //res.json({data:arr})
