@@ -263,7 +263,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                 }
               },
               { $project: {
-                  person:"$name"
+                  status:"$friends.status"
                   friends: {
                     $filter: {
                       input: "$friends",
