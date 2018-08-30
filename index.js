@@ -264,7 +264,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }}}
               },{
                 $addFields: {
-                  _id : "friend_id"
+                  friend_id : "$friend_id"
                 }
               }
             ]).exec(function(err, arr){
