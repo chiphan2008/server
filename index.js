@@ -23,10 +23,6 @@ var io = require('socket.io').listen(server, {secure: true,pingTimeout: 30000});
 server.listen(port);
 
 mongoose.connect('mongodb://localhost:27017/chat');
-//server.setSecure(credentials);
-// server.listen(port, hostname, () => {
-//   console.log(`Server running at https://${hostname}:${port}/`);
-// });
 
 io.on('connection',function(socket){
   //show handleEnterText
@@ -52,14 +48,16 @@ io.on('connection',function(socket){
         });
       }else {
         //chatting...
-        var conversation = new Conversation();
-        //conversation = data;
-        conversation.group= data.group;
-        conversation.user_id= data.user_id;
-        conversation.message= data.message;
-        conversation.save(function(err) {
-          console.log('err',err);
-        });
+        if(data.message.trim()!==''){
+          var conversation = new Conversation();
+          //conversation = data;
+          conversation.group= data.group;
+          conversation.user_id= data.user_id;
+          conversation.message= data.message;
+          conversation.save(function(err) {
+            console.log('err',err);
+          });
+        }
 
         io.sockets.emit('replyMessage-'+port, data);
       }
