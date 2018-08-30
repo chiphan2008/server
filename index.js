@@ -254,18 +254,15 @@ router.route('/list-friend/:id').get(function(req, res){
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
-               {
-                  $unwind: "$friends.friend_id"
-               },
-               {
-                  $lookup:
-                     {
-                        from: "people",
-                        localField: "friends",
-                        foreignField: "id",
-                        as: "list_friends"
-                    }
-               }
+              {
+                $lookup:
+                  {
+                    from: "people",
+                    localField: "id",
+                    foreignField: "id",
+                    as: "list_friend"
+                  }
+             }
             ]).exec(function(err, item){
               res.json({data:item})
             });
