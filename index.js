@@ -272,9 +272,15 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                     var newData = arr[0].friends.map(function(item){
                         return item.friend_id;
                     });
-                    Person.find({ id : { $in: newData } }).exec(function(err, item){
+                    Person.aggregate([
+                      { $match : { id : { $in: newData } } }
+
+                    ]).exec(function(err, item){
                       res.json({data:item})
                     });
+                    // Person.find({ id : { $in: newData } }).exec(function(err, item){
+                    //   res.json({data:item})
+                    // });
 
                   }
             });
