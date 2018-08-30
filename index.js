@@ -254,7 +254,14 @@ router.route('/list-friend/:id').get(function(req, res){
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
-              { $match : { id : parseInt(req.params.id) } },
+              //{ $match : { id : parseInt(req.params.id) } },
+              {$lookup: {
+                  from: "people",
+                  localField: "id",
+                  foreignField: "id",
+                  as: "person"
+                }
+              },
               { $project: {
                   friends: {
                     $filter: {
@@ -262,29 +269,16 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       as: "friend",
                       cond: {$eq: ['$$friend.status', req.params.status]}
                   }}}
-              },{
-                $addFields: {
-                  friends_id : "$friends.friend_id"
-                }
               }
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    const newData = arr[0].friends;
-                    Person.aggregate([
-                      { $match : { id : { $in: arr[0].friends_id } }},
-                      { $project: {
-                          name : "$name",
-                          friend_id: newData.friend_id
-                        }
-                      }
-                    ]).exec(function(err, item){
-                      res.json({data:item})
-                    });
-
-                    //res.json({data:arr})
+                    res.json({data:arr})
+                    // const newData = arr[0].friends;
+                    //
+                    // //res.json({data:arr})
                     // var newData = arr[0].friends.map(function(item){
                     //     return item.friend_id;
                     // });
