@@ -57,9 +57,10 @@ io.on('connection',function(socket){
           conversation.save(function(err) {
             console.log('err',err);
           });
+          let newData = Object.assign(data,{create_at:Date.now()})
+          io.sockets.emit('replyMessage-'+port, data);
         }
 
-        io.sockets.emit('replyMessage-'+port, data);
       }
     }
 

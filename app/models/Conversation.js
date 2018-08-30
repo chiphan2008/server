@@ -5,6 +5,7 @@ var ConversationShema = new Schema({
   group:String,
   user_id:Number,
   message:String,
+  watched:{ type: Number, default: 1 },
   create_at:{ type: Date, default: Date.now() }
 });
 
