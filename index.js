@@ -258,11 +258,12 @@ router.route('/list-friend/:id/:status').get(function(req, res){
               {$lookup: {
                   from: "people",
                   localField: "id",
-                  foreignField: "id"
+                  foreignField: "id",
+                  as:"person"
                 }
               },
               { $project: {
-                  status:"$friends.status"
+                  person:"$person"
                   friends: {
                     $filter: {
                       input: "$friends",
