@@ -260,14 +260,11 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                {
                   $lookup:
                      {
-                        from: "Person",
-                        localField: "friends",
+                        from: "people",
+                        localField: "friends.$.friend_id",
                         foreignField: "id",
                         as: "list_friends"
                     }
-               },
-               {
-                  $match: { "list_friends": { $ne: [] } }
                }
             ]).exec(function(err, item){
               res.json({data:item})
