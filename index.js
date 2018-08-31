@@ -217,9 +217,10 @@ router.route('/history-chat/:id').get(function(req, res){
           }
         })
 router.route('/add-history').post(function(req,res){
-      if(req.body.id>0){
-        const {friend_id,id,message} = req.body;
-        res.json({friend_id,id,message})
+      const id = parseInt(req.body.id);
+      const friend_id = parseInt(req.body.friend_id);
+      const {message} = req.body;
+      if(id>0){
         const dateNow = new Date();
         HistoryChat.findOne({id,"history.friend_id":friend_id}).exec(function(err, item){
           let mycond,friendcond,myVal,friendVal;
