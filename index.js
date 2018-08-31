@@ -309,16 +309,6 @@ router.route('/history-chat/:id').get(function(req, res){
                       initialValue: '',
                       in: { $concat: [ "$$value", "$$this" ] }
                   }},
-                  email:{ $reduce: {
-                      input: "$profile.email",
-                      initialValue: '',
-                      in: { $concat: [ "$$value", "$$this" ] }
-                  }},
-                  phone:{ $reduce: {
-                      input: "$profile.phone",
-                      initialValue: '',
-                      in: { $concat: [ "$$value", "$$this" ] }
-                  }},
                   last_message:"$history.last_message",
                   update_at:"$history.create_at"
                 }
