@@ -323,8 +323,9 @@ router.route('/history-chat/:id').get(function(req, res){
                   update_at:"$history.create_at"
                 }
               }
-
-            ]).exec(function(err, arr){
+            ])
+            .limit(limiting).skip(skipping).sort('-_update_at')
+            .exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
