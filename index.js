@@ -244,19 +244,19 @@ router.route('/add-history').post(function(req,res){
             mycond = {id,"history.friend_id":friend_id };
             friendcond = {id:friend_id,"history.friend_id":id };
             myVal = { $set: {
-                 "last_message":message,
-                 "create_at":dateNow
+                 "history.$.last_message":message,
+                 "history.$.create_at":dateNow
                }
             };
             friendVal = { $set: {
-                 "last_message":message,
-                 "create_at":dateNow
+                 "history.$.last_message":message,
+                 "history.$.create_at":dateNow
                }
             };
           }
           HistoryChat.updateOne(mycond,myVal, function() {
             HistoryChat.updateOne(friendcond,friendVal, function(){
-              res.json({mycond,myVal,friendcond,friendVal})
+              res.json({code:200,message:'Update successfully!'})
             });
           });
         })
