@@ -80,7 +80,7 @@ io.on('connection',function(socket){
               HistoryChat.updateOne(friendcond,friendVal);
             });
           })
-        },1500);
+        },5000);
 
       }); // save conversation
       const dateNow = new Date();
