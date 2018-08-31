@@ -43,6 +43,7 @@ io.on('connection',function(socket){
       conversation.create_at = create_at;
       conversation.save(function(err) {
         //console.log('err',err);
+        const dateNow = new Date();
         clearTimeout(timeoutHistory);
         timeoutHistory = setTimeout(()=>{
           HistoryChat.findOne({id:data.id,"history.friend_id":data.friend_id}).exec(function(err, item){
@@ -55,7 +56,7 @@ io.on('connection',function(socket){
                       "history" : {
                           friend_id:data.friend_id,
                           last_message:data.message,
-                          create_at
+                          create_at:dateNow
                 }}
               };
               friendVal = {
@@ -63,7 +64,7 @@ io.on('connection',function(socket){
                       "history" : {
                           friend_id:data.id,
                           last_message:data.message,
-                          create_at
+                          create_at:dateNow
                 }}
               };
             }else {
@@ -71,7 +72,7 @@ io.on('connection',function(socket){
               friendcond = {id: data.friend_id,"history.friend_id":data.id };
               myVal = { $set: {
                    "last_message":data.message,
-                   "create_at":create_at
+                   "create_at":dateNow
                  }
               };
               friendVal = myVal;
@@ -80,7 +81,7 @@ io.on('connection',function(socket){
               HistoryChat.updateOne(friendcond,friendVal);
             });
           })
-        },5000);
+        },10000);
 
       }); // save conversation
       const dateNow = new Date();
