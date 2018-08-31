@@ -285,7 +285,11 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }
               },{
                 $project: {
-                  profile:"$profile",
+                  profile:  {$reduce: {
+                        input: "$profile",
+                        initialValue: 1,
+                        in: { $multiply: [ "$$value", "$$this" ] }
+                      }},
                   status:"$friends.status"
                   // status:{
                   //   $reduce: {
