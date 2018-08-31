@@ -253,26 +253,32 @@ router.route('/list-friend/:id').get(function(req, res){
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
-            ListFriend.aggregate([
-              { $match : { id : parseInt(req.params.id) } },
-              // {$lookup: {
-              //     from: "people",
-              //     localField: "id",
-              //     foreignField: "id",
-              //     as:"person"
-              //   }
-              // },
-              { $project: {
 
-                  friends: {
-                    $filter: {
-                      input: "$friends",
-                      as: "friend",
-                      cond: {$eq: ['$$friend.status', req.params.status]}
-                  }}}
-              },{
-                $addFields:{friends_id:"$friends.friend_id"}
-              }
+            // ListFriend.aggregate([
+            //   { $match : { id : parseInt(req.params.id) } },
+            //   { $project: {
+            //       friends: {
+            //         $filter: {
+            //           input: "$friends",
+            //           as: "friend",
+            //           cond: {$eq: ['$$friend.status', req.params.status]}
+            //       }}}
+            //   },{
+            //     $addFields:{friends_id:"$friends.friend_id"}
+            //   }
+            // ]).exec(function(err, arr){
+            Person.aggregate([
+              {"$match":{"id":parseInt(req.params.id)}},
+              {"$lookup":{
+                "from":"listfriends",
+                "let":{"id":"$id"},
+                "pipeline":[
+                  {"$match":{"$expr":{"$in":["$$id","$friends"]}}},
+                  {"$unwind":"$friends"},
+                  {"$match":{"$expr":{"$eq":["$$id","$friends"]}}}
+                ],
+                "as":"list_friends"
+              }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
@@ -281,14 +287,14 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                     //res.json({data:arr[0].friends_id})
                     // const newData = arr[0].friends;
                     //
-                    // //res.json({data:arr})
+                    res.json({data:arr})
                     // var newData = arr[0].friends.map(function(item){
                     //     return item.friend_id;
                     // });
 
-                    Person.find({ id : { $in: arr[0].friends_id } }).exec(function(err, item){
-                      res.json({data:item})
-                    });
+                    // Person.find({ id : { $in: arr[0].friends_id } }).exec(function(err, item){
+                    //   res.json({data:item})
+                    // });
 
                   }
             });
