@@ -283,11 +283,11 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       foreignField: "id",
                       as: "profile"
                   }
-              }{ $group: {
-                      id: "profile.id",
-                      name: "profile.name"
-                      // urlhinh: "$profile.urlhinh",
-                      // status: "$friends.status"
+              },{ $group: {
+                      id: "$profile.id",
+                      name: "$profile.name"
+                      urlhinh: "$profile.urlhinh",
+                      status: "$friends.status"
                   }
               }
               // {"$lookup":{
