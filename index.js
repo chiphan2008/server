@@ -269,6 +269,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
             // ]).exec(function(err, arr){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
+              {$unwind: "$friends.friend_id"},
               {"$lookup":{
                 "from":"people",
                 "localField": "$friends.friend_id",
