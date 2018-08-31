@@ -286,13 +286,14 @@ router.route('/list-friend/:id/:status').get(function(req, res){
               },{
                 $project: {
                   profile:"$profile",
-                  status:{
-                    $reduce: {
-                      input: "$friends.status",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value", "$$this" ] }
-                    }
-                  }
+                  status:"$friends.status"
+                  // status:{
+                  //   $reduce: {
+                  //     input: "$friends.status",
+                  //     initialValue: 1,
+                  //     in: { $multiply: [ "$$value", "$$this" ] }
+                  //   }
+                  // }
                 }
               }
               // {"$lookup":{
