@@ -269,17 +269,14 @@ router.route('/list-friend/:id/:status').get(function(req, res){
             // ]).exec(function(err, arr){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
-              {$unwind: "$friends.friend_id"},
               {"$lookup":{
                 "from":"people",
-                "localField": "$friends.friend_id",
-                "foreignField": "id",
-                //"let":{"id":"$friends.friend_id"},
-                // "pipeline":[
-                //   {"$match":{"$expr":{"$in":["$$id","$friends.friend_id"]}}},
-                //   {"$unwind":"$friends"},
-                //   {"$match":{"$expr":{"$eq":["$$id","$friends.friend_id"]}}}
-                // ],
+                "let":{"id":"$friends.friend_id"},
+                "pipeline":[
+                  {"$match":{"$expr":{"$in":["$$id","$friends.friend_id"]}}},
+                  {"$unwind":"$friends"},
+                  {"$match":{"$expr":{"$eq":["$$id","$friends.friend_id"]}}}
+                ],
                 "as":"list_friends"
               }}
             ]).exec(function(err, arr){
