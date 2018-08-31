@@ -255,7 +255,7 @@ router.route('/add-history').post(function(req,res){
           }
           HistoryChat.updateOne(mycond,myVal, function() {
             HistoryChat.updateOne(friendcond,friendVal,()=>{
-
+              res.json({data:myVal})
             });
           });
         })
