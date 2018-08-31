@@ -285,7 +285,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }
               },{
                 $project: {
-                  id:"profile.id",
+                  id:"$$profile.id",
                   name:"$profile.name",
                   urlhinh:"$profile.urlhinh",
                   email:"$profile.email",
