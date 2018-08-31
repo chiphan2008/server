@@ -253,20 +253,6 @@ router.route('/list-friend/:id').get(function(req, res){
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
-
-            // ListFriend.aggregate([
-            //   { $match : { id : parseInt(req.params.id) } },
-            //   { $project: {
-            //       friends: {
-            //         $filter: {
-            //           input: "$friends",
-            //           as: "friend",
-            //           cond: {$eq: ['$$friend.status', req.params.status]}
-            //       }}}
-            //   },{
-            //     $addFields:{friends_id:"$friends.friend_id"}
-            //   }
-            // ]).exec(function(err, arr){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
               { $project: {
@@ -283,48 +269,44 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       foreignField: "id",
                       as: "profile"
                   }
-              },{
-                $project: {
-                  profile:  {$reduce: {
-                        input: "$profile",
-                        initialValue: 1,
-                        in: { $multiply: [ "$$value", "$$this" ] }
-                      }},
+              },{ $project: {
+                  id:{ $reduce: {
+                      input: "$profile.id",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
+                  name:{ $reduce: {
+                      input: "$profile.name",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
+                  urlhinh:{ $reduce: {
+                      input: "$profile.urlhinh",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
+                  email:{ $reduce: {
+                      input: "$profile.email",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
+                  phone:{ $reduce: {
+                      input: "$profile.phone",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
                   status:"$friends.status"
-                  // status:{
-                  //   $reduce: {
-                  //     input: "$friends.status",
-                  //     initialValue: 1,
-                  //     in: { $multiply: [ "$$value", "$$this" ] }
-                  //   }
-                  // }
                 }
               }
-              // {"$lookup":{
-              //   "from":"people",
-              //   "let":{"id":"$friends.friend_id"},
-              //   "pipeline":[
-              //     //{"$match":{"$expr":{"$in":["$$id","$friends.friend_id"]}}},
-              //     {"$unwind":"$friends"},
-              //     {"$match":{"$expr":{"$eq":["$$id","$friends.friend_id"]}}}
-              //   ],
-              //   "as":"list_friends"
-              // }}
+
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
                       res.json({code:200,data:[]})
                   }else {
-                    //res.json({data:arr[0].friends_id})
-                    // const newData = arr[0].friends;
-                    //
                     res.json({data:arr})
                     // var newData = arr[0].friends.map(function(item){
                     //     return item.friend_id;
-                    // });
-
-                    // Person.find({ id : { $in: arr[0].friends_id } }).exec(function(err, item){
-                    //   res.json({data:item})
                     // });
 
                   }
