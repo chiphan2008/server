@@ -281,7 +281,13 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       from: "people",
                       localField: "friends.friend_id",
                       foreignField: "id",
-                      as: "lists"
+                      as: "profile"
+                  }
+              }{ $group: {
+                      id: "$profile.id",
+                      name: "$profile.name",
+                      urlhinh: "$profile.urlhinh",
+                      status: "$friends.status"
                   }
               }
               // {"$lookup":{
