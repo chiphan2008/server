@@ -285,7 +285,13 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }
               },{
                 $project: {
-                  id:"$profile[0].id",
+                  id:{
+                    $reduce: {
+                      input: "$profile.id",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                    }
+                  },
                   name:"$profile.name",
                   urlhinh:"$profile.urlhinh",
                   email:"$profile.email",
