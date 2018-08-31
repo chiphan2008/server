@@ -272,11 +272,11 @@ router.route('/list-friend/:id/:status').get(function(req, res){
               {"$lookup":{
                 "from":"people",
                 "let":{"id":"$friends.friend_id"},
-                "pipeline":[
-                  {"$match":{"$expr":{"$in":["$$id","$friends.friend_id"]}}},
-                  {"$unwind":"$friends"},
-                  {"$match":{"$expr":{"$eq":["$$id","$friends.friend_id"]}}}
-                ],
+                // "pipeline":[
+                //   {"$match":{"$expr":{"$in":["$$id","$friends.friend_id"]}}},
+                //   {"$unwind":"$friends"},
+                //   {"$match":{"$expr":{"$eq":["$$id","$friends.friend_id"]}}}
+                // ],
                 "as":"list_friends"
               }}
             ]).exec(function(err, arr){
