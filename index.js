@@ -116,67 +116,83 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
-          const dateNow =Date.now();
-          Person.updateOne({id: req.body.id },
-            {
-               $set: {
-                 "name": req.body.name,
-                 "urlhinh": req.body.urlhinh,
-                 "email": req.body.email,
-                 "phone": req.body.phone,
-                 "active": 1,
-                 "offline_at": dateNow,
-                 "online_at": dateNow
-               }
-           }, function() {
-             ListFriend.findOne({id:req.body.id}).exec(function(err, item){
-               if(err || item===null){
-                 let listfriend = new ListFriend();
-                 listfriend.id=req.body.id;
-                 listfriend.friends=[];
-                 listfriend.save();
-               }else {
-                 res.json({code:200,message:'Update successfully!'})
-               }
-             });
+      const dateNow =Date.now();
+      Person.updateOne({id: req.body.id },
+              {
+                 $set: {
+                   "name": req.body.name,
+                   "urlhinh": req.body.urlhinh,
+                   "email": req.body.email,
+                   "phone": req.body.phone,
+                   "active": 1,
+                   "offline_at": dateNow,
+                   "online_at": dateNow
+                 }
+             }, function() {
+               ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+                 if(err || item===null){
+                   let listfriend = new ListFriend();
+                   listfriend.id=req.body.id;
+                   listfriend.friends=[];
+                   listfriend.save();
+                 }
+               });
 
-           });
+               HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+                 if(err || item===null){
+                   let historychat = new HistoryChat();
+                   historychat.id=req.body.id;
+                   historychat.history=[];
+                   historychat.save();
+                 }
+               });
+
+       });
 })
 
 // /person add/update user when login app
 router.route('/person/add').post(function(req, res){
-          Person.find({id:req.body.id}).exec(function(err, data){
-            if(data.length===0){
-              const dateNow =Date.now();
-              var person = new Person();
-              person.id = req.body.id;
-              person.name = req.body.name;
-              person.urlhinh = req.body.urlhinh;
-              person.email = req.body.email;
-              person.phone = req.body.phone;
-              person.online_at = dateNow;
-              person.offline_at = dateNow;
-              person.create_at = dateNow;
+      Person.find({id:req.body.id}).exec(function(err, data){
+        if(data.length===0){
+          const dateNow =Date.now();
+          var person = new Person();
+          person.id = req.body.id;
+          person.name = req.body.name;
+          person.urlhinh = req.body.urlhinh;
+          person.email = req.body.email;
+          person.phone = req.body.phone;
+          person.online_at = dateNow;
+          person.offline_at = dateNow;
+          person.create_at = dateNow;
 
-              person.save(function(err){
-                if(err){
-                   res.json({error:err})
-                }
-                ListFriend.findOne({id:req.body.id}).exec(function(err, item){
-                  if(err || item===null){
-                    let listfriend = new ListFriend();
-                    listfriend.id=req.body.id;
-                    listfriend.friends=[];
-                    listfriend.save();
-                    res.json({code:200,message:'Data inserted successfully!'})
-                  }
-                });
-
-              })
-            }else {
-              res.json({code:200,message:'User existing!'})
+          person.save(function(err){
+            if(err){
+               res.json({error:err})
             }
-          });
+
+            ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+              if(err || item===null){
+                let listfriend = new ListFriend();
+                listfriend.id=req.body.id;
+                listfriend.friends=[];
+                listfriend.save();
+                //res.json({code:200,message:'Data inserted successfully!'})
+              }
+            });
+            HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+              if(err || item===null){
+                let historychat = new HistoryChat();
+                historychat.id=req.body.id;
+                historychat.history=[];
+                historychat.save();
+              }
+            });
+            
+          })
+        }else {
+          res.json({code:200,message:'User existing!'})
+        }
+      });
 })
 // .get(function(req, res){
 //   Person.find(function(err, person){
