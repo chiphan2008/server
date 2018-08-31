@@ -254,11 +254,12 @@ router.route('/add-history').post(function(req,res){
                }
             };
           }
-          HistoryChat.updateOne(mycond,myVal, function() {
-            HistoryChat.updateOne(friendcond,friendVal, function(){
-              res.json({code:200,message:'Update successfully!'})
+          HistoryChat.updateOne(mycond,myVal,function(){
+            HistoryChat.updateOne(friendcond,friendVal,function(){ 
+              res.json({data:el})
             });
           });
+
         })
       }else {
         res.json({error:"Cant not GET"})
