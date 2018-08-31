@@ -46,46 +46,6 @@ io.on('connection',function(socket){
         data = Object.assign(data,{create_at: dateNow})
         io.sockets.emit('replyMessage-'+port, data);
 
-        //clearTimeout(timeoutHistory);
-        //timeoutHistory = setTimeout(()=>{
-          HistoryChat.findOne({id:data.id,"history.friend_id":data.friend_id}).exec(function(err, item){
-            let mycond,friendcond,myVal,friendVal;
-            if(item===null ){
-              mycond = {id: data.id};
-              friendcond = {id: data.friend_id};
-              myVal = {
-                $addToSet : {
-                      "history" : {
-                          friend_id:data.friend_id,
-                          last_message:data.message,
-                          create_at:dateNow
-                }}
-              };
-              friendVal = {
-                $addToSet : {
-                      "history" : {
-                          friend_id:data.id,
-                          last_message:data.message,
-                          create_at:dateNow
-                }}
-              };
-            }else {
-              mycond = {id: data.id,"history.friend_id":data.friend_id };
-              friendcond = {id: data.friend_id,"history.friend_id":data.id };
-              myVal = { $set: {
-                   "last_message":data.message,
-                   "create_at":dateNow
-                 }
-              };
-              friendVal = myVal;
-            }
-            HistoryChat.updateOne(mycond,myVal, function() {
-              HistoryChat.updateOne(friendcond,friendVal,()=>{
-
-              });
-            });
-          })
-
       }); // save conversation
 
     }
@@ -256,6 +216,52 @@ router.route('/history-chat/:id').get(function(req, res){
             res.json({error:"Cant not GET"})
           }
         })
+router.route('/add-history').post(function(req,res){
+      if(req.body.id>0){
+        const {friend_id,id,message} = req.body;
+        const dateNow = new Date();
+        HistoryChat.findOne({id,"history.friend_id":friend_id}).exec(function(err, item){
+          let mycond,friendcond,myVal,friendVal;
+          if(item===null){
+            mycond = {id};
+            friendcond = {id:friend_id};
+            myVal = {
+              $addToSet : {
+                    "history" : {
+                        friend_id,
+                        last_message: message,
+                        create_at:dateNow
+              }}
+            };
+            friendVal = {
+              $addToSet : {
+                    "history" : {
+                        friend_id:id,
+                        last_message:message,
+                        create_at:dateNow
+              }}
+            };
+          }else {
+            mycond = {id,"history.friend_id":friend_id };
+            friendcond = {id:friend_id,"history.friend_id":id };
+            myVal = { $set: {
+                 "last_message":message,
+                 "create_at":dateNow
+               }
+            };
+            friendVal = myVal;
+          }
+          HistoryChat.updateOne(mycond,myVal, function() {
+            HistoryChat.updateOne(friendcond,friendVal,()=>{
+
+            });
+          });
+        })
+      }else {
+        res.json({error:"Cant not GET"})
+      }
+
+})
 
 router.route('/except-person/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
