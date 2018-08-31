@@ -324,7 +324,7 @@ router.route('/history-chat/:id').get(function(req, res){
                 }
               }
             ])
-            .limit(limiting).skip(skipping).sort('-_update_at')
+            .limit(limiting).skip(skipping).sort('_update_at')
             .exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
