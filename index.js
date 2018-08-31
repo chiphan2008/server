@@ -285,18 +285,14 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }
               },{
                 $project: {
-                  id:{
+                  profile,
+                  status:{
                     $reduce: {
-                      input: "$profile.id",
+                      input: "$friends.status",
                       initialValue: 1,
                       in: { $multiply: [ "$$value", "$$this" ] }
                     }
-                  },
-                  name:"$profile.name",
-                  urlhinh:"$profile.urlhinh",
-                  email:"$profile.email",
-                  phone:"$profile.phone",
-                  status:"friends.status"
+                  }
                 }
               }
               // {"$lookup":{
