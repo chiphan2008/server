@@ -271,7 +271,9 @@ router.route('/list-friend/:id/:status').get(function(req, res){
               {"$match":{"id":parseInt(req.params.id)}},
               {"$lookup":{
                 "from":"people",
-                "let":{"id":"$friends.friend_id"},
+                "localField": "$friends.friend_id",
+                "foreignField": "id",
+                //"let":{"id":"$friends.friend_id"},
                 // "pipeline":[
                 //   {"$match":{"$expr":{"$in":["$$id","$friends.friend_id"]}}},
                 //   {"$unwind":"$friends"},
