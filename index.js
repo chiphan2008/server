@@ -283,6 +283,15 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       foreignField: "id",
                       as: "profile"
                   }
+              },{
+                $project: {
+                  id:"$profile.id",
+                  name:"$profile.name",
+                  urlhinh:"$profile.urlhinh",
+                  email:"$profile.email",
+                  phone:"$profile.phone",
+                  status:"$friends.status"
+                }
               }
               // {"$lookup":{
               //   "from":"people",
