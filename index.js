@@ -35,14 +35,54 @@ io.on('connection',function(socket){
     //chatting...
     if(data.message.trim()!=='' && data.group!==undefined){
       var conversation = new Conversation();
+      var timeoutHistory;
       const create_at = Date.now();
-      conversation.group= data.group;
-      conversation.user_id= data.user_id;
-      conversation.message= data.message;
-      conversation.create_at= create_at;
+      conversation.group = data.group;
+      conversation.id = data.id;
+      conversation.message = data.message;
+      conversation.create_at = create_at;
       conversation.save(function(err) {
-        console.log('err',err);
-      });
+        //console.log('err',err);
+        clearTimeout(timeoutHistory);
+        timeoutHistory = setTimeout(()=>{
+          HistoryChat.findOne({id:data.id,"history.friend_id":data.friend_id}).exec(function(err, item){
+            let mycond,friendcond,myVal,friendVal;
+            if(item===null ){
+              mycond = {id: data.id};
+              friendcond = {id: data.friend_id};
+              myVal = {
+                $addToSet : {
+                      "history" : {
+                          friend_id:data.friend_id,
+                          last_message:data.message,
+                          create_at
+                }}
+              };
+              friendVal = {
+                $addToSet : {
+                      "history" : {
+                          friend_id:data.id,
+                          last_message:data.message,
+                          create_at
+                }}
+              };
+            }else {
+              mycond = {id: data.id,"history.friend_id":data.friend_id };
+              friendcond = {id: data.friend_id,"history.friend_id":data.id };
+              myVal = { $set: {
+                   "last_message":data.message,
+                   "create_at":create_at
+                 }
+              };
+              friendVal = myVal;
+            }
+            HistoryChat.updateOne(mycond,myVal, function() {
+              HistoryChat.updateOne(friendcond,friendVal);
+            });
+          })
+        },1500);
+
+      }); // save conversation
       const dateNow = new Date();
       data = Object.assign(data,{create_at: dateNow})
       io.sockets.emit('replyMessage-'+port, data);
@@ -118,34 +158,34 @@ router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
       const dateNow =Date.now();
       Person.updateOne({id: req.body.id },
-              {
-                 $set: {
-                   "name": req.body.name,
-                   "urlhinh": req.body.urlhinh,
-                   "email": req.body.email,
-                   "phone": req.body.phone,
-                   "active": 1,
-                   "offline_at": dateNow,
-                   "online_at": dateNow
-                 }
-             }, function() {
-               ListFriend.findOne({id:req.body.id}).exec(function(err, item){
-                 if(err || item===null){
-                   let listfriend = new ListFriend();
-                   listfriend.id=req.body.id;
-                   listfriend.friends=[];
-                   listfriend.save();
-                 }
-               });
+          {
+             $set: {
+               "name": req.body.name,
+               "urlhinh": req.body.urlhinh,
+               "email": req.body.email,
+               "phone": req.body.phone,
+               "active": 1,
+               "offline_at": dateNow,
+               "online_at": dateNow
+             }
+         }, function() {
+           ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+             if(err || item===null){
+               let listfriend = new ListFriend();
+               listfriend.id=req.body.id;
+               listfriend.friends=[];
+               listfriend.save();
+             }
+           });
 
-               HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
-                 if(err || item===null){
-                   let historychat = new HistoryChat();
-                   historychat.id=req.body.id;
-                   historychat.history=[];
-                   historychat.save();
-                 }
-               });
+           HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+             if(err || item===null){
+               let historychat = new HistoryChat();
+               historychat.id=req.body.id;
+               historychat.history=[];
+               historychat.save();
+             }
+           });
 
        });
 })
@@ -187,7 +227,7 @@ router.route('/person/add').post(function(req, res){
                 historychat.save();
               }
             });
-            
+
           })
         }else {
           res.json({code:200,message:'User existing!'})
@@ -205,42 +245,16 @@ router.route('/history-chat/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
-            HistoryChat.find({user_id:req.params.id})
-            .limit(limiting).skip(skipping).sort('-_update_at').exec(function(err, data){
+            HistoryChat.find({id:req.params.id})
+            .limit(limiting).skip(skipping).sort('-_update_at')
+            .exec(function(err, data){
               res.json({data});
             });
           }else {
             res.json({error:"Cant not GET"})
           }
         })
-        .post(function(req, res){
-            HistoryChat.find({user_id:req.params.id,friend_id:req.body.friend_id},function(err,item){
-              const dateNow =Date.now();
-              if(item.length>0){
-                HistoryChat.updateOne({friend_id: req.body.friend_id },
-                  {
-                     $set: {
-                       "last_message":req.body.last_message,
-                       "update_at": dateNow
-                     }
-                  }, function() {
-                     res.json({code:200,message:'Update successfully!'})
-                  });
-              }else {
 
-                  var historychat = new HistoryChat();
-                  historychat.user_id= req.params.id;
-                  historychat.friend_id= req.body.friend_id;
-                  historychat.last_message= req.body.last_message;
-                  historychat.update_at= dateNow;
-                  historychat.create_at= dateNow;
-                  historychat.save(function(err) {
-                    res.json({code:200,message:'Data inserted successful!'})
-                  });
-              }
-            })
-
-        })
 router.route('/except-person/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
