@@ -284,10 +284,10 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                       as: "profile"
                   }
               }{ $group: {
-                      id: "$profile.id",
-                      name: "$profile.name",
-                      urlhinh: "$profile.urlhinh",
-                      status: "$friends.status"
+                      id: "profile.id",
+                      name: "profile.name"
+                      // urlhinh: "$profile.urlhinh",
+                      // status: "$friends.status"
                   }
               }
               // {"$lookup":{
