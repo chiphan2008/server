@@ -42,10 +42,12 @@ io.on('connection',function(socket){
       conversation.message = data.message;
       conversation.create_at = create_at;
       conversation.save(function(err) {
-        //console.log('err',err);
         const dateNow = new Date();
-        clearTimeout(timeoutHistory);
-        timeoutHistory = setTimeout(()=>{
+        data = Object.assign(data,{create_at: dateNow})
+        io.sockets.emit('replyMessage-'+port, data);
+
+        //clearTimeout(timeoutHistory);
+        //timeoutHistory = setTimeout(()=>{
           HistoryChat.findOne({id:data.id,"history.friend_id":data.friend_id}).exec(function(err, item){
             let mycond,friendcond,myVal,friendVal;
             if(item===null ){
@@ -78,15 +80,14 @@ io.on('connection',function(socket){
               friendVal = myVal;
             }
             HistoryChat.updateOne(mycond,myVal, function() {
-              HistoryChat.updateOne(friendcond,friendVal);
+              HistoryChat.updateOne(friendcond,friendVal,()=>{
+
+              });
             });
           })
-        },10000);
 
       }); // save conversation
-      const dateNow = new Date();
-      data = Object.assign(data,{create_at: dateNow})
-      io.sockets.emit('replyMessage-'+port, data);
+
     }
     //console.log(data);
     // if(data.notification!==undefined){
