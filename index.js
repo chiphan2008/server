@@ -277,23 +277,23 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }},
                   name:{ $reduce: {
                       input: "$profile.name",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value", "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
                   }},
                   urlhinh:{ $reduce: {
                       input: "$profile.urlhinh",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value", "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
                   }},
                   email:{ $reduce: {
                       input: "$profile.email",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value", "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
                   }},
                   phone:{ $reduce: {
                       input: "$profile.phone",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value", "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
                   }},
                   status:"$friends.status"
                 }
