@@ -267,10 +267,10 @@ router.route('/list-friend/:id/:status').get(function(req, res){
             //     $addFields:{friends_id:"$friends.friend_id"}
             //   }
             // ]).exec(function(err, arr){
-            Person.aggregate([
+            ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
               {"$lookup":{
-                "from":"listfriends",
+                "from":"people",
                 "let":{"id":"$id"},
                 "pipeline":[
                   {"$match":{"$expr":{"$in":["$$id","$friends"]}}},
