@@ -319,7 +319,8 @@ router.route('/history-chat/:id').get(function(req, res){
                       initialValue: '',
                       in: { $concat: [ "$$value", "$$this" ] }
                   }},
-                  last_message:"$history.last_message"
+                  last_message:"$history.last_message",
+                  update_at:"$history.create_at"
                 }
               }
 
