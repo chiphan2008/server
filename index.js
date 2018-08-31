@@ -35,19 +35,16 @@ io.on('connection',function(socket){
     //chatting...
     if(data.message.trim()!=='' && data.group!==undefined){
       var conversation = new Conversation();
-      var timeoutHistory;
       const create_at = Date.now();
       conversation.group = data.group;
       conversation.id = data.id;
       conversation.message = data.message;
       conversation.create_at = create_at;
       conversation.save(function(err) {
-        const dateNow = new Date();
-        data = Object.assign(data,{create_at: dateNow})
-        io.sockets.emit('replyMessage-'+port, data);
-
       }); // save conversation
-
+      const dateNow = new Date();
+      data = Object.assign(data,{create_at: dateNow})
+      io.sockets.emit('replyMessage-'+port, data);
     }
     //console.log(data);
     // if(data.notification!==undefined){
@@ -219,7 +216,7 @@ router.route('/history-chat/:id').get(function(req, res){
 router.route('/add-history').post(function(req,res){
       const id = parseInt(req.body.id);
       const friend_id = parseInt(req.body.friend_id);
-      const {message} = req.body;
+      const message = req.body.message;
       if(id>0){
         const dateNow = new Date();
         HistoryChat.findOne({id,"history.friend_id":friend_id}).exec(function(err, item){
@@ -251,11 +248,15 @@ router.route('/add-history').post(function(req,res){
                  "create_at":dateNow
                }
             };
-            friendVal = myVal;
+            friendVal = { $set: {
+                 "last_message":message,
+                 "create_at":dateNow
+               }
+            };
           }
           HistoryChat.updateOne(mycond,myVal, function() {
-            HistoryChat.updateOne(friendcond,friendVal,()=>{
-              res.json({data:myVal})
+            HistoryChat.updateOne(friendcond,friendVal, function(){
+              res.json({mycond,myVal,friendcond,friendVal})
             });
           });
         })
