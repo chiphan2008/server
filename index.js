@@ -205,7 +205,7 @@ router.route('/static-friend/:id').get(function(req, res){
               {$project: { status: "$_id" }},
               {$project: {
                 _id: 0,
-                "$status":{count: 1}
+                "$$status":{count: 1}
               }},
               {$sort: { count: -1 } }
             ]).exec(function(err, arr){
