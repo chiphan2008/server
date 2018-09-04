@@ -196,20 +196,7 @@ router.route('/except-person/:id').get(function(req, res){
             res.json({error:"Cant not GET"})
           }
         })
-router.route('/list-friend/:id').get(function(req, res){
-          if(req.params.id>0){
-            ListFriend.findOne({id:req.params.id}).exec(function(err, item){
-              if(err || item===null){
-                res.json({data:[]})
-              }else {
-                res.json({data:item.friends})
-              }
-            });
-          }else {
-            res.json({error:"Cant not GET"})
-          }
-})
-router.route('/friend/static').get(function(req, res){
+router.route('/static-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
@@ -231,6 +218,20 @@ router.route('/friend/static').get(function(req, res){
         }
 
 })
+router.route('/list-friend/:id').get(function(req, res){
+          if(req.params.id>0){
+            ListFriend.findOne({id:req.params.id}).exec(function(err, item){
+              if(err || item===null){
+                res.json({data:[]})
+              }else {
+                res.json({data:item.friends})
+              }
+            });
+          }else {
+            res.json({error:"Cant not GET"})
+          }
+})
+
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
