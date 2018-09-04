@@ -209,6 +209,28 @@ router.route('/list-friend/:id').get(function(req, res){
             res.json({error:"Cant not GET"})
           }
 })
+router.route('/friend/static').get(function(req, res){
+          if(req.params.id>0){
+            ListFriend.aggregate([
+              {"$match":{"id":parseInt(req.params.id)}},
+              { $group : {
+                   status : "$friends.status",
+                   count: { $sum: 1 }
+                }
+              }
+            ]).exec(function(err, arr){
+                  if(arr===null || err){
+                      if(err) res.json(err)
+                      res.json({code:200,data:[]})
+                  }else {
+                    res.json({data:arr})
+                  }
+            });
+        }else {
+          res.json({error:"Cant not GET"})
+        }
+
+})
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
