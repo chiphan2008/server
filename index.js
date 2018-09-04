@@ -212,24 +212,21 @@ router.route('/static-friend/:id').get(function(req, res){
                       input: "$static.count",
                       initialValue: 1,
                       in: { $multiply: [ "$$value",
-                       {$cond: {if: { $eq: [ "$static.status", "accept" ] },then: "$static.count",else: 0}},
-                       "$$this" ]
+                       {$cond: {if: { $eq: [ "$static.status", "accept" ] },then: "$static.count",else: 0}}]
                      }
                   }},
                   "waiting":{ $reduce: {
                       input: "$static.count",
                       initialValue: 1,
                       in: { $multiply: [ "$$value",
-                       {$cond: {if: { $eq: [ "$static.status", "waiting" ] },then: "$static.count",else: 0}},
-                       "$$this" ]
+                       {$cond: {if: { $eq: [ "$static.status", "waiting" ] },then: "$static.count",else: 0}}]
                      }
                   }},
                   "request":{ $reduce: {
                       input: "$static.count",
                       initialValue: 1,
                       in: { $multiply: [ "$$value",
-                       {$cond: {if: { $eq: [ "$static.status", "request" ] },then: "$static.count",else: 0}},
-                       "$$this" ]
+                       {$cond: {if: { $eq: [ "$static.status", "request" ] },then: "$static.count",else: 0}}]
                      }
                   }}
               }}
