@@ -207,7 +207,7 @@ router.route('/static-friend/:id').get(function(req, res){
               {$project: {
                   _id:0,
                   "accept":{$filter: {
-                    input: "$status",
+                    input: "$static",
                     as: "stt",
                     cond: {$eq: ['$$stt.status', "accept"]}
                 }},
