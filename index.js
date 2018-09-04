@@ -207,6 +207,7 @@ router.route('/static-friend/:id').get(function(req, res){
                 {"status":"$status","count":"$count"}
               }}},
               {$project: {
+                  _id:0,
                   "request":{ $reduce: {
                       input: "$static",
                       initialValue: 1,
@@ -219,8 +220,8 @@ router.route('/static-friend/:id').get(function(req, res){
                          }
                        },
                        "$$this" ] }
-                  }},
-                  id:0
+                  }}
+
               }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
