@@ -209,31 +209,31 @@ router.route('/static-friend/:id').get(function(req, res){
                   accept:{$filter: {input: "$static",as: "stt",cond: {$eq: ['$$stt.status', "accept"]}}},
                   waiting:{$filter: {input: "$static",as: "stt",cond: {$eq: ['$$stt.status', "waiting"]}}},
                   request:{$filter: {input: "$static",as: "stt",cond: {$eq: ['$$stt.status', "request"]}}}
+              }},
+              {$project: {
+                  _id:0,
+                  accept:{ $reduce: {
+                      input: "$accept.count",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value",
+                      {'$cond': [{'$accept.count':{$gt:0}}, 1, 0]},
+                      "$$this" ] }
+                  }},
+                  waiting:{ $reduce: {
+                      input: "$waiting.count",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value",
+                      {'$cond': [{'$waiting.count':{$gt:0}}, 1, 0]},
+                      "$$this" ] }
+                  }},
+                  request:{ $reduce: {
+                      input: "$request.count",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value",
+                      {'$cond': [{'$request.count':{$gt:0}}, 1, 0]},
+                      "$$this" ] }
+                  }}
               }}
-              // {$project: {
-              //     _id:0,
-              //     accept:{ $reduce: {
-              //         input: "$accept.count",
-              //         initialValue: 1,
-              //         in: { $multiply: [ "$$value",
-              //         {'$cond': [{'$eq': ['$accept.count', undefined]}, 0, 1]},
-              //         "$$this" ] }
-              //     }},
-              //     waiting:{ $reduce: {
-              //         input: "$waiting.count",
-              //         initialValue: 1,
-              //         in: { $multiply: [ "$$value",
-              //         {'$cond': [{'$eq': ['$waiting.count', undefined]}, 0, 1]},
-              //         "$$this" ] }
-              //     }},
-              //     request:{ $reduce: {
-              //         input: "$request.count",
-              //         initialValue: 1,
-              //         in: { $multiply: [ "$$value",
-              //         {'$cond': [{'$eq': ['$request.count', undefined]}, 0, 1]},
-              //         "$$this" ] }
-              //     }}
-              // }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
