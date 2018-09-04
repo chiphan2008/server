@@ -203,33 +203,13 @@ router.route('/static-friend/:id').get(function(req, res){
               {$unwind: "$friends" },
               {$group: { _id: "$friends.status", count: { $sum: 1 } }},
               {$project:{_id:0,status:"$_id",count:1}},
-              {$group:{_id:0,static:{$push:
-                {"status":"$status","count":"$count"}
-              }}},
-              {$project: {
-                  _id:0,
-                  "accept":{ $reduce: {
-                      input: "$static.count",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                       {$cond: {if: { $eq: [ "$static.status", "accept" ] },then: "$static.count",else: 0}}]
-                     }
-                  }},
-                  "waiting":{ $reduce: {
-                      input: "$static.count",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                       {$cond: {if: { $eq: [ "$static.status", "waiting" ] },then: "$static.count",else: 0}}]
-                     }
-                  }},
-                  "request":{ $reduce: {
-                      input: "$static.count",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                       {$cond: {if: { $eq: [ "$static.status", "request" ] },then: "$static.count",else: 0}}]
-                     }
-                  }}
-              }}
+              {$group:{_id:0,"accept":{
+                $push:{$cond: {
+                  if: { $eq: [ "$status", "accept" ] },
+                  then: "$count" ,
+                  else: null,
+                }}
+              }}}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
