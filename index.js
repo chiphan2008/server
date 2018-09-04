@@ -201,13 +201,8 @@ router.route('/static-friend/:id').get(function(req, res){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
               {$unwind: "$friends" },
-              {$group: {
-                "_id":"$friends.status",
-                "_accept": { "$sum": { "$cond": [{ "$eq": [ "$friends.status", "accept" ] }, 1, 0 ]}},
-                "_request": {"$sum": {"$cond": [ { "$eq": [ "$friends.status", "request" ] }, 1, 0 ]}},
-                "_waiting": {"$sum": {"$cond": [ { "$eq": [ "$friends.status", "waiting" ] }, 1, 0 ]}}
-              }},
-              {$project:{_id:0,accept:"$_accept",request:"$_request",waiting:"$_waiting"}}
+              {$group: { _id: "$friends.status", count: { $sum: 1 } }},
+              {$project:{_id:0,status:"$_id",count:1}}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
