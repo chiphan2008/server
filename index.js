@@ -212,21 +212,9 @@ router.route('/static-friend/:id').get(function(req, res){
               }},
               {$project: {
                   _id:0,
-                  accept:{ $reduce: {
-                      input: "$accept.count",
-                      initialValue: 0,
-                      in: { $multiply: [ "$$this" ] }
-                  }},
-                  waiting:{ $reduce: {
-                      input: "$waiting.count",
-                      initialValue: 0,
-                      in: { $multiply: [ "$$this" ] }
-                  }},
-                  request:{ $reduce: {
-                      input: "$request.count",
-                      initialValue: 0,
-                      in: { $multiply: [ "$$this" ] }
-                  }}
+                  accept:{ $reduce: { input: "$accept.count", initialValue: 0, in: { $multiply: [ "$$this" ] } }},
+                  waiting:{ $reduce: { input: "$waiting.count", initialValue: 0, in: { $multiply: [ "$$this" ] } }},
+                  request:{ $reduce: { input: "$request.count", initialValue: 0, in: { $multiply: [ "$$this" ] } }}
               }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
