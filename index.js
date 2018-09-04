@@ -215,23 +215,17 @@ router.route('/static-friend/:id').get(function(req, res){
                   accept:{ $reduce: {
                       input: "$accept.count",
                       initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                      {'$cond': [{'$eq': ['$$value', undefined]}, 0, 1]},
-                      "$$this" ] }
+                      in: { $multiply: [ "$$value",{'$cond': [{'$eq': ['$$value', ""]}, 0, 1]}] }
                   }},
                   waiting:{ $reduce: {
                       input: "$waiting.count",
                       initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                      {'$cond': [{'$eq': ['$$value', undefined]}, 0, 1]},
-                      "$$this" ] }
+                      in: { $multiply: [ "$$value",{'$cond': [{'$eq': ['$$value', ""]}, 0, 1]}] }
                   }},
                   request:{ $reduce: {
                       input: "$request.count",
                       initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                      {'$cond': [{'$eq': ['$$value', undefined]}, 0, 1]},
-                      "$$this" ] }
+                      in: { $multiply: [ "$$value",{'$cond': [{'$eq': ['$$value', ""]}, 0, 1]}] }
                   }}
               }}
             ]).exec(function(err, arr){
