@@ -206,7 +206,11 @@ router.route('/static-friend/:id').get(function(req, res){
               {$group:{_id:0,static:{ $push: {"status":"$status","count":"$count"} }}},
               {$project: {
                   _id:0,
-                  "accept":{$cond: {if: { $eq: [ "$static.status", "accept" ] },then: "$static.count",else: 0}},
+                  "accept":{$filter: {
+                    input: "$status",
+                    as: "stt",
+                    cond: {$eq: ['$$stt.status', "accept"]}
+                }},
                   "waiting":{$cond: {if: { $eq: [ "$static.status", "waiting" ] },then: "$static.count",else: 0}},
                   "request":{$cond: {if: { $eq: [ "$static.status", "request" ] },then: "$static.count",else: 0}}
               }}
