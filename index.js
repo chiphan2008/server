@@ -214,24 +214,18 @@ router.route('/static-friend/:id').get(function(req, res){
                   _id:0,
                   accept:{ $reduce: {
                       input: "$accept.count",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                      {'$cond': ['$$this':{$gt:0}, 1, 0]},
-                      "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value","$$this" ] }
                   }},
                   waiting:{ $reduce: {
                       input: "$waiting.count",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                      {'$cond': ['$$this':{$gt:0}, 1, 0]},
-                      "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value","$$this" ] }
                   }},
                   request:{ $reduce: {
                       input: "$request.count",
-                      initialValue: 1,
-                      in: { $multiply: [ "$$value",
-                      {'$cond': ['$$this':{$gt:0}, 1, 0]},
-                      "$$this" ] }
+                      initialValue: '',
+                      in: { $concat: [ "$$value","$$this" ] }
                   }}
               }}
             ]).exec(function(err, arr){
