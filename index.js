@@ -207,7 +207,7 @@ router.route('/static-friend/:id').get(function(req, res){
                 {"k":"$status","v":"$count"}
               }}},
               {$unwind: "$newData" },
-              {$project:{_id:0,data:{$arrayToObject:  { $literal: "$newData"}} }}
+              {$project:{$arrayToObject:  { $literal: "$newData"}}}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
