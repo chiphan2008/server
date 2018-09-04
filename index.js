@@ -210,9 +210,17 @@ router.route('/static-friend/:id').get(function(req, res){
                     input: "$static",
                     as: "stt",
                     cond: {$eq: ['$$stt.status', "accept"]}
-                }},
-                  "waiting":{$cond: {if: { $eq: [ "$static.status", "waiting" ] },then: "$static.count",else: 0}},
-                  "request":{$cond: {if: { $eq: [ "$static.status", "request" ] },then: "$static.count",else: 0}}
+                  }},
+                  "waiting":$filter: {
+                    input: "$static",
+                    as: "stt",
+                    cond: {$eq: ['$$stt.status', "waiting"]}
+                  }},
+                  "request":$filter: {
+                    input: "$static",
+                    as: "stt",
+                    cond: {$eq: ['$$stt.status', "request"]}
+                  }}
               }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
