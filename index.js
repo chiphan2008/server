@@ -206,8 +206,7 @@ router.route('/static-friend/:id').get(function(req, res){
               {$group:{_id:0,"accept":{
                 $push:{$cond: {
                   if: { $eq: [ "$status", "accept" ] },
-                  then: "$count" ,
-                  else: null,
+                  then: "$count"
                 }}
               }}}
             ]).exec(function(err, arr){
