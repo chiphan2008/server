@@ -209,7 +209,7 @@ router.route('/static-friend/:id').get(function(req, res){
               {$project: {
                   _id:0,
                   "request":{ $reduce: {
-                      input: "$static",
+                      input: "$static.count",
                       initialValue: 1,
                       in: { $multiply: [ "$$value",
                        {
