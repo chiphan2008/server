@@ -203,10 +203,9 @@ router.route('/static-friend/:id').get(function(req, res){
               {$unwind: "$friends" },
               {$group: { _id: "$friends.status", count: { $sum: 1 } }},
               {$project:{_id:0,status:"$_id",count:1}},
-              {$group:{_id:0,newData:{$push:
-                {"k":"$status","v":"$count"}
-              }}},
-              {$project:{_id:0,data:{$arrayToObject:  { $literal: "$newData"}} }}
+              {$group:{_id:0,static:{$push:
+                {"$status":"$count"}
+              }}}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
