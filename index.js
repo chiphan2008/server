@@ -206,20 +206,26 @@ router.route('/static-friend/:id').get(function(req, res){
               {$group:{_id:0,static:{ $push: {"status":"$status","count":"$count"} }}},
               {$project: {
                   _id:0,
-                  "accept":{$filter: {
-                    input: "$static",
-                    as: "stt",
-                    cond: {$eq: ['$$stt.status', "accept"]}
+                  accept:{$filter: {input: "$static",as: "stt",cond: {$eq: ['$$stt.status', "accept"]}}},
+                  waiting:{$filter: {input: "$static",as: "stt",cond: {$eq: ['$$stt.status', "waiting"]}}},
+                  request:{$filter: {input: "$static",as: "stt",cond: {$eq: ['$$stt.status', "request"]}}}
+              }},
+              {$project: {
+                  _id:0,
+                  accept:{ $reduce: {
+                      input: "$accept.count",
+                      initialValue: 0,
+                      in: { $multiply: [ "$$value", "$$this" ] }
                   }},
-                  "waiting":{$filter: {
-                    input: "$static",
-                    as: "stt",
-                    cond: {$eq: ['$$stt.status', "waiting"]}
+                  waiting:{ $reduce: {
+                      input: "$waiting.count",
+                      initialValue: 0,
+                      in: { $multiply: [ "$$value", "$$this" ] }
                   }},
-                  "request":{$filter: {
-                    input: "$static",
-                    as: "stt",
-                    cond: {$eq: ['$$stt.status', "request"]}
+                  request:{ $reduce: {
+                      input: "$request.count",
+                      initialValue: 0,
+                      in: { $multiply: [ "$$value", "$$this" ] }
                   }}
               }}
             ]).exec(function(err, arr){
