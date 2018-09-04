@@ -211,12 +211,12 @@ router.route('/static-friend/:id').get(function(req, res){
                     as: "stt",
                     cond: {$eq: ['$$stt.status', "accept"]}
                   }},
-                  "waiting":$filter: {
+                  "waiting":{$filter: {
                     input: "$static",
                     as: "stt",
                     cond: {$eq: ['$$stt.status', "waiting"]}
                   }},
-                  "request":$filter: {
+                  "request":{$filter: {
                     input: "$static",
                     as: "stt",
                     cond: {$eq: ['$$stt.status', "request"]}
