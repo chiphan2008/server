@@ -208,20 +208,30 @@ router.route('/static-friend/:id').get(function(req, res){
               }}},
               {$project: {
                   _id:0,
+                  "accept":{ $reduce: {
+                      input: "$static.count",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value",
+                       {$cond: {if: { $eq: [ "$static.status", "accept" ] },then: "$static.count",else: 0}},
+                       "$$this" ]
+                     }
+                  }},
+                  "waiting":{ $reduce: {
+                      input: "$static.count",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value",
+                       {$cond: {if: { $eq: [ "$static.status", "waiting" ] },then: "$static.count",else: 0}},
+                       "$$this" ]
+                     }
+                  }},
                   "request":{ $reduce: {
                       input: "$static.count",
                       initialValue: 1,
                       in: { $multiply: [ "$$value",
-                       {
-                         $cond: {
-                           if: { $eq: [ "$static.status", "request" ] },
-                           then: "$static.count",
-                           else: 0
-                         }
-                       },
-                       "$$this" ] }
+                       {$cond: {if: { $eq: [ "$static.status", "request" ] },then: "$static.count",else: 0}},
+                       "$$this" ]
+                     }
                   }}
-
               }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
