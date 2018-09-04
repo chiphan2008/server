@@ -204,8 +204,24 @@ router.route('/static-friend/:id').get(function(req, res){
               {$group: { _id: "$friends.status", count: { $sum: 1 } }},
               {$project:{_id:0,status:"$_id",count:1}},
               {$group:{_id:0,static:{$push:
-                {"$_id":"$count"}
-              }}}
+                {"status":"$status","count":"$count"}
+              }}},
+              {$project: {
+                  "request":{ $reduce: {
+                      input: "$static",
+                      initialValue: "$static.count",
+                      in: { $multiply: [ "$$value",
+                       {
+                         $cond: {
+                           if: { $eq: [ "$static.status", "request" ] },
+                           then: 1,
+                           else: 0
+                         }
+                       },
+                       "$$this" ] }
+                  }},
+                  id:0
+              }}
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
