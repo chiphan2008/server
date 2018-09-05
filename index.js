@@ -99,17 +99,18 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
-      const dateNow =Date.now();
-      const obj = {
-        "name": req.body.name,
-        "urlhinh": req.body.urlhinh,
-        "email": req.body.email,
-        "phone": req.body.phone,
-        "active": 1,
-        "offline_at": dateNow,
-        "online_at": dateNow
-      };
+          res.json({id:parseInt(req.body.id)});
       if(parseInt(req.body.id)>0){
+        const dateNow =Date.now();
+        const obj = {
+          "name": req.body.name,
+          "urlhinh": req.body.urlhinh,
+          "email": req.body.email,
+          "phone": req.body.phone,
+          "active": 1,
+          "offline_at": dateNow,
+          "online_at": dateNow
+        };
         Person.updateOne({id: req.body.id },{ $set: obj}, function() {
              ListFriend.findOne({id:req.body.id}).exec(function(err, item){
                if(err || item===null){
