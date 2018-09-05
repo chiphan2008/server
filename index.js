@@ -34,6 +34,10 @@ io.on('connection',function(socket){
   socket.on('sendMessage',function(port,data){
     //chatting...
     if(data.message.trim()!=='' && data.group!==undefined){
+      const dateNow = new Date();
+      const socketID = Math.floor(Math.random() * 1000);
+      data = Object.assign(data,{create_at: dateNow, socketID})
+      io.sockets.emit('replyMessage-'+port, data);
       var conversation = new Conversation();
       const create_at = Date.now();
       conversation.group = data.group;
@@ -42,10 +46,7 @@ io.on('connection',function(socket){
       conversation.create_at = create_at;
       conversation.save(function(err) {
       }); // save conversation
-      const dateNow = new Date();
-      const socketID = Math.floor(Math.random() * 1000);
-      data = Object.assign(data,{create_at: dateNow, socketID})
-      io.sockets.emit('replyMessage-'+port, data);
+
     }
 
   })
