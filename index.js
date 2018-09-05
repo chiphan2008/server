@@ -44,8 +44,6 @@ io.on('connection',function(socket){
       conversation.save(function(err) {
         data = Object.assign(data,{create_at: dateNow, socketID});
         io.sockets.emit('replyMessage-'+port, data);
-        // io.sockets.emit('updateHistory-'+data.id,true);
-        // io.sockets.emit('updateHistory-'+data.friend_id,true);
       }); // save conversation
 
     }
@@ -101,7 +99,7 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
-          res.json({req.body});
+          res.json({request:req.body});
       if(parseInt(req.body.id)>0){
         const dateNow =Date.now();
         const obj = {
