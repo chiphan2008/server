@@ -519,7 +519,7 @@ router.route('/conversation/:group').get(function(req, res){
     var skipping = parseInt(req.query.skip) || 0;
     var limiting = parseInt(req.query.limit) || 0;
     Conversation.find({group:req.params.group})
-    .limit(limiting).skip(skipping).sort({'create_at':1})
+    .limit(limiting).skip(skipping).sort({'create_at':-1})
     .exec(function(err, data){
       if(err) res.json({error:"Cant not GET"})
       res.json({data})
