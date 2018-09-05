@@ -100,18 +100,16 @@ router.route('/person/offline').post(function(req, res){
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
       const dateNow =Date.now();
-      Person.updateOne({id: req.body.id },
-          {
-             $set: {
-               "name": req.body.name,
-               "urlhinh": req.body.urlhinh,
-               "email": req.body.email,
-               "phone": req.body.phone,
-               "active": 1,
-               "offline_at": dateNow,
-               "online_at": dateNow
-             }
-         }, function() {
+      const obj = {
+        "name": req.body.name,
+        "urlhinh": req.body.urlhinh,
+        "email": req.body.email,
+        "phone": req.body.phone,
+        "active": 1,
+        "offline_at": dateNow,
+        "online_at": dateNow
+      };
+      Person.updateOne({id: req.body.id },{ $set: obj}, function() {
            ListFriend.findOne({id:req.body.id}).exec(function(err, item){
              if(err || item===null){
                let listfriend = new ListFriend();
@@ -119,15 +117,15 @@ router.route('/person/update').post(function(req, res){
                listfriend.friends=[];
                listfriend.save();
              }
-           });
-
-           HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
-             if(err || item===null){
-               let historychat = new HistoryChat();
-               historychat.id=req.body.id;
-               historychat.history=[];
-               historychat.save();
-             }
+             HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+               if(err || item===null){
+                 let historychat = new HistoryChat();
+                 historychat.id=req.body.id;
+                 historychat.history=[];
+                 historychat.save();
+               }
+               res.json({data:obj});
+             });
            });
 
        });
