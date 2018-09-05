@@ -42,7 +42,7 @@ io.on('connection',function(socket){
       conversation.message = data.message;
       conversation.create_at = dateNow;
       conversation.save(function(err) {
-        data = Object.assign(data,{create_at: dateNow, socketID})
+        data = Object.assign(data,{create_at: dateNow, socketID});
         io.sockets.emit('replyMessage-'+port, data);
       }); // save conversation
 
@@ -366,8 +366,9 @@ router.route('/add-history').post(function(req,res){
       const id = parseInt(req.body.id);
       const friend_id = parseInt(req.body.friend_id);
       const message = req.body.message;
+      const dateNow = req.body.dateNow;
       if(id>0){
-        const dateNow = new Date();
+        //const dateNow = new Date();
         HistoryChat.findOne({id,"history.friend_id":friend_id}).exec(function(err, item){
           let mycond,friendcond,myVal,friendVal;
           if(item===null){
