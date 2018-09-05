@@ -81,28 +81,31 @@ router.route('/person/:id').get(function(req, res){
           }
 })
 router.route('/person/inactive').post(function(req, res){
-          Person.updateOne(
-            {id: req.body.id },
-            {
-               $set: {
-                 "active": 0,
-               }
-           }, function() {
+        if(parseInt(req.body.id)>0){
+          Person.updateOne({id: parseInt(req.body.id) },{ $set: {"active": 0} }, function() {
                res.json({code:200,message:'User inactived!'})
           });
+        }else {
+          res.json({error:"Can not GET"})
+        }
 })
 router.route('/person/offline').post(function(req, res){
-          Person.updateOne({id: req.body.id },
-           {
-               $set: {"offline_at": Date.now()}
-           }, function() {
-               res.json({code:200,message:'Update successfully!'})
-           });
+      if(parseInt(req.body.id)>0){
+        const dateNow =new Date();
+        Person.updateOne({id: parseInt(req.body.id) },
+         {
+             $set: {"offline_at": dateNow}
+         }, function() {
+             res.json({code:200,message:'Update successfully!'})
+         });
+      }else {
+        res.json({error:"Can not GET"})
+      }
 })
 router.route('/person/update').post(function(req, res){
           //res.json({request:req.body});
       if(parseInt(req.body.id)>0){
-        const dateNow =Date.now();
+        const dateNow =new Date();
         let obj = {
           "name": req.body.name,
           "urlhinh": req.body.urlhinh,
@@ -144,7 +147,7 @@ router.route('/person/add').post(function(req, res){
       Person.find({id:req.body.id}).exec(function(err, data){
         //res.json({data})
             if(data.length===0){
-              const dateNow =Date.now();
+              const dateNow =new Date();
               var person = new Person();
               person.id = req.body.id;
               person.name = req.body.name;
@@ -154,30 +157,27 @@ router.route('/person/add').post(function(req, res){
               person.online_at = dateNow;
               person.offline_at = dateNow;
               person.create_at = dateNow;
-
               person.save(function(err){
                 if(err){
                    res.json({error:err})
                 }
-
                 ListFriend.findOne({id:req.body.id}).exec(function(err, item){
                   if(err || item===null){
                     let listfriend = new ListFriend();
                     listfriend.id=req.body.id;
                     listfriend.friends=[];
                     listfriend.save();
-                    //res.json({code:200,message:'Data inserted successfully!'})
                   }
+                  HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+                    if(err || item===null){
+                      let historychat = new HistoryChat();
+                      historychat.id=req.body.id;
+                      historychat.history=[];
+                      historychat.save();
+                    }
+                    res.json({code:200,message:'Inserted successfully!'})
+                  });
                 });
-                HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
-                  if(err || item===null){
-                    let historychat = new HistoryChat();
-                    historychat.id=req.body.id;
-                    historychat.history=[];
-                    historychat.save();
-                  }
-                });
-
               })
             }else {
               res.json({code:200,message:'User existing!'})
@@ -187,14 +187,6 @@ router.route('/person/add').post(function(req, res){
         res.json({error:"Can not GET/POST"})
       }
 })
-// .get(function(req, res){
-//   Person.find(function(err, person){
-//     if(err) res.json({error:err})
-//     res.json({person})
-//   });
-// })
-
-
 
 router.route('/except-person/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
@@ -313,7 +305,6 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                     // var newData = arr[0].friends.map(function(item){
                     //     return item.friend_id;
                     // });
-
                   }
             });
         }else {
@@ -435,7 +426,7 @@ router.route('/add-friend').post(function(req, res){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
             let conds,setVal,addVal;
               //I not inserte friend yet
-              const dateNow = Date.now();
+              const dateNow = new Date();
               if(err || item===null){
                 conds = {id:friend_id};
                 setVal = {
