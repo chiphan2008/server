@@ -358,7 +358,7 @@ router.route('/history-chat/:id').get(function(req, res){
                   last_message:"$history.last_message",
                   update_at:"$history.create_at"
                 }
-              },{ $sort : { update_at : 1}}
+              },{ $sort : { update_at : -1}}
             ]).limit(limiting).skip(skipping).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
