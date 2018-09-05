@@ -75,7 +75,7 @@ router.route('/person/:id').get(function(req, res){
               res.json({data});
             });
           }else {
-            res.json({error:"Cant not GET"})
+            res.json({error:"Can not GET"})
           }
 })
 router.route('/person/inactive').post(function(req, res){
@@ -109,73 +109,82 @@ router.route('/person/update').post(function(req, res){
         "offline_at": dateNow,
         "online_at": dateNow
       };
-      Person.updateOne({id: req.body.id },{ $set: obj}, function() {
-           ListFriend.findOne({id:req.body.id}).exec(function(err, item){
-             if(err || item===null){
-               let listfriend = new ListFriend();
-               listfriend.id=req.body.id;
-               listfriend.friends=[];
-               listfriend.save();
-             }
-             HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+      if(parseInt(req.body.id)>0){
+        Person.updateOne({id: req.body.id },{ $set: obj}, function() {
+             ListFriend.findOne({id:req.body.id}).exec(function(err, item){
                if(err || item===null){
-                 let historychat = new HistoryChat();
-                 historychat.id=req.body.id;
-                 historychat.history=[];
-                 historychat.save();
+                 let listfriend = new ListFriend();
+                 listfriend.id=req.body.id;
+                 listfriend.friends=[];
+                 listfriend.save();
                }
-               obj = Object.assign(obj,{id:req.body.id})
-               res.json({data:obj});
+               HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+                 if(err || item===null){
+                   let historychat = new HistoryChat();
+                   historychat.id=req.body.id;
+                   historychat.history=[];
+                   historychat.save();
+                 }
+                 obj = Object.assign(obj,{id:req.body.id})
+                 res.json({data:obj});
+               });
              });
-           });
 
-       });
+         });
+      }else {
+        res.json({error:"Can not GET"})
+      }
+
 })
 
 // /person add/update user when login app
 router.route('/person/add').post(function(req, res){
+  if(parseInt(req.body.id)>0){
       Person.find({id:req.body.id}).exec(function(err, data){
         //res.json({data})
-        if(data.length===0){
-          const dateNow =Date.now();
-          var person = new Person();
-          person.id = req.body.id;
-          person.name = req.body.name;
-          person.urlhinh = req.body.urlhinh;
-          person.email = req.body.email;
-          person.phone = req.body.phone;
-          person.online_at = dateNow;
-          person.offline_at = dateNow;
-          person.create_at = dateNow;
+            if(data.length===0){
+              const dateNow =Date.now();
+              var person = new Person();
+              person.id = req.body.id;
+              person.name = req.body.name;
+              person.urlhinh = req.body.urlhinh;
+              person.email = req.body.email;
+              person.phone = req.body.phone;
+              person.online_at = dateNow;
+              person.offline_at = dateNow;
+              person.create_at = dateNow;
 
-          person.save(function(err){
-            if(err){
-               res.json({error:err})
+              person.save(function(err){
+                if(err){
+                   res.json({error:err})
+                }
+
+                ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+                  if(err || item===null){
+                    let listfriend = new ListFriend();
+                    listfriend.id=req.body.id;
+                    listfriend.friends=[];
+                    listfriend.save();
+                    //res.json({code:200,message:'Data inserted successfully!'})
+                  }
+                });
+                HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+                  if(err || item===null){
+                    let historychat = new HistoryChat();
+                    historychat.id=req.body.id;
+                    historychat.history=[];
+                    historychat.save();
+                  }
+                });
+
+              })
+            }else {
+              res.json({code:200,message:'User existing!'})
             }
-
-            ListFriend.findOne({id:req.body.id}).exec(function(err, item){
-              if(err || item===null){
-                let listfriend = new ListFriend();
-                listfriend.id=req.body.id;
-                listfriend.friends=[];
-                listfriend.save();
-                //res.json({code:200,message:'Data inserted successfully!'})
-              }
-            });
-            HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
-              if(err || item===null){
-                let historychat = new HistoryChat();
-                historychat.id=req.body.id;
-                historychat.history=[];
-                historychat.save();
-              }
-            });
-
-          })
-        }else {
-          res.json({code:200,message:'User existing!'})
-        }
-      });
+        });
+      }else {
+        res.json({error:"Can not GET/POST"})
+      }
 })
 // .get(function(req, res){
 //   Person.find(function(err, person){
@@ -196,7 +205,7 @@ router.route('/except-person/:id').get(function(req, res){
               res.json({data});
             });
           }else {
-            res.json({error:"Cant not GET"})
+            res.json({error:"Can not GET"})
           }
         })
 router.route('/static-friend/:id').get(function(req, res){
@@ -228,7 +237,7 @@ router.route('/static-friend/:id').get(function(req, res){
                   }
             });
         }else {
-          res.json({error:"Cant not GET"})
+          res.json({error:"Can not GET"})
         }
 
 })
@@ -242,7 +251,7 @@ router.route('/list-friend/:id').get(function(req, res){
               }
             });
           }else {
-            res.json({error:"Cant not GET"})
+            res.json({error:"Can not GET"})
           }
 })
 
@@ -307,7 +316,7 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   }
             });
         }else {
-          res.json({error:"Cant not GET"})
+          res.json({error:"Can not GET"})
         }
 
 })
@@ -359,7 +368,7 @@ router.route('/history-chat/:id').get(function(req, res){
                   }
             });
           }else {
-            res.json({error:"Cant not GET"})
+            res.json({error:"Can not GET"})
           }
         })
 router.route('/add-history').post(function(req,res){
@@ -412,7 +421,7 @@ router.route('/add-history').post(function(req,res){
 
         })
       }else {
-        res.json({error:"Cant not GET"})
+        res.json({error:"Can not GET"})
       }
 
 })
@@ -420,7 +429,7 @@ router.route('/add-history').post(function(req,res){
 router.route('/add-friend').post(function(req, res){
         const id = parseInt(req.body.id);
         const friend_id = parseInt(req.body.friend_id);
-        if(id<0) res.json({error:"Cant not GET"});
+        if(id<0) res.json({error:"Can not GET"});
         ListFriend.findOne({id:friend_id,"friends.friend_id":id}).exec(function(err, item){
           ListFriend.findOne({id,"friends.friend_id":friend_id}).exec(function(error, el){
             let conds,setVal,addVal;
@@ -522,7 +531,7 @@ router.route('/conversation/:group').get(function(req, res){
     Conversation.find({group:req.params.group})
     .limit(limiting).skip(skipping).sort({'create_at':-1})
     .exec(function(err, data){
-      if(err) res.json({error:"Cant not GET"})
+      if(err) res.json({error:"Can not GET"})
       res.json({data})
     });
 })
