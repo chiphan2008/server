@@ -99,7 +99,7 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
-          //res.json({id:parseInt(req.body.id)});
+          res.json({request:req.body});
       if(parseInt(req.body.id)>0){
         const dateNow =Date.now();
         const obj = {
