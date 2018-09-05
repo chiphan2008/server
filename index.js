@@ -124,6 +124,7 @@ router.route('/person/update').post(function(req, res){
                  historychat.history=[];
                  historychat.save();
                }
+               obj = Object.assign(obj,{id:req.body.id})
                res.json({data:obj});
              });
            });
