@@ -43,7 +43,8 @@ io.on('connection',function(socket){
       conversation.save(function(err) {
       }); // save conversation
       const dateNow = new Date();
-      data = Object.assign(data,{create_at: dateNow, socketID:socket})
+      const socketID = Math.floor(Math.random() * 1000);
+      data = Object.assign(data,{create_at: dateNow, socketID})
       io.sockets.emit('replyMessage-'+port, data);
     }
 
