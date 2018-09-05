@@ -44,6 +44,8 @@ io.on('connection',function(socket){
       conversation.save(function(err) {
         data = Object.assign(data,{create_at: dateNow, socketID});
         io.sockets.emit('replyMessage-'+port, data);
+        io.sockets.emit('updateHistory-'+data.id,{update:true});
+        // io.sockets.emit('updateHistory-'+data.friend_id,true);
       }); // save conversation
 
     }
