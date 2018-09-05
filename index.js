@@ -35,17 +35,17 @@ io.on('connection',function(socket){
     //chatting...
     if(data.message.trim()!=='' && data.group!==undefined){
       var conversation = new Conversation();
-      const create_at = Date.now();
+      const dateNow = new Date();
+      const socketID = Math.floor(Math.random() * 1000);
       conversation.group = data.group;
       conversation.id = data.id;
       conversation.message = data.message;
-      conversation.create_at = create_at;
+      conversation.create_at = dateNow;
       conversation.save(function(err) {
+        data = Object.assign(data,{create_at: dateNow, socketID})
+        io.sockets.emit('replyMessage-'+port, data);
       }); // save conversation
-      const dateNow = new Date();
-      const socketID = Math.floor(Math.random() * 1000);
-      data = Object.assign(data,{create_at: dateNow, socketID})
-      io.sockets.emit('replyMessage-'+port, data);
+
     }
 
   })
