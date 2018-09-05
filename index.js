@@ -99,7 +99,7 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //console.log('/person/update',req.body);
-          res.json({id:parseInt(req.body.id)});
+          //res.json({id:parseInt(req.body.id)});
       if(parseInt(req.body.id)>0){
         const dateNow =Date.now();
         const obj = {
@@ -135,7 +135,6 @@ router.route('/person/update').post(function(req, res){
       }else {
         res.json({error:"Can not GET"})
       }
-
 })
 
 // /person add/update user when login app
