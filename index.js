@@ -76,31 +76,22 @@ router.route('/person/:id').get(function(req, res){
             Person.find({id:req.params.id}).exec(function(err, data){
               res.json({data});
             });
-          }else {
-            res.json({error:"Can not GET"})
-          }
+          }else {res.json({error:"Can not GET"})}
 })
 router.route('/person/inactive').post(function(req, res){
         if(parseInt(req.body.id)>0){
           Person.updateOne({id: parseInt(req.body.id) },{ $set: {"active": 0} }, function() {
                res.json({code:200,message:'User inactived!'})
           });
-        }else {
-          res.json({error:"Can not GET"})
-        }
+        }else {res.json({error:"Can not GET"})}
 })
 router.route('/person/offline').post(function(req, res){
       if(parseInt(req.body.id)>0){
         const dateNow =new Date();
-        Person.updateOne({id: parseInt(req.body.id) },
-         {
-             $set: {"offline_at": dateNow}
-         }, function() {
+        Person.updateOne({id: parseInt(req.body.id) },{$set: {"offline_at": dateNow}}, function() {
              res.json({code:200,message:'Update successfully!'})
          });
-      }else {
-        res.json({error:"Can not GET"})
-      }
+      }else {res.json({error:"Can not GET"})}
 })
 router.route('/person/update').post(function(req, res){
           //res.json({request:req.body});
@@ -179,13 +170,9 @@ router.route('/person/add').post(function(req, res){
                   });
                 });
               })
-            }else {
-              res.json({code:200,message:'User existing!'})
-            }
+            }else {res.json({code:200,message:'User existing!'})}
         });
-      }else {
-        res.json({error:"Can not GET/POST"})
-      }
+      }else {res.json({error:"Can not GET/POST"})}
 })
 
 router.route('/except-person/:id').get(function(req, res){
@@ -193,14 +180,11 @@ router.route('/except-person/:id').get(function(req, res){
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
             Person.find({id:{$ne : req.params.id} ,active:1})
-            .limit(limiting).skip(skipping).sort('-_id')
-            .exec(function(err, data){
+            .limit(limiting).skip(skipping).sort('-_id').exec(function(err, data){
               res.json({data});
             });
-          }else {
-            res.json({error:"Can not GET"})
-          }
-        })
+          }else { res.json({error:"Can not GET"}) }
+  })
 router.route('/static-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
@@ -229,23 +213,16 @@ router.route('/static-friend/:id').get(function(req, res){
                     res.json({data:arr})
                   }
             });
-        }else {
-          res.json({error:"Can not GET"})
-        }
+        }else { res.json({error:"Can not GET"}) }
 
 })
 router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.findOne({id:req.params.id}).exec(function(err, item){
-              if(err || item===null){
-                res.json({data:[]})
-              }else {
-                res.json({data:item.friends})
-              }
+              if(err || item===null){ res.json({data:[]})}
+              else { res.json({data:item.friends}) }
             });
-          }else {
-            res.json({error:"Can not GET"})
-          }
+          }else { res.json({error:"Can not GET"}) }
 })
 
 router.route('/list-friend/:id/:status').get(function(req, res){
@@ -316,22 +293,14 @@ router.route('/history-chat/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           if(req.params.id>0){
-            // HistoryChat.find({id:req.params.id})
-            // .limit(limiting).skip(skipping).sort('-_update_at')
-            // .exec(function(err, data){
-            //   res.json({data});
-            // });
-
             HistoryChat.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
-              {$unwind: "$history"},{
-                  $lookup: {
+              {$unwind: "$history"},{$lookup: {
                       from: "people",
                       localField: "history.friend_id",
                       foreignField: "id",
                       as: "profile"
-                  }
-              },{ $project: {
+              }},{ $project: {
                   id:{ $reduce: {
                       input: "$profile.id",
                       initialValue: 1,
@@ -371,53 +340,57 @@ router.route('/add-history').post(function(req,res){
       if(id>0){
         //const dateNow = new Date();
         HistoryChat.findOne({id,"history.friend_id":friend_id}).exec(function(err, item){
-          let mycond,friendcond,myVal,friendVal;
-          if(item===null){
-            mycond = {id};
-            friendcond = {id:friend_id};
-            myVal = {
-              $addToSet : {
-                    "history" : {
-                        friend_id,
-                        last_message: message,
-                        create_at:dateNow
-              }}
-            };
-            friendVal = {
-              $addToSet : {
-                    "history" : {
-                        friend_id:id,
-                        last_message:message,
-                        create_at:dateNow
-              }}
-            };
-          }else {
-            mycond = {id,"history.friend_id":friend_id };
-            friendcond = {id:friend_id,"history.friend_id":id };
-            myVal = { $set: {
-                 "history.$.last_message":message,
-                 "history.$.create_at":dateNow
-               }
-            };
-            friendVal = { $set: {
-                 "history.$.last_message":message,
-                 "history.$.create_at":dateNow
-               }
-            };
-          }
-          HistoryChat.updateOne(mycond,myVal,function(){
-            HistoryChat.updateOne(friendcond,friendVal,function(){
-              res.json({data:el})
+          HistoryChat.findOne({id:friend_id,"history.friend_id":id}).exec(function(error, el){
+            let mycond,friendcond,myVal,friendVal;
+            if(item===null){
+              mycond = {id};
+              myVal = {$addToSet : {"history" : {
+                          friend_id,
+                          last_message: message,
+                          create_at:dateNow
+                        }}};
+            }else {
+              mycond = {id,"history.friend_id":friend_id };
+              myVal = { $set: {
+                   "history.$.last_message":message,
+                   "history.$.create_at":dateNow
+                 }};
+            }
+            if(el===null){
+              friendcond = {id:friend_id};
+              friendVal = {$addToSet : {"history" : {
+                          friend_id:id,
+                          last_message:message,
+                          create_at:dateNow
+                        }}};
+            }else {
+              friendcond = {id:friend_id,"history.friend_id":id };
+              friendVal = { $set: {
+                   "history.$.last_message":message,
+                   "history.$.create_at":dateNow
+                 }};
+            }
+            HistoryChat.updateOne(mycond,myVal,function(){
+              HistoryChat.updateOne(friendcond,friendVal,function(){
+                res.json({data:el})
+              });
             });
-          });
 
+          })
         })
-      }else {
-        res.json({error:"Can not GET"})
-      }
-
+      }else { res.json({error:"Can not GET"}) }
 })
-
+router.route('/delete-history').post(function(req,res){
+      const id = parseInt(req.body.id);
+      const friend_id = parseInt(req.body.friend_id);
+      if(id>0){
+        HistoryChat.updateOne({id} , { $pull : { "history" : {friend_id} } },function(){
+          HistoryChat.updateOne({id: friend_id} , { $pull : { "history" : {friend_id:id} } },function(){
+            res.json({code:200,data:'Deleted successfully!'})
+          });
+        });
+      }else { res.json({error:"Can not GET"}) }
+})
 router.route('/add-friend').post(function(req, res){
         const id = parseInt(req.body.id);
         const friend_id = parseInt(req.body.friend_id);
@@ -429,41 +402,32 @@ router.route('/add-friend').post(function(req, res){
               const dateNow = new Date();
               if(err || item===null){
                 conds = {id:friend_id};
-                setVal = {
-                  $addToSet : {
+                setVal = {$addToSet : {
                     "friends" : {
                       friend_id:id,
                       status:"request",
                       update_at: dateNow,
                       create_at: dateNow
-                  }}
-                };
-                addVal = {
-                  $addToSet : {
+                }}};
+                addVal = {$addToSet : {
                     "friends" : {
                       friend_id:id,
                       status:"accept",
                       update_at: dateNow,
                       create_at: dateNow
-                  }}
-                }
+                }}}
               }else {
                 conds = {id:friend_id,"friends.friend_id":id};
-                setVal = {
-                  $set : {
+                setVal = {$set : {
                     "friends.$.friend_id":id,
                     "friends.$.status":"request",
                     "friends.$.update_at":dateNow,
                     "friends.$.create_at":dateNow
-                  }
-                };
-                addVal = {
-                  $set : {
+                }};
+                addVal = {$set : {
                     "friends.$.status":"accept",
                     "friends.$.update_at":dateNow
-                  }
-                };
-
+                }};
               }
             //friend not requested me yet
             if(error || el===null){
@@ -491,30 +455,25 @@ router.route('/add-friend').post(function(req, res){
                   },function(){ res.json({data:el}) });
                 });
               }
-
            }
-
           })
       });
 })
 router.route('/unfriend').post(function(req, res){
         const id = parseInt(req.body.id);
         const friend_id = parseInt(req.body.friend_id);
-        ListFriend.updateOne({id} ,
-        {
-          $pull : {
-            "friends" : {friend_id}
-          }
-        },function(){
-          ListFriend.updateOne({id: friend_id} ,
-          {
-            $pull : {
-              "friends" : {friend_id:id}
-            }
-          },function(){
-            res.json({data:'Data updated'})
+        if(id>0){
+          ListFriend.updateOne({id} , { $pull : { "friends" : {friend_id} } },function(){
+            ListFriend.updateOne({id: friend_id} , { $pull : { "friends" : {friend_id:id} } },function(){
+              // HistoryChat.updateOne({id} , { $pull : { "history" : {friend_id} } },function(){
+              //   HistoryChat.updateOne({id: friend_id} , { $pull : { "history" : {friend_id:id} } },function(){
+              //       // const group = id<friend_id?`${id}_${friend_id}`:`${friend_id}_${id}`;
+              //       // Conversation.remove({ group },function(){});
+              //   });
+              // });
+            });
           });
-        });
+        }else{res.json({error:"Can not GET"})}
 })
 
 router.route('/conversation/:group').get(function(req, res){
