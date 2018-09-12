@@ -190,7 +190,8 @@ router.route('/search-person').post(function(req, res){
           var limiting = parseInt(req.query.limit) || 0;
           const kw = req.body.keyword;
           Person.find({ $or:[{'name':kw},{'email':kw},{'phone':kw}] })
-          .limit(limiting).skip(skipping).exec(function(err, data){
+          //.limit(limiting).skip(skipping)
+          .exec(function(err, data){
             res.json({data});
           });
   })
