@@ -237,7 +237,61 @@ router.route('/list-friend/:id').get(function(req, res){
             });
           }else { res.json({error:"Can not GET"}) }
 })
-
+router.route('/search-contact').post(function(req, res){
+          //var skipping = parseInt(req.query.skip) || 0;
+          //var limiting = parseInt(req.query.limit) || 0;
+          const id = parseInt(req.body.id);
+          const keyword = new RegExp(req.body.keyword, 'i');
+          if(id>0){
+            ListFriend.aggregate([
+              {"$match":{id}},{ $project: {
+                    friends: {
+                      $filter: {
+                        input: "$friends",
+                        as: "friend",
+                        cond: {$eq: ['$$friend.status', "accept"]}
+                    }}}
+                },{$unwind: "$friends"},{
+                  $lookup: {
+                      from: "people",
+                      localField: "friends.friend_id",
+                      foreignField: "id",
+                      as: "profile"
+                  }
+              },{ $project: {
+                  id:{ $reduce: {
+                      input: "$profile.id",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
+                  name:{ $reduce: {
+                      input: "$profile.name",
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
+                  }},
+                  urlhinh:{ $reduce: {
+                      input: "$profile.urlhinh",
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
+                  }},
+                  email:{ $reduce: {
+                      input: "$profile.email",
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
+                  }},
+                  phone:{ $reduce: {
+                      input: "$profile.phone",
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
+                  }},
+                  status:"$friends.status"
+                }
+              },{"$match":{$or:[{name: keyword},{email: keyword},{phone: keyword}]}}
+            ]).exec(function(err, arr){
+                if(arr===null || err){ res.json({data:[]}) }else { res.json({data:arr}) }
+            });
+          }else { res.json({error:"Can not GET"}) }
+})
 router.route('/list-friend/:id/:status').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
@@ -285,7 +339,6 @@ router.route('/list-friend/:id/:status').get(function(req, res){
                   status:"$friends.status"
                 }
               }
-
             ]).exec(function(err, arr){
                   if(arr===null || err){
                       if(err) res.json(err)
