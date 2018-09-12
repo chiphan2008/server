@@ -188,8 +188,8 @@ router.route('/except-person/:id').get(function(req, res){
 router.route('/search-person').post(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
-          const kw = req.body.keyword;
-          Person.find({ $or:[{'name':kw},{'email':kw},{'phone':kw}] })
+          const keyword = req.body.keyword;
+          Person.find({ $or:[{'name':keyword}] })
           //.limit(limiting).skip(skipping)
           .exec(function(err, data){
             res.json({data});
