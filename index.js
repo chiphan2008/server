@@ -189,10 +189,10 @@ router.route('/search-person').post(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
           const keyword = new RegExp(req.body.keyword, 'i');
-          //res.json({keyword:keyword,skip:skipping,limit:limiting});
-          Person.find({$or:[
-            {name: keyword},{email: keyword},{phone: keyword}
-          ]}).limit(limiting).skip(skipping)
+          // Person.find({$or:[
+          //   {name: keyword},{email: keyword},{phone: keyword}
+          // ]})
+          Person.find({ $text: { $search: keyword }}).limit(limiting).skip(skipping)
           .exec(function(err, data){
             res.json({data});
           });
