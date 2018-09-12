@@ -360,7 +360,7 @@ router.route('/search-history').post(function(req, res){
           const keyword = new RegExp(req.body.keyword, 'i');
           if(id>0){
             HistoryChat.aggregate([
-              {"$match":{id},{$unwind: "$history"},{$lookup: {
+              {"$match":{id}},{$unwind: "$history"},{$lookup: {
                       from: "people",
                       localField: "history.friend_id",
                       foreignField: "id",
