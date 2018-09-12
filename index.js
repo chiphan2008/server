@@ -190,12 +190,14 @@ router.route('/search-person').post(function(req, res){
           var limiting = parseInt(req.query.limit) || 0;
           const id = parseInt(req.body.id);
           const keyword = new RegExp(req.body.keyword, 'i');
-          Person.find({$and :[{$or:[{name: keyword},{email: keyword},{phone: keyword}]}, {id:{$ne:id}} ]})
-          .limit(limiting).skip(skipping)
-          .exec(function(err, data){
-            res.json({data});
-          });
-  })
+          if(id>0){
+            Person.find({$and :[{$or:[{name: keyword},{email: keyword},{phone: keyword}]}, {id:{$ne:id}} ]})
+            .limit(limiting).skip(skipping)
+            .exec(function(err, data){
+              res.json({data});
+            });
+          }else { res.json({error:"Can not GET"}) }
+})
 router.route('/static-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
