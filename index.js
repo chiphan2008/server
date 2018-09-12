@@ -185,6 +185,16 @@ router.route('/except-person/:id').get(function(req, res){
             });
           }else { res.json({error:"Can not GET"}) }
   })
+router.route('/search-person/:kw').get(function(req, res){
+          var skipping = parseInt(req.query.skip) || 0;
+          var limiting = parseInt(req.query.limit) || 0;
+          const kw = req.params.kw;
+          Person.find({ $or :[{name:/kw/},{email:/kw/},{phone:/kw/}]})
+          .limit(limiting).skip(skipping)
+          .exec(function(err, data){
+            res.json({data});
+          });
+  })
 router.route('/static-friend/:id').get(function(req, res){
           if(req.params.id>0){
             ListFriend.aggregate([
