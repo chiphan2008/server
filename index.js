@@ -190,7 +190,7 @@ router.route('/search-person').post(function(req, res){
           var limiting = parseInt(req.query.limit) || 0;
           const keyword = req.body.keyword;
           //res.json({keyword:keyword,skip:skipping,limit:limiting});
-          Person.find({$text: { $search: new RegExp(keyword, 'i') }}).limit(limiting).skip(skipping)
+          Person.find({name: new RegExp(keyword, 'i')}).limit(limiting).skip(skipping)
           .exec(function(err, data){
             res.json({data});
           });
