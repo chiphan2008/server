@@ -384,7 +384,7 @@ router.route('/search-history').post(function(req, res){
                   last_message:"$history.last_message",
                   update_at:"$history.create_at"
                 }
-              },{"$match":{$or:[{name: keyword},{email: keyword},{phone: keyword}]}},
+              },{"$match":{name: keyword}},
               {$sort : { update_at : -1}}
             ]).limit(limiting).skip(skipping).exec(function(err, arr){
               if(arr===null || err){ res.json({data:[]}) }else { res.json({data:arr}) }
