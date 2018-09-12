@@ -238,8 +238,6 @@ router.route('/list-friend/:id').get(function(req, res){
           }else { res.json({error:"Can not GET"}) }
 })
 router.route('/search-contact').post(function(req, res){
-          //var skipping = parseInt(req.query.skip) || 0;
-          //var limiting = parseInt(req.query.limit) || 0;
           const id = parseInt(req.body.id);
           const keyword = new RegExp(req.body.keyword, 'i');
           if(id>0){
@@ -354,6 +352,44 @@ router.route('/list-friend/:id/:status').get(function(req, res){
           res.json({error:"Can not GET"})
         }
 
+})
+router.route('/search-history').post(function(req, res){
+          var skipping = parseInt(req.query.skip) || 0;
+          var limiting = parseInt(req.query.limit) || 0;
+          const id = parseInt(req.body.id);
+          const keyword = new RegExp(req.body.keyword, 'i');
+          if(id>0){
+            HistoryChat.aggregate([
+              {"$match":{id},{$unwind: "$history"},{$lookup: {
+                      from: "people",
+                      localField: "history.friend_id",
+                      foreignField: "id",
+                      as: "profile"
+              }},{ $project: {
+                  id:{ $reduce: {
+                      input: "$profile.id",
+                      initialValue: 1,
+                      in: { $multiply: [ "$$value", "$$this" ] }
+                  }},
+                  name:{ $reduce: {
+                      input: "$profile.name",
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
+                  }},
+                  urlhinh:{ $reduce: {
+                      input: "$profile.urlhinh",
+                      initialValue: '',
+                      in: { $concat: [ "$$value", "$$this" ] }
+                  }},
+                  last_message:"$history.last_message",
+                  update_at:"$history.create_at"
+                }
+              },{$or:[{name: keyword},{email: keyword},{phone: keyword}]},
+              {$sort : { update_at : -1}}
+            ]).limit(limiting).skip(skipping).exec(function(err, arr){
+              if(arr===null || err){ res.json({data:[]}) }else { res.json({data:arr}) }
+            });
+          }else { res.json({error:"Can not GET"}) }
 })
 router.route('/history-chat/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
