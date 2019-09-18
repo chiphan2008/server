@@ -11,8 +11,14 @@ var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
 var HistoryChat = require('./app/models/HistoryChat')
 //var BaseController = require('./app/controllers/BaseController')
+/*
 var privateKey = fs.readFileSync('/etc/ssl/private/apache-selfsigned.key').toString();
 var certificate = fs.readFileSync('/etc/ssl/certs/apache-selfsigned.crt').toString();
+SSLCertificateFile /etc/ssl/certs/kingmap.vn/cert.pem
+SSLCertificateKeyFile /etc/ssl/private/kingmap.vn/privkey.pem
+*/
+var privateKey = fs.readFileSync('/etc/ssl/private/kingmap.vn/privkey.pem').toString();
+var certificate = fs.readFileSync('/etc/ssl/certs/kingmap.vn/cert.pem').toString();
 //const hostname = 'node.kingmap.vn';
 const port = 2309;
 var server = https.createServer({
