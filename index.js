@@ -6,7 +6,7 @@ const fs = require("fs"),
 var app = express();
 //var server = require('http').Server(app);
 var router = express.Router();
-var Person = require('./app/models/person')
+var Person = require('./app/models/Person')
 var Conversation = require('./app/models/Conversation')
 var ListFriend = require('./app/models/ListFriend')
 var HistoryChat = require('./app/models/HistoryChat')
@@ -28,7 +28,8 @@ var server = https.createServer({
 var io = require('socket.io').listen(server, {secure: true,pingTimeout: 30000});
 server.listen(port);
 
-mongoose.connect('mongodb://localhost:27017/chat');
+mongoose.connect('mongodb://127.0.0.1:27017/chat');
+//mongoose.connect('mongodb://admins:admins_123@127.0.0.1:27017/chat?authSource=admin', {useNewUrlParser: true});
 
 io.on('connection',function(socket){
   //show handleEnterText
@@ -237,7 +238,9 @@ router.route('/static-friend/:id').get(function(req, res){
 })
 router.route('/list-friend/:id').get(function(req, res){
           if(req.params.id>0){
+console.log("id", req.params.id);
             ListFriend.findOne({id:req.params.id}).exec(function(err, item){
+		console.log("err" ,err);
               if(err || item===null){ res.json({data:[]})}
               else { res.json({data:item.friends}) }
             });
