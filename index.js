@@ -79,8 +79,8 @@ router.get('/',function(req,res){
 })
 //check info person
 router.route('/person/:id').get(function(req, res){
-          if(req.params.id>0){
-            Person.find({id:req.params.id}).exec(function(err, data){
+          if(parseInt(req.params.id)>0){
+            Person.find({id:parseInt(req.params.id)}).exec(function(err, data){
               res.json({data});
             });
           }else {res.json({error:"Can not GET"})}
@@ -102,7 +102,8 @@ router.route('/person/offline').post(function(req, res){
 })
 router.route('/person/update').post(function(req, res){
           //res.json({request:req.body});
-      if(parseInt(req.body.id)>0){
+          const id = parseInt(req.body.id);
+      if(id>0){
         const dateNow =new Date();
         let obj = {
           "name": req.body.name,
@@ -113,22 +114,22 @@ router.route('/person/update').post(function(req, res){
           "offline_at": dateNow,
           "online_at": dateNow
         };
-        Person.updateOne({id: req.body.id },{ $set: obj}, function() {
-             ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+        Person.updateOne({ id },{ $set: obj}, function() {
+             ListFriend.findOne({ id }).exec(function(err, item){
                if(err || item===null){
                  let listfriend = new ListFriend();
-                 listfriend.id=req.body.id;
+                 listfriend.id= id;
                  listfriend.friends=[];
                  listfriend.save();
                }
-               HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+               HistoryChat.findOne({ id }).exec(function(err, item){
                  if(err || item===null){
                    let historychat = new HistoryChat();
-                   historychat.id=req.body.id;
+                   historychat.id=id;
                    historychat.history=[];
                    historychat.save();
                  }
-                 obj = Object.assign({id:req.body.id},obj)
+                 obj = Object.assign({ id },obj)
                  res.json({data:obj});
                });
              });
@@ -141,13 +142,14 @@ router.route('/person/update').post(function(req, res){
 
 // /person add/update user when login app
 router.route('/person/add').post(function(req, res){
-  if(parseInt(req.body.id)>0){
-      Person.find({id:req.body.id}).exec(function(err, data){
+    const id = parseInt(req.body.id);
+  if(id>0){
+      Person.find({ id }).exec(function(err, data){
         //res.json({data})
             if(data.length===0){
               const dateNow =new Date();
               var person = new Person();
-              person.id = req.body.id;
+              person.id = id;
               person.name = req.body.name;
               person.urlhinh = req.body.urlhinh;
               person.email = req.body.email;
@@ -159,17 +161,17 @@ router.route('/person/add').post(function(req, res){
                 if(err){
                    res.json({error:err})
                 }
-                ListFriend.findOne({id:req.body.id}).exec(function(err, item){
+                ListFriend.findOne({ id }).exec(function(err, item){
                   if(err || item===null){
                     let listfriend = new ListFriend();
-                    listfriend.id=req.body.id;
+                    listfriend.id=id;
                     listfriend.friends=[];
                     listfriend.save();
                   }
-                  HistoryChat.findOne({id:req.body.id}).exec(function(err, item){
+                  HistoryChat.findOne({ id }).exec(function(err, item){
                     if(err || item===null){
                       let historychat = new HistoryChat();
-                      historychat.id=req.body.id;
+                      historychat.id=id;
                       historychat.history=[];
                       historychat.save();
                     }
@@ -185,8 +187,8 @@ router.route('/person/add').post(function(req, res){
 router.route('/except-person/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
-          if(req.params.id>0){
-            Person.find({id:{$ne : req.params.id} ,active:1})
+          if(parseInt(req.params.id)>0){
+            Person.find({id:{$ne : parseInt(req.params.id)} ,active:1})
             .limit(limiting).skip(skipping).sort('-_id').exec(function(err, data){
               res.json({data});
             });
@@ -206,7 +208,7 @@ router.route('/search-person').post(function(req, res){
           }else { res.json({error:"Can not GET"}) }
 })
 router.route('/static-friend/:id').get(function(req, res){
-          if(req.params.id>0){
+          if(parseInt(req.params.id)>0){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
               {$unwind: "$friends" },
@@ -237,9 +239,10 @@ router.route('/static-friend/:id').get(function(req, res){
 
 })
 router.route('/list-friend/:id').get(function(req, res){
-          if(req.params.id>0){
-console.log("id", req.params.id);
-            ListFriend.findOne({id:req.params.id}).exec(function(err, item){
+            const id = parseInt(req.params.id);
+          if(id>0){
+console.log("id", id);
+            ListFriend.findOne({ id }).exec(function(err, item){
 		console.log("err" ,err);
               if(err || item===null){ res.json({data:[]})}
               else { res.json({data:item.friends}) }
@@ -300,7 +303,7 @@ router.route('/search-contact').post(function(req, res){
           }else { res.json({error:"Can not GET"}) }
 })
 router.route('/list-friend/:id/:status').get(function(req, res){
-          if(req.params.id>0){
+          if(parseInt(req.params.id)>0){
             ListFriend.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
               { $project: {
@@ -403,7 +406,7 @@ router.route('/search-history').post(function(req, res){
 router.route('/history-chat/:id').get(function(req, res){
           var skipping = parseInt(req.query.skip) || 0;
           var limiting = parseInt(req.query.limit) || 0;
-          if(req.params.id>0){
+          if(parseInt(req.params.id)>0){
             HistoryChat.aggregate([
               {"$match":{"id":parseInt(req.params.id)}},
               {$unwind: "$history"},{$lookup: {
