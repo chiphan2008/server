@@ -40,6 +40,7 @@ io.on('connection',function(socket){
   // handle send message
   socket.on('sendMessage',function(port,data){
     //chatting...
+    console.log('sendMessage', data);
     if(data.message.trim()!=='' && data.group!==undefined){
       var conversation = new Conversation();
       const dateNow = new Date();
